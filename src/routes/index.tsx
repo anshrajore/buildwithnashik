@@ -1,29 +1,60 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { Toaster } from "sonner";
+import anshAsset from "@/assets/ansh.png.asset.json";
+import { RegisterDialog } from "@/components/RegisterDialog";
+import { SponsorDialog } from "@/components/SponsorDialog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Build With Nashik 2026 — Nashik's Largest Developer Hackathon" },
       { name: "description", content: "36 hours. 500+ builders. One city. Build With Nashik is the community-driven developer hackathon by Team Nest. Date announce soon." },
-      { property: "og:title", content: "Build With Nashik 2026" },
-      { property: "og:description", content: "Nashik's largest community-driven hackathon. 36 hours of building, shipping, and winning. By Team Nest." },
     ],
   }),
   component: Home,
 });
 
-/* ---------- shared bits ---------- */
+/* ===== state context (just two dialogs) ===== */
 
-function SectionLabel({ index, children }: { index: string; children: React.ReactNode }) {
+function Home() {
+  const [openReg, setOpenReg] = useState(false);
+  const [openSponsor, setOpenSponsor] = useState(false);
+  const [sponsorTier, setSponsorTier] = useState<string | undefined>();
+
+  function openSponsorFor(tier?: string) {
+    setSponsorTier(tier);
+    setOpenSponsor(true);
+  }
+
   return (
-    <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-      <span className="text-neon">/{index}</span>
-      <span>{children}</span>
-      <span className="h-px flex-1 bg-border" />
+    <div className="min-h-screen overflow-x-hidden paper text-foreground antialiased">
+      <Toaster position="top-center" theme="light" toastOptions={{ style: { fontFamily: "var(--font-sans)" } }} />
+      <Ticker />
+      <Nav onRegister={() => setOpenReg(true)} />
+      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <Stats />
+      <About />
+      <Mission />
+      <Timeline3D />
+      <Tracks />
+      <Prizes />
+      <Sponsors onSponsor={openSponsorFor} />
+      <WhySponsor onSponsor={() => openSponsorFor("Title")} />
+      <Community />
+      <Team />
+      <Venue />
+      <Faq />
+      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <Footer />
+
+      <RegisterDialog open={openReg} onClose={() => setOpenReg(false)} />
+      <SponsorDialog open={openSponsor} onClose={() => setOpenSponsor(false)} defaultTier={sponsorTier} />
     </div>
   );
 }
+
+/* ============= shared ============= */
 
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   const [n, setN] = useState(0);
@@ -31,8 +62,8 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver((e) => {
-      if (e[0].isIntersecting) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
         const start = performance.now();
         const dur = 1400;
         const step = (t: number) => {
@@ -50,150 +81,115 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   return <span ref={ref}>{n}{suffix}</span>;
 }
 
-/* ---------- page ---------- */
-
-function Home() {
+function SectionTag({ n, children }: { n: string; children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased">
-      <CursorGlow />
-      <AnnouncementBar />
-      <Nav />
-      <Hero />
-      <StatsTicker />
-      <About />
-      <Mission />
-      <Timeline />
-      <Tracks />
-      <Prizes />
-      <Sponsors />
-      <WhySponsor />
-      <Community />
-      <Team />
-      <Venue />
-      <Faq />
-      <FinalCta />
-      <Footer />
+    <div className="flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-[0.2em]">
+      <span className="tag-orange px-2 py-0.5 text-cream">{n}</span>
+      <span>{children}</span>
+      <span className="h-0.5 flex-1 bg-ink" />
     </div>
   );
 }
 
-/* ---------- cursor ---------- */
+/* ============= ticker (yellow tape) ============= */
 
-function CursorGlow() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (ref.current) {
-        ref.current.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`;
-      }
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+function Ticker() {
+  const items = ["★ Build With Nashik 2026", "● Date · Announce Soon", "⚡ Registrations Opening Soon", "✦ 36 Hours / 500+ Builders", "→ Powered by Team Nest", "◆ Nashik · Maharashtra"];
   return (
-    <div
-      ref={ref}
-      aria-hidden
-      className="pointer-events-none fixed left-0 top-0 z-0 h-[400px] w-[400px] rounded-full opacity-40 blur-3xl transition-transform duration-300 ease-out"
-      style={{ background: "radial-gradient(circle, var(--neon), transparent 60%)" }}
-    />
-  );
-}
-
-/* ---------- announcement ---------- */
-
-function AnnouncementBar() {
-  return (
-    <div className="relative z-30 overflow-hidden border-b border-border bg-neon text-primary-foreground">
-      <div className="flex animate-marquee whitespace-nowrap py-2 font-mono text-xs font-semibold uppercase tracking-widest">
-        {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="flex shrink-0 items-center gap-8 px-4">
-            {["🚀 Registrations Opening Soon", "★ Date Announce Soon", "⚡ 36 Hours of Building", "✦ Powered by Team Nest", "→ Nashik 2026", "● Stay Tuned", "▲ 500+ Builders", "◆ ₹XX+ Prize Pool"].map((t) => (
-              <span key={t} className="flex items-center gap-8">
-                {t}
-                <span className="opacity-50">✕</span>
-              </span>
-            ))}
-          </div>
-        ))}
+    <div className="relative z-30 overflow-hidden border-y-2 border-ink bg-yellow">
+      <div className="flex animate-marquee whitespace-nowrap py-2 font-chunk text-sm uppercase tracking-wide text-ink">
+        {Array.from({ length: 2 }).flatMap((_, i) =>
+          items.map((t, j) => (
+            <span key={`${i}-${j}`} className="flex shrink-0 items-center gap-6 px-6">
+              {t} <span className="opacity-40">✕</span>
+            </span>
+          ))
+        )}
       </div>
     </div>
   );
 }
 
-/* ---------- nav ---------- */
+/* ============= nav ============= */
 
-function Nav() {
-  const links = ["About", "Timeline", "Tracks", "Prizes", "Sponsors", "Team", "FAQ"];
+function Nav({ onRegister }: { onRegister: () => void }) {
+  const links = [["About", "about"], ["Timeline", "timeline"], ["Tracks", "tracks"], ["Prizes", "prizes"], ["Sponsors", "sponsors"], ["Team", "team"], ["FAQ", "faq"]];
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#top" className="flex items-center gap-2 font-display text-lg tracking-tight">
-          <span className="grid h-8 w-8 place-items-center rounded-md bg-neon text-primary-foreground">B</span>
-          <span>BUILD/NASHIK</span>
+    <header className="sticky top-0 z-40 border-b-2 border-ink bg-cream/80 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+        <a href="#top" className="flex items-center gap-2">
+          <span className="grid h-9 w-9 place-items-center rounded-md bg-ink font-display text-xl text-cream">B</span>
+          <span className="font-chunk text-xl uppercase tracking-tight">Build/Nashik</span>
+          <span className="tag-yellow ml-1 px-1.5 py-0 font-mono text-[10px]">2026</span>
         </a>
-        <nav className="hidden items-center gap-8 md:flex">
-          {links.map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground">
-              {l}
-            </a>
+        <nav className="hidden items-center gap-6 md:flex">
+          {links.map(([l, h]) => (
+            <a key={h} href={`#${h}`} className="font-mono text-xs font-bold uppercase tracking-widest text-ink/70 transition-colors hover:text-orange">{l}</a>
           ))}
         </nav>
-        <a href="#register" className="group inline-flex items-center gap-2 rounded-full bg-neon px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-primary-foreground transition-all hover:gap-3 glow-neon">
+        <button onClick={onRegister} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
           Register <span>→</span>
-        </a>
+        </button>
       </div>
     </header>
   );
 }
 
-/* ---------- hero ---------- */
+/* ============= hero — unique BUILD/NASHIK logotype ============= */
 
-function Hero() {
+function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: () => void }) {
   return (
-    <section id="top" className="relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-60" aria-hidden />
-      <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-electric/30 blur-3xl animate-float" aria-hidden />
-      <div className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-neon/30 blur-3xl animate-float" aria-hidden />
+    <section id="top" className="relative">
+      {/* floating stickers */}
+      <Sticker className="left-[6%] top-24" rot={-12}>⚡</Sticker>
+      <Sticker className="right-[8%] top-36" rot={14} color="cobalt">★</Sticker>
+      <Sticker className="left-[14%] bottom-40" rot={6} color="rose">36h</Sticker>
+      <Sticker className="right-[12%] bottom-24" rot={-8} color="yellow">◆</Sticker>
 
-      <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-24">
+      <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-24">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="chip"><span className="h-2 w-2 rounded-full bg-neon animate-pulse-dot" /> Edition 01 · Nashik</span>
-          <span className="chip text-neon">Date · Announce Soon</span>
-          <span className="chip">By Team Nest</span>
+          <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
+          <span className="chip bg-yellow">Date · Announce Soon</span>
+          <span className="chip">By Team Nest · Nashik</span>
         </div>
 
-        <h1 className="mt-10 font-display text-[18vw] leading-[0.85] tracking-tight md:text-[14vw] lg:text-[180px]">
-          <span className="block">BUILD</span>
-          <span className="block text-stroke">WITH</span>
-          <span className="block">
-            NASHIK
-            <span className="ml-3 inline-block -translate-y-6 rounded-2xl bg-neon px-4 py-1 align-top font-sans text-2xl font-bold text-primary-foreground md:text-3xl">2026</span>
-          </span>
-        </h1>
+        {/* Sticker-style wordmark */}
+        <div className="relative mt-12 select-none">
+          <div className="font-display text-[18vw] leading-[0.78] tracking-tight text-ink md:text-[15vw] lg:text-[210px]">
+            <span className="block">BUILD</span>
+          </div>
+          <div className="-mt-6 flex items-end gap-4">
+            <span className="font-script text-[14vw] leading-none text-orange md:text-[10vw] lg:text-[140px] animate-wiggle inline-block" style={{ transformOrigin: "center" }}>
+              with
+            </span>
+            <span className="mb-2 hidden h-1 flex-1 bg-ink md:block" />
+            <span className="mb-3 hidden font-mono text-xs font-bold uppercase tracking-widest text-ink md:inline">/ Hackathon 2026</span>
+          </div>
+          <div className="-mt-4 inline-block ink-border bg-ink px-4 pb-2 pt-1 text-cream">
+            <span className="font-display text-[18vw] leading-[0.85] tracking-tight md:text-[15vw] lg:text-[210px]">NASHIK<span className="text-orange">.</span></span>
+          </div>
+        </div>
 
-        <div className="mt-10 grid gap-10 md:grid-cols-[1.4fr,1fr] md:items-end">
-          <p className="max-w-xl text-lg text-muted-foreground md:text-xl">
-            Nashik's largest community-driven hackathon. <span className="text-foreground">36 hours</span> to build, ship and win — alongside 500+ developers, mentors and founders.
+        <div className="mt-12 grid items-end gap-10 md:grid-cols-[1.4fr,1fr]">
+          <p className="max-w-2xl font-sans text-xl text-ink/80 md:text-2xl">
+            Nashik's largest community-driven hackathon. <span className="tag-yellow font-bold">36 hours</span> to build, ship and win — alongside <span className="tag-orange font-bold">500+ developers</span>, mentors and founders.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a href="#register" className="inline-flex items-center gap-2 rounded-full bg-neon px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-primary-foreground transition-all hover:gap-3 glow-neon">
+            <button onClick={onRegister} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
               Register Now →
-            </a>
-            <a href="#sponsors" className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-foreground transition-colors hover:border-neon hover:text-neon">
+            </button>
+            <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5">
               Become Sponsor
-            </a>
-            <a href="#community" className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-foreground transition-colors hover:border-foreground">
+            </button>
+            <a href="#community" className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-colors hover:bg-ink hover:text-cream">
               Join Community
             </a>
           </div>
         </div>
 
-        <div className="mt-16 flex flex-wrap gap-x-8 gap-y-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <div className="mt-16 flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs font-bold uppercase tracking-widest">
           {["36 Hours", "Innovation", "Networking", "Building", "Learning", "Winning"].map((w, i) => (
-            <span key={w} className="flex items-center gap-2">
-              <span className="text-neon">0{i + 1}</span> {w}
-            </span>
+            <span key={w} className="chip"><span className="text-orange">0{i + 1}</span> {w}</span>
           ))}
         </div>
       </div>
@@ -201,25 +197,40 @@ function Hero() {
   );
 }
 
-/* ---------- stats ticker ---------- */
+function Sticker({ children, className = "", rot = 0, color = "orange" }: { children: React.ReactNode; className?: string; rot?: number; color?: "orange" | "cobalt" | "rose" | "yellow" }) {
+  const map: Record<string, string> = {
+    orange: "bg-orange text-cream",
+    cobalt: "bg-cobalt text-cream",
+    rose: "bg-rose text-ink",
+    yellow: "bg-yellow text-ink",
+  };
+  return (
+    <div
+      aria-hidden
+      className={`pointer-events-none absolute z-10 hidden md:block ${className}`}
+      style={{ ["--r" as never]: `${rot}deg`, animation: "float-y 6s ease-in-out infinite" }}
+    >
+      <div className={`ink-border grid h-16 w-16 place-items-center rounded-2xl font-display text-2xl ${map[color]}`} style={{ transform: `rotate(${rot}deg)` }}>
+        {children}
+      </div>
+    </div>
+  );
+}
 
-function StatsTicker() {
-  const stats = [
-    { v: 500, s: "+", l: "Developers" },
-    { v: 50, s: "+", l: "Teams" },
-    { v: 36, s: "h", l: "Hours" },
-    { v: 20, s: "+", l: "Mentors" },
-    { v: 10, s: "+", l: "Workshops" },
+/* ============= stats ============= */
+
+function Stats() {
+  const items: Array<[number, string, string]> = [
+    [500, "+", "Developers"], [50, "+", "Teams"], [36, "h", "Hours"],
+    [20, "+", "Mentors"], [10, "+", "Workshops"], [1000, "+", "Community"],
   ];
   return (
-    <section className="border-y border-border bg-surface/40">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 divide-border md:grid-cols-5 md:divide-x">
-        {stats.map((s) => (
-          <div key={s.l} className="border-border p-6 md:p-8 [&:not(:last-child)]:border-b md:[&:not(:last-child)]:border-b-0">
-            <div className="font-display text-5xl text-neon md:text-6xl">
-              <Counter to={s.v} suffix={s.s} />
-            </div>
-            <div className="mt-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">{s.l}</div>
+    <section className="border-y-2 border-ink bg-ink text-cream">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-6">
+        {items.map(([v, s, l], i) => (
+          <div key={l} className={`p-6 md:p-8 ${i < items.length - 1 ? "border-r-2 border-cream/15" : ""} ${i < items.length - (i % 2 === 0 ? 2 : 1) ? "border-b-2 border-cream/15 md:border-b-0" : ""}`}>
+            <div className="font-display text-5xl text-orange md:text-6xl"><Counter to={v} suffix={s} /></div>
+            <div className="mt-2 font-mono text-xs font-bold uppercase tracking-widest opacity-80">{l}</div>
           </div>
         ))}
       </div>
@@ -227,30 +238,29 @@ function StatsTicker() {
   );
 }
 
-/* ---------- about ---------- */
+/* ============= about ============= */
 
 function About() {
   const values = ["Innovation", "Collaboration", "Community", "Open Source", "Learning", "Networking", "AI", "Startup"];
   return (
-    <section id="about" className="mx-auto max-w-7xl px-6 py-28">
-      <SectionLabel index="01">About</SectionLabel>
-      <h2 className="mt-6 max-w-4xl font-display text-5xl leading-[0.95] md:text-7xl">
-        Not just another <span className="text-neon">hackathon.</span>
+    <section id="about" className="relative mx-auto max-w-7xl px-6 py-28">
+      <SectionTag n="01">About</SectionTag>
+      <h2 className="mt-6 max-w-5xl font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+        Not just another <span className="tag-orange text-cream">hackathon.</span>
       </h2>
       <div className="mt-10 grid gap-10 md:grid-cols-2">
-        <p className="text-lg leading-relaxed text-muted-foreground">
-          Build With Nashik is a community-driven innovation festival uniting developers, designers, founders, AI enthusiasts and students under one roof to ship impactful products in 36 hours.
+        <p className="text-lg leading-relaxed text-ink/75">
+          Build With Nashik is a community-driven innovation festival uniting developers, designers, founders, AI enthusiasts and students under one roof to ship products in 36 hours.
         </p>
-        <p className="text-lg leading-relaxed text-muted-foreground">
-          Nashik has incredible talent waiting for the right platform. Our mission is simple — <span className="text-foreground">build, collaborate, learn, grow.</span> Make friendships, launch careers, start companies.
+        <p className="text-lg leading-relaxed text-ink/75">
+          Nashik has incredible talent waiting for the right platform. Our mission is simple — <span className="font-script text-3xl text-orange">build, collaborate, learn, grow.</span>
         </p>
       </div>
       <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4">
         {values.map((v, i) => (
-          <div key={v} className="group relative overflow-hidden rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-neon">
-            <div className="font-mono text-xs text-muted-foreground">/{String(i + 1).padStart(2, "0")}</div>
-            <div className="mt-6 font-display text-2xl tracking-tight">{v}</div>
-            <div className="absolute -bottom-10 -right-10 h-24 w-24 rounded-full bg-neon/0 blur-2xl transition-all group-hover:bg-neon/30" />
+          <div key={v} className="group ink-border-sm rounded-2xl bg-cream p-5 transition-transform hover:-translate-y-1">
+            <div className="font-mono text-xs font-bold text-orange">/{String(i + 1).padStart(2, "0")}</div>
+            <div className="mt-6 font-chunk text-2xl uppercase tracking-tight">{v}</div>
           </div>
         ))}
       </div>
@@ -258,129 +268,30 @@ function About() {
   );
 }
 
-/* ---------- mission ---------- */
+/* ============= mission ============= */
 
 function Mission() {
   return (
-    <section className="relative overflow-hidden border-y border-border bg-surface/40">
+    <section className="relative overflow-hidden border-y-2 border-ink bg-orange text-cream">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-28 md:grid-cols-2">
         <div>
-          <SectionLabel index="02">Mission</SectionLabel>
-          <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-6xl">
-            Why we started <br /> Build With Nashik.
+          <div className="chip border-cream bg-orange text-cream">02 · Mission</div>
+          <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-7xl">
+            Why we started <br />
+            <span className="font-script normal-case text-yellow">Build With Nashik.</span>
           </h2>
         </div>
-        <div className="space-y-8">
-          <p className="text-lg text-muted-foreground">
-            The lack of high-quality developer events in Nashik inspired Team Nest to bridge students, startups, professionals and industry leaders in one weekend.
+        <div className="space-y-6">
+          <p className="text-lg leading-relaxed">
+            The lack of high-quality developer events in Nashik pushed Team Nest to bridge students, startups, professionals and industry leaders in one weekend.
           </p>
-          <div className="space-y-4">
-            {[
-              ["Vision", "Make Nashik India's next innovation hub."],
-              ["Mission", "Empower builders. Create founders. Promote AI. Connect industries."],
-            ].map(([k, v]) => (
-              <div key={k} className="rounded-2xl border border-border bg-background p-5">
-                <div className="font-mono text-xs uppercase tracking-widest text-neon">{k}</div>
-                <div className="mt-2 text-lg">{v}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- timeline (gamified) ---------- */
-
-function Timeline() {
-  const steps = [
-    { t: "Registration Opens", s: "Coming Soon", icon: "▶" },
-    { t: "Idea Submission", s: "Coming Soon", icon: "✎" },
-    { t: "Shortlisting", s: "Coming Soon", icon: "★" },
-    { t: "Hackathon Begins", s: "36 Hours", icon: "⚡" },
-    { t: "Mentoring", s: "Live", icon: "◆" },
-    { t: "Judging", s: "Panel", icon: "⚖" },
-    { t: "Winners", s: "Reveal", icon: "♛" },
-    { t: "Networking", s: "Meetups", icon: "✦" },
-    { t: "Aftermovie", s: "Coming Soon", icon: "▷" },
-  ];
-  return (
-    <section id="timeline" className="mx-auto max-w-7xl px-6 py-28">
-      <SectionLabel index="03">Timeline</SectionLabel>
-      <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
-        <h2 className="font-display text-5xl leading-[0.95] md:text-7xl">The <span className="text-neon">level path.</span></h2>
-        <p className="max-w-md text-muted-foreground">A 9-checkpoint journey. Hit start, ship a product, claim the trophy.</p>
-      </div>
-
-      <div className="relative mt-16">
-        {/* path */}
-        <div className="absolute left-6 top-0 hidden h-full w-px bg-gradient-to-b from-neon via-electric to-hot md:left-1/2 md:block" aria-hidden />
-        <ol className="space-y-6">
-          {steps.map((step, i) => (
-            <li key={step.t} className={`grid items-center gap-4 md:grid-cols-2 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}>
-              <div className={`${i % 2 ? "md:pl-12 md:text-left" : "md:pr-12 md:text-right"}`}>
-                <div className="group inline-block w-full max-w-md rounded-2xl border border-border bg-surface p-6 transition-all hover:border-neon hover:-translate-y-1">
-                  <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                    <span className="grid h-8 w-8 place-items-center rounded-md bg-neon text-primary-foreground">{String(i + 1).padStart(2, "0")}</span>
-                    Checkpoint
-                  </div>
-                  <div className="mt-4 font-display text-2xl">{step.t}</div>
-                  <div className="mt-1 text-sm text-neon">{step.s}</div>
-                  <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-border">
-                    <div className="h-full w-0 bg-neon transition-all duration-500 group-hover:w-full" />
-                  </div>
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <div className="relative mx-auto grid h-14 w-14 place-items-center rounded-full border-2 border-neon bg-background font-display text-xl text-neon">
-                  {step.icon}
-                  <span className="absolute -inset-2 rounded-full bg-neon/20 blur-md" />
-                </div>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- tracks ---------- */
-
-function Tracks() {
-  const tracks = [
-    { n: "AI", d: "Agents, LLMs, copilots", c: "neon" },
-    { n: "Healthcare", d: "Diagnostics, access, wellness", c: "electric" },
-    { n: "Education", d: "Learning at scale", c: "hot" },
-    { n: "Climate", d: "Sustainability tech", c: "neon" },
-    { n: "Agriculture", d: "Farm-to-fork stack", c: "electric" },
-    { n: "FinTech", d: "Money, rails, access", c: "hot" },
-    { n: "Cyber Security", d: "Defense & trust", c: "neon" },
-    { n: "Web3", d: "Open protocols", c: "electric" },
-    { n: "Open Innovation", d: "Build anything", c: "hot" },
-  ];
-  return (
-    <section id="tracks" className="border-y border-border bg-surface/40 py-28">
-      <div className="mx-auto max-w-7xl px-6">
-        <SectionLabel index="04">Tracks</SectionLabel>
-        <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Build the <span className="text-neon">future.</span></h2>
-        <p className="mt-4 max-w-xl text-muted-foreground">Nine problem spaces. Pick yours. Final themes reveal soon.</p>
-
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {tracks.map((t, i) => (
-            <div key={t.n} className="group relative overflow-hidden rounded-3xl border border-border bg-background p-6 transition-all hover:-translate-y-1 hover:border-neon">
-              <div className="flex items-start justify-between">
-                <span className="font-mono text-xs text-muted-foreground">/0{i + 1}</span>
-                <span className="chip">Reveal Soon</span>
-              </div>
-              <div className="mt-10 font-display text-3xl leading-tight">{t.n}</div>
-              <p className="mt-2 text-sm text-muted-foreground">{t.d}</p>
-              <div className={`mt-6 h-px w-full bg-gradient-to-r from-transparent via-${t.c} to-transparent opacity-50`} />
-              <div className="mt-4 flex items-center justify-between font-mono text-xs uppercase tracking-widest">
-                <span className="text-muted-foreground">Difficulty · Open</span>
-                <span className="text-neon transition-transform group-hover:translate-x-1">→</span>
-              </div>
+          {[
+            ["Vision", "Make Nashik India's next innovation hub."],
+            ["Mission", "Empower builders. Create founders. Promote AI. Connect industries."],
+          ].map(([k, v]) => (
+            <div key={k} className="ink-border-sm rounded-2xl bg-cream p-5 text-ink">
+              <div className="font-mono text-xs font-bold uppercase tracking-widest text-orange">{k}</div>
+              <div className="mt-2 font-chunk text-2xl">{v}</div>
             </div>
           ))}
         </div>
@@ -389,40 +300,196 @@ function Tracks() {
   );
 }
 
-/* ---------- prizes ---------- */
+/* ============= 3D scrolling timeline ============= */
+
+function Timeline3D() {
+  const steps = [
+    { n: "01", t: "Registration Opens", s: "Coming Soon", c: "orange", icon: "▶" },
+    { n: "02", t: "Idea Submission", s: "Coming Soon", c: "yellow", icon: "✎" },
+    { n: "03", t: "Shortlisting", s: "Coming Soon", c: "cobalt", icon: "★" },
+    { n: "04", t: "Hackathon Begins", s: "36 Hours · Live", c: "orange", icon: "⚡" },
+    { n: "05", t: "Mentoring", s: "Expert Sessions", c: "rose", icon: "◆" },
+    { n: "06", t: "Judging", s: "Panel Reviews", c: "cobalt", icon: "⚖" },
+    { n: "07", t: "Winners Announced", s: "Reveal Stage", c: "orange", icon: "♛" },
+    { n: "08", t: "Networking", s: "Founders Mixer", c: "yellow", icon: "✦" },
+    { n: "09", t: "Aftermovie", s: "Coming Soon", c: "rose", icon: "▷" },
+  ];
+
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = rect.height - vh;
+      const p = Math.min(1, Math.max(0, -rect.top / total));
+      setActive(Math.min(steps.length - 1, Math.floor(p * steps.length)));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [steps.length]);
+
+  return (
+    <section id="timeline" className="mx-auto max-w-7xl px-6 py-28">
+      <SectionTag n="03">Timeline</SectionTag>
+      <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
+        <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+          The <span className="tag-cobalt text-cream">level path.</span>
+        </h2>
+        <p className="max-w-md text-ink/70">Scroll through 9 checkpoints. Hit start, ship a product, claim the trophy.</p>
+      </div>
+
+      {/* sticky stage with scroll-driven card stack */}
+      <div ref={ref} className="relative mt-16" style={{ height: `${steps.length * 80}vh` }}>
+        <div className="sticky top-20 perspective-stage">
+          <div className="relative mx-auto h-[70vh] max-h-[640px] w-full max-w-3xl">
+            {/* progress rail */}
+            <div className="absolute -left-2 top-0 hidden h-full w-1 bg-ink md:block">
+              <div className="w-full bg-orange transition-all duration-500" style={{ height: `${((active + 1) / steps.length) * 100}%` }} />
+            </div>
+
+            {steps.map((s, i) => {
+              const offset = i - active;
+              const visible = offset >= 0 && offset < 4;
+              const colorMap: Record<string, string> = {
+                orange: "bg-orange text-cream",
+                yellow: "bg-yellow text-ink",
+                cobalt: "bg-cobalt text-cream",
+                rose: "bg-rose text-ink",
+              };
+              return (
+                <article
+                  key={s.n}
+                  className="ink-border-lg tilt-card absolute inset-0 rounded-3xl bg-cream p-8 md:p-12"
+                  style={{
+                    transform: visible
+                      ? `translate3d(0, ${offset * 18}px, ${-offset * 80}px) rotateX(${offset * -3}deg) scale(${1 - offset * 0.04})`
+                      : offset < 0
+                        ? `translate3d(-30%, -40%, 400px) rotate(-8deg)`
+                        : `translate3d(0, 100%, -400px)`,
+                    opacity: visible ? 1 : 0,
+                    zIndex: 100 - i,
+                    pointerEvents: offset === 0 ? "auto" : "none",
+                    transition: "transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 400ms ease",
+                  }}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="font-mono text-xs font-bold uppercase tracking-widest text-ink/60">Checkpoint /{s.n}</div>
+                    <div className={`ink-border-sm grid h-14 w-14 place-items-center rounded-2xl font-display text-2xl ${colorMap[s.c]}`}>{s.icon}</div>
+                  </div>
+                  <h3 className="mt-10 font-chunk text-5xl uppercase leading-none tracking-tight md:text-7xl">{s.t}</h3>
+                  <div className="mt-4 inline-block tag-orange px-3 py-1 font-mono text-sm font-bold uppercase tracking-widest">{s.s}</div>
+                  <div className="mt-8 h-1.5 w-full overflow-hidden rounded-full bg-ink/10">
+                    <div className="h-full bg-ink transition-all duration-700" style={{ width: `${((i + 1) / steps.length) * 100}%` }} />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-ink/60">
+                    <span>{i + 1} of {steps.length}</span>
+                    <span>Keep scrolling →</span>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============= tracks ============= */
+
+function Tracks() {
+  const tracks = [
+    ["AI", "Agents, LLMs, copilots", "orange"],
+    ["Healthcare", "Diagnostics, access, wellness", "cobalt"],
+    ["Education", "Learning at scale", "rose"],
+    ["Climate", "Sustainability tech", "yellow"],
+    ["Agriculture", "Farm-to-fork stack", "orange"],
+    ["FinTech", "Money, rails, access", "cobalt"],
+    ["Cyber Security", "Defense & trust", "rose"],
+    ["Web3", "Open protocols", "yellow"],
+    ["Open Innovation", "Build anything", "orange"],
+  ] as const;
+  return (
+    <section id="tracks" className="border-y-2 border-ink bg-cream py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionTag n="04">Tracks</SectionTag>
+        <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+          Build the <span className="tag-orange text-cream">future.</span>
+        </h2>
+        <p className="mt-4 max-w-xl text-ink/70">Nine problem spaces. Pick yours. Final themes reveal soon.</p>
+
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {tracks.map(([n, d, c], i) => {
+            const map: Record<string, string> = {
+              orange: "bg-orange text-cream",
+              cobalt: "bg-cobalt text-cream",
+              rose: "bg-rose text-ink",
+              yellow: "bg-yellow text-ink",
+            };
+            return (
+              <div key={n} className="ink-border group relative overflow-hidden rounded-3xl bg-cream p-6 transition-transform hover:-translate-y-1 hover:rotate-[-1deg]">
+                <div className="flex items-start justify-between">
+                  <span className="font-mono text-xs font-bold text-ink/60">/0{i + 1}</span>
+                  <span className="chip">Reveal Soon</span>
+                </div>
+                <div className={`mt-10 inline-block px-3 py-1 font-chunk text-3xl uppercase tracking-tight ${map[c]}`} style={{ transform: "rotate(-2deg)" }}>
+                  {n}
+                </div>
+                <p className="mt-4 text-ink/70">{d}</p>
+                <div className="mt-6 flex items-center justify-between font-mono text-xs font-bold uppercase tracking-widest">
+                  <span className="text-ink/60">Difficulty · Open</span>
+                  <span className="text-orange transition-transform group-hover:translate-x-1">→</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============= prizes ============= */
 
 function Prizes() {
   const podium = [
-    { p: "2nd", h: "h-40", c: "bg-surface-2", label: "Silver", amt: "Coming Soon" },
-    { p: "1st", h: "h-56", c: "bg-neon text-primary-foreground", label: "Gold", amt: "Coming Soon" },
-    { p: "3rd", h: "h-32", c: "bg-surface-2", label: "Bronze", amt: "Coming Soon" },
+    { p: "2nd", h: "h-44", c: "bg-cream text-ink", label: "Silver" },
+    { p: "1st", h: "h-60", c: "bg-orange text-cream", label: "Gold" },
+    { p: "3rd", h: "h-36", c: "bg-rose text-ink", label: "Bronze" },
   ];
   const special = ["Best AI Project", "Best UI", "Best Beginner Team", "Best Innovation", "Women in Tech", "Community Choice"];
   return (
     <section id="prizes" className="mx-auto max-w-7xl px-6 py-28">
-      <SectionLabel index="05">Prize Pool</SectionLabel>
-      <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Compete. <span className="text-neon">Win big.</span></h2>
+      <SectionTag n="05">Prize Pool</SectionTag>
+      <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+        Compete. <span className="font-script normal-case text-orange">Win big.</span>
+      </h2>
 
-      <div className="mt-16 grid items-end gap-4 md:grid-cols-3">
+      <div className="mt-16 grid items-end gap-5 md:grid-cols-3">
         {podium.map((p) => (
           <div key={p.p} className="text-center">
-            <div className="mb-3 font-display text-4xl">{p.p}</div>
-            <div className={`${p.h} ${p.c} flex items-center justify-center rounded-t-2xl border border-border font-display text-2xl transition-transform hover:-translate-y-2`}>
+            <div className="mb-3 font-chunk text-3xl uppercase">{p.p}</div>
+            <div className={`${p.h} ink-border-lg flex items-center justify-center rounded-t-3xl font-chunk text-3xl uppercase tracking-tight transition-transform hover:-translate-y-2 ${p.c}`}>
               {p.label}
             </div>
-            <div className="rounded-b-2xl border-x border-b border-border bg-surface p-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              {p.amt}
+            <div className="ink-border-sm rounded-b-2xl border-t-0 bg-cream p-4 font-mono text-xs font-bold uppercase tracking-widest text-ink/70">
+              Coming Soon
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-16">
-        <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Special Awards</div>
+      <div className="mt-20">
+        <div className="font-mono text-xs font-bold uppercase tracking-widest text-ink/60">Special Awards</div>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {special.map((s) => (
-            <div key={s} className="flex items-center justify-between rounded-xl border border-border bg-surface p-4">
-              <span>{s}</span>
+            <div key={s} className="ink-border-sm flex items-center justify-between rounded-xl bg-cream p-4">
+              <span className="font-chunk uppercase">{s}</span>
               <span className="chip">TBA</span>
             </div>
           ))}
@@ -432,30 +499,39 @@ function Prizes() {
   );
 }
 
-/* ---------- sponsors ---------- */
+/* ============= sponsors ============= */
 
-function Sponsors() {
-  const tiers = ["Title", "Gold", "Silver", "Community", "Education", "Hiring", "Cloud", "AI", "Dev Tools"];
+function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
+  const tiers = ["Title", "Gold", "Silver", "Community", "Education", "Hiring", "Cloud", "AI", "Developer Tools"];
   return (
-    <section id="sponsors" className="border-y border-border bg-surface/40 py-28">
+    <section id="sponsors" className="border-y-2 border-ink bg-yellow py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionLabel index="06">Sponsors</SectionLabel>
-        <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Powered by <span className="text-neon">industry leaders.</span></h2>
+        <SectionTag n="06">Sponsors</SectionTag>
+        <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+          Powered by <span className="tag-cobalt text-cream">industry leaders.</span>
+        </h2>
+        <p className="mt-4 max-w-xl text-ink/80">Pick a tier and start a conversation. Every inquiry reaches Team Nest directly.</p>
 
-        <div className="mt-12 grid gap-3 md:grid-cols-3">
-          {tiers.map((t) => (
-            <div key={t} className="flex h-32 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-background transition-colors hover:border-neon">
-              <div className="font-display text-xl text-muted-foreground">Your Brand Here</div>
-              <div className="mt-1 font-mono text-xs uppercase tracking-widest text-neon">{t} Partner</div>
-            </div>
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {tiers.map((t, i) => (
+            <button
+              key={t}
+              onClick={() => onSponsor(t)}
+              className="ink-border group flex h-36 flex-col items-center justify-center rounded-3xl bg-cream text-center transition-transform hover:-translate-y-1 hover:rotate-[-1deg]"
+              style={{ transform: `rotate(${i % 2 ? 1 : -1}deg)` }}
+            >
+              <div className="font-chunk text-2xl uppercase">Your brand</div>
+              <div className="mt-2 inline-block tag-orange px-2 py-0.5 font-mono text-xs font-bold uppercase tracking-widest">{t} Partner</div>
+              <div className="mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50">click to inquire →</div>
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="mt-16 overflow-hidden border-y border-border py-6">
-        <div className="flex animate-marquee gap-12 whitespace-nowrap font-display text-2xl text-muted-foreground">
+      <div className="mt-16 overflow-hidden border-y-2 border-ink bg-ink py-5 text-cream">
+        <div className="flex animate-marquee-fast gap-12 whitespace-nowrap font-chunk text-2xl uppercase">
           {Array.from({ length: 2 }).flatMap((_, i) =>
-            ["BUILD/NASHIK", "★", "TEAM NEST", "✦", "OPEN SOURCE", "◆", "AI INDIA", "▲", "STARTUP NASHIK", "✕"].map((t, j) => (
+            ["Build/Nashik", "★", "Team Nest", "✦", "Open Source", "◆", "AI India", "▲", "Startup Nashik", "✕"].map((t, j) => (
               <span key={`${i}-${j}`} className="shrink-0">{t}</span>
             ))
           )}
@@ -465,38 +541,34 @@ function Sponsors() {
   );
 }
 
-/* ---------- why sponsor ---------- */
+/* ============= why sponsor ============= */
 
-function WhySponsor() {
-  const benefits = [
-    "Direct hiring access", "Brand visibility", "Developer engagement",
-    "Product showcase", "Campus outreach", "Social media reach",
-    "Community trust", "Startup ecosystem", "Speaking opportunities",
-  ];
+function WhySponsor({ onSponsor }: { onSponsor: () => void }) {
+  const benefits = ["Direct hiring access", "Brand visibility", "Developer engagement", "Product showcase", "Campus outreach", "Social media reach", "Community trust", "Startup ecosystem", "Speaking opportunities"];
   return (
     <section className="mx-auto max-w-7xl px-6 py-28">
-      <SectionLabel index="07">Why Sponsor</SectionLabel>
+      <SectionTag n="07">Why Sponsor</SectionTag>
       <div className="mt-6 grid gap-12 md:grid-cols-[1fr,1.2fr]">
-        <h2 className="font-display text-5xl leading-[0.95] md:text-6xl">
-          Partner with Nashik's next generation of <span className="text-neon">builders.</span>
+        <h2 className="font-chunk text-5xl uppercase leading-[0.95] tracking-tight md:text-7xl">
+          Partner with Nashik's next generation of <span className="tag-orange text-cream">builders.</span>
         </h2>
         <div>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-ink/75">
             Get unmatched visibility, recruit top talent and back the next wave of founders out of Nashik. Custom packages available.
           </p>
           <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {benefits.map((b, i) => (
-              <li key={b} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4 text-sm">
-                <span className="font-mono text-xs text-neon">0{i + 1}</span> {b}
+              <li key={b} className="ink-border-sm flex items-center gap-3 rounded-xl bg-cream p-4 text-sm">
+                <span className="font-mono text-xs font-bold text-orange">0{i + 1}</span> {b}
               </li>
             ))}
           </ul>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#" className="inline-flex items-center gap-2 rounded-full bg-neon px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-primary-foreground glow-neon">
-              Download Deck →
-            </a>
-            <a href="mailto:team@buildwithnashik.in" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest hover:border-neon hover:text-neon">
-              Book a Meeting
+            <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">
+              Become Sponsor →
+            </button>
+            <a href="mailto:team@buildwithnashik.in" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
+              Email Team Nest
             </a>
           </div>
         </div>
@@ -505,24 +577,26 @@ function WhySponsor() {
   );
 }
 
-/* ---------- community ---------- */
+/* ============= community ============= */
 
 function Community() {
   const partners = ["Developer Community", "Student Chapters", "Tech Clubs", "AI Clubs", "GDG", "Microsoft Learn", "AWS Community", "GitHub Community"];
   return (
-    <section id="community" className="border-y border-border bg-surface/40 py-28">
+    <section id="community" className="border-y-2 border-ink bg-cobalt py-28 text-cream">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionLabel index="08">Community</SectionLabel>
-        <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Built by <span className="text-neon">community.</span></h2>
-        <p className="mt-6 max-w-2xl text-muted-foreground">
+        <div className="chip border-cream bg-cobalt text-cream">08 · Community</div>
+        <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+          Built by <span className="font-script normal-case text-yellow">community.</span>
+        </h2>
+        <p className="mt-6 max-w-2xl">
           Team Nest runs workshops, meetups, hackathons and open-source projects across Nashik. This is what we do every weekend — now scaled up.
         </p>
 
         <div className="mt-12 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
           {partners.map((p) => (
-            <div key={p} className="rounded-2xl border border-border bg-background p-5">
-              <div className="font-display text-lg">{p}</div>
-              <div className="mt-2 font-mono text-xs uppercase tracking-widest text-neon">Partner Soon</div>
+            <div key={p} className="ink-border-sm rounded-2xl bg-cream p-5 text-ink">
+              <div className="font-chunk text-lg uppercase">{p}</div>
+              <div className="mt-2 inline-block tag-orange px-2 py-0.5 font-mono text-xs font-bold uppercase tracking-widest">Partner Soon</div>
             </div>
           ))}
         </div>
@@ -531,7 +605,7 @@ function Community() {
   );
 }
 
-/* ---------- team ---------- */
+/* ============= team — featuring Ansh ============= */
 
 function Team() {
   const core = [
@@ -539,31 +613,56 @@ function Team() {
     { n: "Aaryan Singh", r: "Core Team" },
     { n: "Rupali Patil", r: "Core Team" },
     { n: "Nikhil Patil", r: "Core Team" },
-    { n: "Anurag (Darshan)", r: "Core Team" },
+    { n: "Anurag Darshan", r: "Core Team" },
     { n: "More Soon", r: "Joining" },
   ];
   return (
     <section id="team" className="mx-auto max-w-7xl px-6 py-28">
-      <SectionLabel index="09">Organizing Team</SectionLabel>
-      <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Meet the <span className="text-neon">builders.</span></h2>
+      <SectionTag n="09">Organizing Team</SectionTag>
+      <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+        Meet the <span className="tag-orange text-cream">builders.</span>
+      </h2>
 
-      <div className="mt-16 grid gap-6 md:grid-cols-[1.2fr,2fr]">
-        <div className="group relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-neon/20 via-electric/10 to-background p-8">
-          <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-neon/30 blur-3xl" />
-          <div className="chip">Founder & Organizer</div>
-          <div className="mt-6 aspect-square w-40 rounded-2xl border border-border bg-surface grid place-items-center font-display text-6xl text-neon">AR</div>
-          <h3 className="mt-6 font-display text-4xl">Ansh Rajore</h3>
-          <p className="mt-2 max-w-md text-muted-foreground">Founder of Team Nest & NayaMarg. 5× hackathon winner. AI / full-stack builder.</p>
-          <a href="#" className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-neon">LinkedIn →</a>
+      <div className="mt-16 grid gap-6 md:grid-cols-[1.1fr,1.6fr]">
+        {/* founder spotlight */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-6 text-cream">
+          <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
+
+          <div className="relative mt-6 overflow-hidden rounded-2xl border-2 border-cream bg-ink">
+            <img
+              src={anshAsset.url}
+              alt="Ansh Rajore — Founder of Team Nest"
+              className="aspect-[4/5] w-full object-cover"
+              loading="lazy"
+            />
+            {/* sticker decorations on top of photo */}
+            <div className="absolute -left-3 top-4 ink-border-sm tag-orange px-3 py-1 font-chunk text-lg uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+              5× hackathon winner
+            </div>
+            <div className="absolute -right-3 bottom-6 ink-border-sm bg-yellow px-3 py-1 font-chunk text-lg uppercase tracking-tight text-ink" style={{ transform: "rotate(4deg)" }}>
+              builds in public
+            </div>
+            <div className="absolute left-4 bottom-4 ink-border-sm bg-cobalt px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-2deg)" }}>
+              Founder · Team Nest
+            </div>
+          </div>
+
+          <h3 className="mt-6 font-chunk text-5xl uppercase leading-none tracking-tight">Ansh Rajore</h3>
+          <p className="font-script text-3xl text-orange">the one behind it all</p>
+          <p className="mt-3 text-cream/80">Founder of Team Nest & NayaMarg. AI / full-stack builder shipping in Nashik. Believes a city is one good hackathon away from becoming an ecosystem.</p>
+          <a href="#" className="ink-border-sm mt-6 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream">
+            LinkedIn →
+          </a>
         </div>
+
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {core.map((m) => (
-            <div key={m.n} className="group rounded-2xl border border-border bg-surface p-5 transition-all hover:-translate-y-1 hover:border-neon">
-              <div className="aspect-square w-full rounded-xl border border-border bg-background grid place-items-center font-display text-3xl text-muted-foreground transition-colors group-hover:text-neon">
+          {core.map((m, i) => (
+            <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-5 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
+              <div className="ink-border-sm aspect-square w-full place-items-center rounded-xl bg-yellow grid font-display text-3xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
                 {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
               </div>
-              <div className="mt-4 font-display text-lg leading-tight">{m.n}</div>
-              <div className="mt-1 font-mono text-xs uppercase tracking-widest text-muted-foreground">{m.r}</div>
+              <div className="mt-4 font-chunk text-lg uppercase leading-tight">{m.n}</div>
+              <div className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
             </div>
           ))}
         </div>
@@ -572,31 +671,33 @@ function Team() {
   );
 }
 
-/* ---------- venue ---------- */
+/* ============= venue ============= */
 
 function Venue() {
   const items = ["Hotels", "Railway", "Airport", "Parking", "Food", "Accommodation", "Directions", "Weather"];
   return (
-    <section className="border-y border-border bg-surface/40 py-28">
+    <section className="border-y-2 border-ink bg-rose py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionLabel index="10">Venue</SectionLabel>
-        <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Hosted in <span className="text-neon">Nashik.</span></h2>
+        <SectionTag n="10">Venue</SectionTag>
+        <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+          Hosted in <span className="tag-cobalt text-cream">Nashik.</span>
+        </h2>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2">
-          <div className="relative aspect-video overflow-hidden rounded-3xl border border-border bg-background grid-bg">
+          <div className="ink-border relative aspect-video overflow-hidden rounded-3xl bg-cream">
             <div className="absolute inset-0 grid place-items-center">
               <div className="text-center">
-                <div className="font-display text-6xl text-neon">📍</div>
-                <div className="mt-4 font-display text-3xl">Nashik, MH</div>
-                <div className="mt-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">Venue · Announce Soon</div>
+                <div className="font-display text-7xl text-orange">📍</div>
+                <div className="mt-2 font-chunk text-4xl uppercase">Nashik · MH</div>
+                <div className="mt-2 chip">Venue · Announce Soon</div>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {items.map((it) => (
-              <div key={it} className="rounded-2xl border border-border bg-background p-5">
-                <div className="font-display text-lg">{it}</div>
-                <div className="mt-1 font-mono text-xs uppercase tracking-widest text-muted-foreground">Coming Soon</div>
+              <div key={it} className="ink-border-sm rounded-2xl bg-cream p-5">
+                <div className="font-chunk text-lg uppercase">{it}</div>
+                <div className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-ink/60">Coming Soon</div>
               </div>
             ))}
           </div>
@@ -606,10 +707,10 @@ function Venue() {
   );
 }
 
-/* ---------- faq ---------- */
+/* ============= faq ============= */
 
 function Faq() {
-  const faqs = [
+  const faqs: Array<[string, string]> = [
     ["Who can participate?", "Anyone passionate about technology — students, developers, designers, founders."],
     ["What's the team size?", "2 to 4 members per team."],
     ["How long is the hackathon?", "36 hours of continuous building."],
@@ -622,19 +723,21 @@ function Faq() {
   ];
   return (
     <section id="faq" className="mx-auto max-w-7xl px-6 py-28">
-      <SectionLabel index="11">FAQ</SectionLabel>
-      <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">Asked & <span className="text-neon">answered.</span></h2>
-      <div className="mt-12 divide-y divide-border rounded-3xl border border-border bg-surface">
+      <SectionTag n="11">FAQ</SectionTag>
+      <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+        Asked & <span className="tag-orange text-cream">answered.</span>
+      </h2>
+      <div className="ink-border-sm mt-12 divide-y-2 divide-ink/10 overflow-hidden rounded-3xl bg-cream">
         {faqs.map(([q, a], i) => (
           <details key={q} className="group p-6 [&_summary::-webkit-details-marker]:hidden">
             <summary className="flex cursor-pointer items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <span className="font-mono text-xs text-neon">/{String(i + 1).padStart(2, "0")}</span>
-                <span className="font-display text-lg md:text-xl">{q}</span>
+                <span className="font-mono text-xs font-bold text-orange">/{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-chunk text-xl uppercase md:text-2xl">{q}</span>
               </div>
-              <span className="grid h-8 w-8 place-items-center rounded-full border border-border font-mono text-sm transition-transform group-open:rotate-45">+</span>
+              <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-ink font-mono text-lg transition-transform group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-4 max-w-2xl pl-12 text-muted-foreground">{a}</p>
+            <p className="mt-4 max-w-2xl pl-10 text-ink/75">{a}</p>
           </details>
         ))}
       </div>
@@ -642,29 +745,29 @@ function Faq() {
   );
 }
 
-/* ---------- final cta ---------- */
+/* ============= final cta ============= */
 
-function FinalCta() {
+function FinalCta({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: () => void }) {
   return (
-    <section id="register" className="relative overflow-hidden border-t border-border bg-neon text-primary-foreground">
-      <div className="absolute inset-0 grid-bg opacity-30" aria-hidden />
+    <section id="register" className="relative overflow-hidden border-t-2 border-ink bg-ink text-cream">
       <div className="relative mx-auto max-w-7xl px-6 py-32 text-center">
-        <div className="chip border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground">Date · Announce Soon</div>
-        <h2 className="mt-8 font-display text-6xl leading-[0.9] md:text-[10vw] lg:text-[160px]">
-          READY TO <br /> BUILD?
+        <div className="chip bg-ink text-cream border-cream">Date · Announce Soon</div>
+        <h2 className="mt-8 font-display text-7xl leading-[0.85] md:text-[15vw] lg:text-[200px]">
+          READY TO <br /><span className="text-orange">BUILD?</span>
         </h2>
-        <p className="mx-auto mt-8 max-w-xl text-lg opacity-80">
-          One weekend in Nashik. 36 hours of building. A community for life.
+        <p className="font-script text-5xl text-yellow">one weekend in nashik.</p>
+        <p className="mx-auto mt-6 max-w-xl text-lg opacity-80">
+          36 hours of building. A community for life.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          {[
-            ["Register", "#"],
-            ["Join Discord", "#"],
-            ["Join WhatsApp", "#"],
-            ["Become Sponsor", "#"],
-            ["Become Volunteer", "#"],
-          ].map(([l, h]) => (
-            <a key={l} href={h} className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-foreground transition-transform hover:-translate-y-0.5">
+          <button onClick={onRegister} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">
+            Register →
+          </button>
+          <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-yellow px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
+            Become Sponsor →
+          </button>
+          {[["Join Discord", "#"], ["Join WhatsApp", "#"], ["Become Volunteer", "#"]].map(([l, h]) => (
+            <a key={l} href={h} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
               {l} →
             </a>
           ))}
@@ -674,47 +777,47 @@ function FinalCta() {
   );
 }
 
-/* ---------- footer ---------- */
+/* ============= footer ============= */
 
 function Footer() {
   const cols = [
     { h: "Event", l: ["About", "Timeline", "Tracks", "Prizes", "FAQ"] },
     { h: "Partners", l: ["Sponsors", "Community", "Volunteer", "Mentors"] },
-    { h: "Connect", l: ["Instagram", "LinkedIn", "GitHub", "Discord", "Mail"] },
+    { h: "Connect", l: ["Instagram", "LinkedIn", "GitHub", "Discord"] },
     { h: "Legal", l: ["Privacy", "Terms", "Code of Conduct"] },
   ];
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="bg-cream">
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-12 md:grid-cols-[1.4fr,2fr]">
           <div>
-            <div className="flex items-center gap-2 font-display text-xl">
-              <span className="grid h-8 w-8 place-items-center rounded-md bg-neon text-primary-foreground">B</span>
-              BUILD/NASHIK
+            <div className="flex items-center gap-2">
+              <span className="grid h-9 w-9 place-items-center rounded-md bg-ink font-display text-xl text-cream">B</span>
+              <span className="font-chunk text-xl uppercase">Build/Nashik</span>
             </div>
-            <p className="mt-4 max-w-sm text-muted-foreground">Nashik's largest community-driven developer hackathon. Built with love by Team Nest.</p>
+            <p className="mt-4 max-w-sm text-ink/70">Nashik's largest community-driven developer hackathon. Built with care by Team Nest.</p>
             <div className="mt-6 chip">Nashik · Maharashtra · India</div>
           </div>
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {cols.map((c) => (
               <div key={c.h}>
-                <div className="font-mono text-xs uppercase tracking-widest text-neon">{c.h}</div>
+                <div className="font-mono text-xs font-bold uppercase tracking-widest text-orange">{c.h}</div>
                 <ul className="mt-4 space-y-2">
                   {c.l.map((it) => (
-                    <li key={it}><a href="#" className="text-sm text-muted-foreground hover:text-foreground">{it}</a></li>
+                    <li key={it}><a href="#" className="text-sm text-ink/70 hover:text-ink">{it}</a></li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
         </div>
-        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-8 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t-2 border-ink pt-8 font-mono text-xs font-bold uppercase tracking-widest text-ink/70">
           <span>© 2026 Team Nest</span>
           <span>Build · Ship · Win</span>
         </div>
 
         <div className="mt-16 overflow-hidden">
-          <div className="font-display text-[28vw] leading-none tracking-tighter text-foreground/5 select-none">BUILD/NASHIK</div>
+          <div className="font-display text-[26vw] leading-none tracking-tighter text-ink/5 select-none">BUILD/NASHIK</div>
         </div>
       </div>
     </footer>
