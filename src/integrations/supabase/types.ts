@@ -14,7 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      sponsor_inquiries: {
+        Row: {
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          id: string
+          message: string | null
+          status: string
+          tier: string
+          website: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: string
+          tier: string
+          website?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: string
+          tier?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      teams: {
+        Row: {
+          city: string | null
+          created_at: string
+          id: string
+          lead_email: string
+          lead_name: string
+          lead_phone: string
+          member_count: number
+          members: Json
+          project_idea: string | null
+          status: string
+          team_name: string
+          track: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          lead_email: string
+          lead_name: string
+          lead_phone: string
+          member_count?: number
+          members?: Json
+          project_idea?: string | null
+          status?: string
+          team_name: string
+          track: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          lead_email?: string
+          lead_name?: string
+          lead_phone?: string
+          member_count?: number
+          members?: Json
+          project_idea?: string | null
+          status?: string
+          team_name?: string
+          track?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
