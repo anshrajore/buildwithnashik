@@ -1049,3 +1049,269 @@ function Footer() {
     </footer>
   );
 }
+
+/* ============= cursor follower ============= */
+
+function CursorFollower() {
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(hover: none)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let x = -100, y = -100, rx = -100, ry = -100;
+    let raf = 0;
+
+    const move = (e: MouseEvent) => { x = e.clientX; y = e.clientY; };
+    const tick = () => {
+      rx += (x - rx) * 0.18;
+      ry += (y - ry) * 0.18;
+      if (dotRef.current) dotRef.current.style.transform = `translate3d(${x - 7}px, ${y - 7}px, 0)`;
+      if (ringRef.current) ringRef.current.style.transform = `translate3d(${rx - 24}px, ${ry - 24}px, 0)`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const onOver = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      const interactive = t.closest("a, button, [role=button], summary, input, select, textarea, label");
+      if (!dotRef.current || !ringRef.current) return;
+      if (interactive) {
+        dotRef.current.style.width = "8px";
+        dotRef.current.style.height = "8px";
+        ringRef.current.style.width = "64px";
+        ringRef.current.style.height = "64px";
+        ringRef.current.style.borderColor = "var(--orange)";
+      } else {
+        dotRef.current.style.width = "14px";
+        dotRef.current.style.height = "14px";
+        ringRef.current.style.width = "48px";
+        ringRef.current.style.height = "48px";
+        ringRef.current.style.borderColor = "var(--ink)";
+      }
+    };
+
+    window.addEventListener("mousemove", move, { passive: true });
+    window.addEventListener("mouseover", onOver, { passive: true });
+    raf = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseover", onOver);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={ringRef} className="cursor-ring" aria-hidden />
+      <div ref={dotRef} className="cursor-dot" aria-hidden />
+    </>
+  );
+}
+
+/* ============= legacy / community proof ============= */
+
+function Legacy() {
+  const events = [
+    {
+      title: "SUNHACKS",
+      sub: "Asia's Largest GenAI Hackathon",
+      role: "Organizer",
+      year: "2024",
+      tone: "orange",
+      icon: "✦",
+      body: "Successfully organized one of Asia's largest GenAI hackathons — bringing developers, founders, students, mentors and industry experts together to build AI-powered solutions while creating one of the largest innovation communities of the year.",
+      tags: ["Large-scale GenAI", "Industry Mentors", "Startup Ecosystem", "AI Builders", "National Reach"],
+    },
+    {
+      title: "NASA Space Apps Challenge",
+      sub: "Global Innovation Hackathon",
+      role: "Participant",
+      year: "2024",
+      tone: "cobalt",
+      icon: "★",
+      body: "Participated in one of the world's largest global hackathons, collaborating with innovators across continents to solve real-world challenges inspired by space and Earth data.",
+      tags: ["Global Innovation", "Team Collaboration", "Problem Solving", "International"],
+    },
+    {
+      title: "Mumbai Tech Week",
+      sub: "Job Fair · Founder Connect",
+      role: "Community Contributor",
+      year: "2025",
+      tone: "yellow",
+      icon: "◆",
+      body: "Connected with founders, startups, recruiters and developers while expanding opportunities for students through one of Maharashtra's leading technology events.",
+      tags: ["Startup Networking", "Career Opportunities", "Founder Connections", "Developer Community"],
+    },
+  ];
+
+  const stats: Array<[number, string, string]> = [
+    [25, "+", "Community Events"],
+    [12, "+", "Hackathons Organized & Joined"],
+    [3000, "+", "Developers Connected"],
+    [5000, "+", "Students Reached"],
+    [40, "+", "Industry Mentors"],
+    [20, "+", "Startup Collaborations"],
+    [15, "+", "Workshops Conducted"],
+    [10, "+", "Community Partners"],
+  ];
+
+  const milestones = [
+    { y: "2023", t: "Participated in National Hackathons", d: "Cut our teeth across India's biggest builder stages." },
+    { y: "2024", t: "Organized SUNHACKS", d: "Asia's largest GenAI hackathon — operations end-to-end." },
+    { y: "2024", t: "Hosted Community Events", d: "Workshops, meetups and dev jams across Nashik." },
+    { y: "2025", t: "Connected Students & Startups", d: "Mumbai Tech Week + founder office hours." },
+    { y: "2025", t: "Expanded Team Nest", d: "From a small crew to a multi-city volunteer network." },
+    { y: "2026", t: "Launching Build With Nashik", d: "The flagship — everything we've learned, applied." },
+  ];
+
+  const tones: Record<string, string> = {
+    orange: "bg-orange text-cream",
+    cobalt: "bg-cobalt text-cream",
+    yellow: "bg-yellow text-ink",
+  };
+
+  return (
+    <section id="legacy" className="border-y-2 border-ink bg-cream py-28">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionTag n="00">Community Legacy</SectionTag>
+        <h2 className="mt-6 max-w-5xl font-chunk text-5xl uppercase leading-[0.95] tracking-tight md:text-7xl">
+          We've been building the developer ecosystem <span className="tag-orange text-cream">before</span> Build With Nashik.
+        </h2>
+        <p className="mt-6 max-w-3xl text-lg text-ink/75">
+          Build With Nashik is the result of years of organizing, collaborating and participating in some of India's most exciting technology communities. Every event shaped the vision behind creating Nashik's own flagship hackathon.
+        </p>
+
+        {/* event cards */}
+        <div className="mt-14 grid gap-6 lg:grid-cols-3">
+          {events.map((e, i) => (
+            <article key={e.title} className="ink-border-lg group relative flex flex-col overflow-hidden rounded-3xl bg-cream transition-transform hover:-translate-y-1.5">
+              <div className={`relative h-44 ${tones[e.tone]} overflow-hidden`}>
+                <div className="absolute inset-0 opacity-20 mix-blend-multiply"
+                  style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }} />
+                <div className="relative flex h-full items-end justify-between p-6">
+                  <div className="font-display text-7xl leading-none">{e.icon}</div>
+                  <div className="text-right">
+                    <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">/0{i + 1}</div>
+                    <div className="mt-1 font-chunk text-2xl uppercase">{e.year}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-center gap-2">
+                  <span className="chip">{e.role}</span>
+                </div>
+                <h3 className="mt-3 font-chunk text-3xl uppercase leading-none tracking-tight">{e.title}</h3>
+                <div className="mt-1 font-script text-2xl text-orange">{e.sub}</div>
+                <p className="mt-3 text-sm text-ink/75">{e.body}</p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {e.tags.map((t) => (
+                    <span key={t} className="rounded-full border-2 border-ink/15 bg-cream px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/70">{t}</span>
+                  ))}
+                </div>
+                <button className="ink-border-sm mt-6 inline-flex items-center justify-between gap-2 self-start rounded-full bg-ink px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream transition-transform group-hover:-translate-y-0.5">
+                  View Highlights <span>→</span>
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* community impact stats */}
+        <div className="mt-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h3 className="font-chunk text-3xl uppercase tracking-tight md:text-5xl">Community impact <span className="text-orange">/ so far.</span></h3>
+            <p className="max-w-md text-sm text-ink/60">Numbers from events Team Nest has organized, joined or contributed to.</p>
+          </div>
+          <div className="ink-border-lg mt-6 grid grid-cols-2 overflow-hidden rounded-3xl bg-ink text-cream md:grid-cols-4">
+            {stats.map(([v, s, l], i) => (
+              <div key={l} className={`p-6 ${i < stats.length - 1 ? "border-r-2 border-cream/10" : ""} ${i < stats.length - (i % 4 === 3 ? 1 : (i >= stats.length - 4 ? 1 : 4)) ? "border-b-2 border-cream/10 md:border-b-0" : ""}`}>
+                <div className="font-display text-4xl text-orange md:text-5xl"><Counter to={v} suffix={s} /></div>
+                <div className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* community journey timeline */}
+        <div className="mt-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h3 className="font-chunk text-3xl uppercase tracking-tight md:text-5xl">The journey <span className="font-script normal-case text-orange">so far.</span></h3>
+            <p className="max-w-md text-sm text-ink/60">From small meetups to Asia's largest GenAI hackathon → and now, Build With Nashik.</p>
+          </div>
+
+          <div className="relative mt-8 overflow-x-auto pb-4">
+            <div className="absolute left-0 right-0 top-[58px] h-1 bg-ink/15" />
+            <div className="absolute left-0 top-[58px] h-1 bg-orange" style={{ width: "82%" }} />
+            <ol className="flex min-w-max gap-4">
+              {milestones.map((m, i) => (
+                <li key={m.t} className="ink-border-sm relative w-64 shrink-0 rounded-2xl bg-cream p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-orange">/{String(i + 1).padStart(2, "0")}</span>
+                    <span className="chip">{m.y}</span>
+                  </div>
+                  <div className="mt-3 grid h-4 w-4 place-items-center rounded-full bg-orange ring-4 ring-cream" />
+                  <div className="mt-3 font-chunk text-lg uppercase leading-tight">{m.t}</div>
+                  <p className="mt-1 text-xs text-ink/70">{m.d}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <p className="mx-auto mt-16 max-w-3xl text-center font-script text-3xl text-ink md:text-4xl">
+          "Every event, every collaboration, and every builder we've met has led us here. Build With Nashik isn't where our journey starts — <span className="text-orange">it's where everything we've learned comes together.</span>"
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ============= join team CTA ============= */
+
+function JoinTeam() {
+  return (
+    <section className="relative overflow-hidden border-y-2 border-ink bg-yellow py-24">
+      {/* sticker decorations */}
+      <Sticker className="left-[6%] top-10" rot={-10}>♥</Sticker>
+      <Sticker className="right-[8%] bottom-10" rot={8} color="cobalt">→</Sticker>
+
+      <div
+        className="absolute inset-0 -z-0 opacity-50"
+        style={{ backgroundImage: "radial-gradient(var(--ink) 1px, transparent 1px)", backgroundSize: "22px 22px" }}
+        aria-hidden
+      />
+      <div className="relative mx-auto max-w-7xl px-6">
+        <SectionTag n="09b">Join the Crew</SectionTag>
+        <div className="mt-6 grid items-center gap-10 lg:grid-cols-[1.4fr,1fr]">
+          <div>
+            <h2 className="font-chunk text-5xl uppercase leading-[0.95] tracking-tight md:text-7xl">
+              Want to build Nashik <span className="tag-orange text-cream">with us?</span>
+            </h2>
+            <p className="mt-6 max-w-2xl text-lg text-ink/80">
+              Help organize one of Maharashtra's fastest-growing developer communities. Whether you're a designer, developer, marketer, photographer, content creator or community builder — there's a place for you.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">Join Team →</a>
+              <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">Become Volunteer →</a>
+              <a href="#sponsors" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">Partner With Us →</a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { v: 50, s: "+", l: "Volunteers" },
+              { v: 20, s: "+", l: "Partners" },
+              { v: 500, s: "+", l: "Builders" },
+            ].map((x) => (
+              <div key={x.l} className="ink-border rounded-2xl bg-cream p-5 text-center">
+                <div className="font-display text-4xl text-orange md:text-5xl"><Counter to={x.v} suffix={x.s} /></div>
+                <div className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/70">{x.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
