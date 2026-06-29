@@ -468,16 +468,16 @@ function Timeline3D() {
 
 function Tracks() {
   const tracks = [
-    ["AI", "Agents, LLMs, copilots", "orange"],
-    ["Healthcare", "Diagnostics, access, wellness", "cobalt"],
-    ["Education", "Learning at scale", "rose"],
-    ["Climate", "Sustainability tech", "yellow"],
-    ["Agriculture", "Farm-to-fork stack", "orange"],
-    ["FinTech", "Money, rails, access", "cobalt"],
-    ["Cyber Security", "Defense & trust", "rose"],
-    ["Web3", "Open protocols", "yellow"],
-    ["Open Innovation", "Build anything", "orange"],
-  ] as const;
+    { n: "AI / GenAI",      d: "Agents, LLMs, multimodal copilots",      c: "orange", icon: "✦", diff: "Open",         eg: "RAG bots · voice agents · LLM tools" },
+    { n: "Healthcare",      d: "Diagnostics, access, mental wellness",   c: "cobalt", icon: "✚", diff: "Intermediate", eg: "tele-care · health records · triage" },
+    { n: "Education",       d: "Learning at scale, ed-tech for Bharat",  c: "rose",   icon: "✎", diff: "Beginner OK",  eg: "tutor bots · skill maps · libraries" },
+    { n: "Climate",         d: "Sustainability + green-tech",            c: "yellow", icon: "❀", diff: "Open",         eg: "carbon · waste · clean energy" },
+    { n: "Agriculture",     d: "Farm-to-fork modern stack",              c: "orange", icon: "✿", diff: "Open",         eg: "crop intel · supply chain · markets" },
+    { n: "FinTech",         d: "Money rails, access, inclusion",         c: "cobalt", icon: "₹", diff: "Intermediate", eg: "UPI hacks · credit · wealth" },
+    { n: "Cyber Security",  d: "Defense, trust, identity",               c: "rose",   icon: "⛨", diff: "Advanced",     eg: "auth · threat · privacy tools" },
+    { n: "Web3 / Open",     d: "Open protocols, public goods",           c: "yellow", icon: "◈", diff: "Open",         eg: "ID · DAOs · onchain tooling" },
+    { n: "Open Innovation", d: "Build literally anything",               c: "orange", icon: "★", diff: "All Levels",   eg: "your wild card track" },
+  ];
   return (
     <section id="tracks" className="border-y-2 border-ink bg-cream py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -488,28 +488,45 @@ function Tracks() {
         <p className="mt-4 max-w-xl text-ink/70">Nine problem spaces. Pick yours. Final themes reveal soon.</p>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {tracks.map(([n, d, c], i) => {
-            const map: Record<string, string> = {
-              orange: "bg-orange text-cream",
-              cobalt: "bg-cobalt text-cream",
-              rose: "bg-rose text-ink",
-              yellow: "bg-yellow text-ink",
+          {tracks.map((t, i) => {
+            const map: Record<string, { chip: string; glow: string; ring: string }> = {
+              orange: { chip: "bg-orange text-cream", glow: "from-orange/40", ring: "group-hover:shadow-[0_0_0_2px_var(--orange)]" },
+              cobalt: { chip: "bg-cobalt text-cream", glow: "from-cobalt/40", ring: "group-hover:shadow-[0_0_0_2px_var(--cobalt)]" },
+              rose:   { chip: "bg-rose text-ink",    glow: "from-rose/50",   ring: "group-hover:shadow-[0_0_0_2px_var(--rose)]" },
+              yellow: { chip: "bg-yellow text-ink",  glow: "from-yellow/60", ring: "group-hover:shadow-[0_0_0_2px_var(--yellow)]" },
             };
+            const m = map[t.c];
             return (
-              <div key={n} className="ink-border group relative overflow-hidden rounded-3xl bg-cream p-6 transition-transform hover:-translate-y-1 hover:rotate-[-1deg]">
-                <div className="flex items-start justify-between">
-                  <span className="font-mono text-xs font-bold text-ink/60">/0{i + 1}</span>
-                  <span className="chip">Reveal Soon</span>
+              <article
+                key={t.n}
+                className={`ink-border group relative overflow-hidden rounded-3xl bg-cream p-6 transition-all duration-300 hover:-translate-y-1.5 hover:rotate-[-0.6deg] ${m.ring}`}
+              >
+                {/* number watermark */}
+                <div className="pointer-events-none absolute -right-3 -top-6 font-display text-[110px] leading-none text-ink/[0.06] select-none">
+                  {String(i + 1).padStart(2, "0")}
                 </div>
-                <div className={`mt-10 inline-block px-3 py-1 font-chunk text-3xl uppercase tracking-tight ${map[c]}`} style={{ transform: "rotate(-2deg)" }}>
-                  {n}
+                {/* hover gradient wash */}
+                <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${m.glow} via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
+
+                <div className="relative flex items-start justify-between">
+                  <div className={`ink-border-sm grid h-12 w-12 place-items-center rounded-2xl font-display text-2xl ${m.chip}`}>{t.icon}</div>
+                  <span className="chip">{t.diff}</span>
                 </div>
-                <p className="mt-4 text-ink/70">{d}</p>
-                <div className="mt-6 flex items-center justify-between font-mono text-xs font-bold uppercase tracking-widest">
-                  <span className="text-ink/60">Difficulty · Open</span>
-                  <span className="text-orange transition-transform group-hover:translate-x-1">→</span>
+
+                <div className={`relative mt-8 inline-block px-3 py-1 font-chunk text-3xl uppercase tracking-tight ${m.chip}`} style={{ transform: "rotate(-1.5deg)" }}>
+                  {t.n}
                 </div>
-              </div>
+                <p className="relative mt-4 text-ink/75">{t.d}</p>
+
+                <div className="relative mt-5 ink-border-sm rounded-xl bg-cream/60 p-3 font-mono text-[11px] uppercase tracking-widest text-ink/60">
+                  examples → <span className="text-ink">{t.eg}</span>
+                </div>
+
+                <div className="relative mt-5 flex items-center justify-between font-mono text-xs font-bold uppercase tracking-widest">
+                  <span className="text-ink/60">Prize · TBA</span>
+                  <span className="text-orange transition-transform group-hover:translate-x-1">explore →</span>
+                </div>
+              </article>
             );
           })}
         </div>
@@ -517,6 +534,7 @@ function Tracks() {
     </section>
   );
 }
+
 
 /* ============= prizes ============= */
 
