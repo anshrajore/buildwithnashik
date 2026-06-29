@@ -789,8 +789,9 @@ function Team() {
           </div>
 
           <h3 className="mt-6 font-chunk text-5xl uppercase leading-none tracking-tight">Ansh Rajore</h3>
-          <p className="font-script text-3xl text-orange">the one behind it all</p>
-          <p className="mt-3 text-cream/80">Founder of Team Nest & NayaMarg. AI / full-stack builder shipping in Nashik. Believes a city is one good hackathon away from becoming an ecosystem.</p>
+          <p className="font-script text-3xl text-orange">leading the charge</p>
+          <p className="mt-3 text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+
           <a href="#" className="ink-border-sm mt-6 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream">
             LinkedIn →
           </a>
