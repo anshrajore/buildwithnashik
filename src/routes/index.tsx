@@ -750,13 +750,13 @@ function Community() {
 
 function Team() {
   const core = [
-    { n: "Vedant Lokhande", r: "Core Team" },
-    { n: "Aaryan Singh", r: "Core Team" },
-    { n: "Rupali Patil", r: "Core Team" },
-    { n: "Nikhil Patil", r: "Core Team" },
-    { n: "Anurag Darshan", r: "Core Team" },
-    { n: "More Soon", r: "Joining" },
+    { n: "Vedant Lokhande", r: "Operations" },
+    { n: "Aaryan Singh", r: "Tech Lead" },
+    { n: "Rupali Patil", r: "Community" },
+    { n: "Nikhil Patil", r: "Partnerships" },
+    { n: "Anurag Darshan", r: "Design" },
   ];
+
   return (
     <section id="team" className="mx-auto max-w-7xl px-6 py-28">
       <SectionTag n="09">Organizing Team</SectionTag>
