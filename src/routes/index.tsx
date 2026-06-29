@@ -31,10 +31,12 @@ function Home() {
 
   return (
     <div className="min-h-screen overflow-x-hidden paper text-foreground antialiased">
+      <CursorFollower />
       <Toaster position="top-center" theme="light" toastOptions={{ style: { fontFamily: "var(--font-sans)" } }} />
       <Ticker />
       <Nav onRegister={() => setOpenReg(true)} />
       <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <Legacy />
       <Stats />
       <About />
       <Mission />
@@ -45,7 +47,8 @@ function Home() {
       <WhySponsor onSponsor={() => openSponsorFor("Title")} />
       <Community />
       <Team />
-      <Venue />
+      <JoinTeam />
+      <Venue onSponsor={() => openSponsorFor("Venue")} />
       <Faq />
       <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
       <Footer />
@@ -55,6 +58,7 @@ function Home() {
     </div>
   );
 }
+
 
 /* ============= shared ============= */
 
