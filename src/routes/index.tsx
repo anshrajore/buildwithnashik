@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import anshAsset from "@/assets/ansh.png.asset.json";
+import towerAsset from "@/assets/clock-tower.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
