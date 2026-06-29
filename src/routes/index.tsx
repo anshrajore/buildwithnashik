@@ -814,32 +814,116 @@ function Team() {
 
 /* ============= venue ============= */
 
-function Venue() {
-  const items = ["Hotels", "Railway", "Airport", "Parking", "Food", "Accommodation", "Directions", "Weather"];
+function Venue({ onSponsor }: { onSponsor: () => void }) {
+  const items: Array<{ icon: string; t: string; sub: string; body: string; bullets?: string[]; cta?: { label: string; onClick?: () => void; href?: string } }> = [
+    {
+      icon: "📍", t: "Venue Partner", sub: "Announcement soon",
+      body: "We're collaborating with leading universities, innovation hubs and premium venues across Nashik to host the best possible hackathon experience.",
+      bullets: ["High-speed internet", "24×7 power backup", "Mentor & networking zones", "Stage & demo area"],
+      cta: { label: "Become Venue Partner →", onClick: onSponsor },
+    },
+    {
+      icon: "🏙", t: "Why Nashik?", sub: "Maharashtra's next tech hub",
+      body: "Nashik is one of Maharashtra's fastest-growing tech and startup ecosystems — home to thousands of engineering students, manufacturing industries, and innovation-driven institutions.",
+    },
+    {
+      icon: "🚆", t: "Travel Information", sub: "Easily reachable from all of India",
+      body: "Designed to be accessible for participants travelling from across Maharashtra and India.",
+      bullets: ["Nashik Road Railway Station", "Mumbai–Nashik Expressway", "State transport connectivity", "Nearby airport access"],
+    },
+    {
+      icon: "🍽", t: "Participant Experience", sub: "Comfortable 36-hour stay",
+      body: "Expect a thoughtfully planned experience throughout the hackathon.",
+      bullets: ["Meals & midnight refreshments", "Coffee & beverages", "Networking lounge", "Quiet zones & first-aid"],
+    },
+    {
+      icon: "🏨", t: "Stay & Accommodation", sub: "Help for outstation builders",
+      body: "Accommodation support is currently being planned for participants travelling from outside Nashik.",
+      bullets: ["Partner hotels", "Student accommodations", "Budget stays", "Shuttle (if available)"],
+    },
+    {
+      icon: "🤝", t: "Partnership Opportunities", sub: "Build the ecosystem with us",
+      body: "We're actively collaborating with organisations that want to support Nashik's growing developer ecosystem.",
+      bullets: ["Venue · Tech · Cloud", "Community · Startup · Hiring", "Food · Media"],
+      cta: { label: "Become a Partner →", onClick: onSponsor },
+    },
+    {
+      icon: "📢", t: "Event Updates", sub: "Full guide drops with registrations",
+      body: "Upcoming announcements: official venue, dates, registrations, prize pool, speakers, mentors, sponsors and community partners.",
+      cta: { label: "Get Notified →", href: "#register" },
+    },
+  ];
+
   return (
     <section className="border-y-2 border-ink bg-rose py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionTag n="10">Venue</SectionTag>
+        <SectionTag n="10">Hosted in Nashik</SectionTag>
         <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
-          Hosted in <span className="tag-cobalt text-cream">Nashik.</span>
+          A city <span className="tag-cobalt text-cream">ready to build.</span>
         </h2>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          <div className="ink-border relative aspect-video overflow-hidden rounded-3xl bg-cream">
-            <div className="absolute inset-0 grid place-items-center">
-              <div className="text-center">
-                <div className="font-display text-7xl text-orange">📍</div>
-                <div className="mt-2 font-chunk text-4xl uppercase">Nashik · MH</div>
-                <div className="mt-2 chip">Venue · Announce Soon</div>
+        <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr,1fr]">
+          {/* LEFT — sticky map / venue card */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-cream">
+              <div className="relative aspect-[5/4] w-full overflow-hidden bg-cream">
+                <iframe
+                  title="Nashik map"
+                  className="absolute inset-0 h-full w-full grayscale"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=73.66%2C19.93%2C73.92%2C20.07&layer=mapnik&marker=20.0,73.78"
+                  loading="lazy"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cream via-cream/20 to-transparent" />
+                <div className="pointer-events-none absolute left-4 top-4 ink-border-sm tag-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
+                  Coordinates · 20.0°N 73.78°E
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60">Event Location</div>
+                <div className="mt-2 font-chunk text-4xl uppercase leading-none md:text-5xl">Nashik, Maharashtra</div>
+                <p className="mt-2 font-script text-2xl text-orange">the future home of Build With Nashik</p>
+                <p className="mt-3 text-ink/75">Our official venue will be revealed soon. We're finalising a location that can deliver an exceptional experience for builders, mentors, sponsors and the community.</p>
+
+                <div className="mt-5 grid grid-cols-2 gap-2">
+                  {["High-speed Wi-Fi", "36-Hour Workspace", "Mentor Zones", "Networking Area", "Startup Booths", "Demo Stage", "Sponsor Zone", "Food Court"].map((f) => (
+                    <div key={f} className="ink-border-sm rounded-lg bg-cream/70 px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-widest">{f}</div>
+                  ))}
+                </div>
+
+                <div className="mt-5 chip bg-yellow">Venue Reveal · Coming Soon</div>
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+
+          {/* RIGHT — info stack */}
+          <div className="space-y-4">
             {items.map((it) => (
-              <div key={it} className="ink-border-sm rounded-2xl bg-cream p-5">
-                <div className="font-chunk text-lg uppercase">{it}</div>
-                <div className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-ink/60">Coming Soon</div>
-              </div>
+              <article key={it.t} className="ink-border-sm group rounded-2xl bg-cream p-5 transition-transform hover:-translate-y-0.5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="ink-border-sm grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-yellow text-2xl">{it.icon}</div>
+                    <div>
+                      <div className="font-chunk text-xl uppercase leading-none">{it.t}</div>
+                      <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{it.sub}</div>
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm text-ink/80">{it.body}</p>
+                {it.bullets && (
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
+                    {it.bullets.map((b) => (
+                      <li key={b} className="rounded-full border-2 border-ink/15 bg-cream px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/70">{b}</li>
+                    ))}
+                  </ul>
+                )}
+                {it.cta && (
+                  it.cta.href ? (
+                    <a href={it.cta.href} className="ink-border-sm mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">{it.cta.label}</a>
+                  ) : (
+                    <button onClick={it.cta.onClick} className="ink-border-sm mt-4 inline-flex items-center gap-2 rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">{it.cta.label}</button>
+                  )
+                )}
+              </article>
             ))}
           </div>
         </div>
@@ -847,6 +931,7 @@ function Venue() {
     </section>
   );
 }
+
 
 /* ============= faq ============= */
 
