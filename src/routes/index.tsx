@@ -584,7 +584,6 @@ function Prizes() {
 /* ============= sponsors ============= */
 
 function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
-  const tiers = ["Title", "Gold", "Silver", "Community", "Education", "Hiring", "Cloud", "AI", "Developer Tools"];
   return (
     <section id="sponsors" className="border-y-2 border-ink bg-yellow py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -592,19 +591,53 @@ function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
         <h2 className="mt-6 font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
           Powered by <span className="tag-cobalt text-cream">industry leaders.</span>
         </h2>
-        <p className="mt-4 max-w-xl text-ink/80">Pick a tier and start a conversation. Every inquiry reaches Team Nest directly.</p>
+        <p className="mt-4 max-w-xl text-ink/80">Different tiers, different stages. Pick the level that fits your brand — every inquiry reaches Team Nest directly.</p>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {tiers.map((t, i) => (
-            <button
-              key={t}
-              onClick={() => onSponsor(t)}
-              className="ink-border group flex h-36 flex-col items-center justify-center rounded-3xl bg-cream text-center transition-transform hover:-translate-y-1 hover:rotate-[-1deg]"
-              style={{ transform: `rotate(${i % 2 ? 1 : -1}deg)` }}
-            >
-              <div className="font-chunk text-2xl uppercase">Your brand</div>
-              <div className="mt-2 inline-block tag-orange px-2 py-0.5 font-mono text-xs font-bold uppercase tracking-widest">{t} Partner</div>
-              <div className="mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50">click to inquire →</div>
+        {/* TITLE — single hero card */}
+        <button
+          onClick={() => onSponsor("Title")}
+          className="ink-border-lg group relative mt-12 block w-full overflow-hidden rounded-3xl bg-ink p-1 text-cream"
+        >
+          <div className="relative grid min-h-[220px] place-items-center rounded-[20px] bg-gradient-to-br from-[#2a1d0a] via-ink to-[#2a1d0a] px-8 py-12">
+            <div className="absolute -inset-1 -z-0 opacity-40 blur-3xl"
+              style={{ background: "radial-gradient(circle at 30% 50%, #f5d76e, transparent 60%), radial-gradient(circle at 70% 50%, #b8860b, transparent 60%)" }} />
+            <div className="relative text-center">
+              <div className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-yellow/80">— Tier 01 · Headline —</div>
+              <div className="mt-3 font-display text-5xl uppercase tracking-tight text-gold-shimmer md:text-7xl">Title Sponsor</div>
+              <div className="mt-4 font-script text-3xl text-cream">your brand · everywhere.</div>
+              <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-yellow/60 bg-ink/40 px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-yellow transition-transform group-hover:-translate-y-0.5">
+                Inquire for headline tier →
+              </div>
+            </div>
+          </div>
+        </button>
+
+        {/* POWERED BY + PLATINUM */}
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          <SponsorCard onClick={() => onSponsor("Powered By")} tier="Powered By" tone="orange" size="lg" tagline="brand alongside the wordmark" />
+          <SponsorCard onClick={() => onSponsor("Platinum")} tier="Platinum" tone="cobalt" size="lg" tagline="stage · keynote · prize sponsor" />
+        </div>
+
+        {/* GOLD x3 */}
+        <div className="mt-5 grid gap-4 md:grid-cols-3">
+          {["Gold", "Cloud", "AI"].map((t) => (
+            <SponsorCard key={t} onClick={() => onSponsor(t)} tier={t} tone="yellow" size="md" tagline="track sponsor" />
+          ))}
+        </div>
+
+        {/* SILVER x4 */}
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          {["Silver", "Hiring", "Education", "Developer Tools"].map((t) => (
+            <SponsorCard key={t} onClick={() => onSponsor(t)} tier={t} tone="rose" size="sm" />
+          ))}
+        </div>
+
+        {/* COMMUNITY pills */}
+        <div className="mt-8 flex flex-wrap gap-2">
+          <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60">Community Partners →</span>
+          {["GDG", "Microsoft Learn", "AWS Cloud", "GitHub", "Devfolio", "Postman", "Vercel", "MLH"].map((p) => (
+            <button key={p} onClick={() => onSponsor("Community")} className="ink-border-sm rounded-full bg-cream px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-widest text-ink transition-all hover:-translate-y-0.5 hover:bg-orange hover:text-cream">
+              {p}
             </button>
           ))}
         </div>
@@ -622,6 +655,32 @@ function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
     </section>
   );
 }
+
+function SponsorCard({ tier, tone, size, tagline, onClick }: { tier: string; tone: "orange" | "cobalt" | "yellow" | "rose"; size: "lg" | "md" | "sm"; tagline?: string; onClick: () => void }) {
+  const tones = {
+    orange: { bg: "bg-orange", text: "text-cream", chip: "bg-cream text-ink" },
+    cobalt: { bg: "bg-cobalt", text: "text-cream", chip: "bg-cream text-ink" },
+    yellow: { bg: "bg-cream", text: "text-ink", chip: "tag-yellow" },
+    rose:   { bg: "bg-cream", text: "text-ink", chip: "bg-rose text-ink" },
+  } as const;
+  const h = size === "lg" ? "min-h-[170px]" : size === "md" ? "min-h-[130px]" : "min-h-[100px]";
+  const label = size === "lg" ? "text-3xl md:text-4xl" : size === "md" ? "text-2xl" : "text-xl";
+  const t = tones[tone];
+  return (
+    <button
+      onClick={onClick}
+      className={`ink-border group relative flex w-full ${h} flex-col items-start justify-between gap-3 overflow-hidden rounded-3xl ${t.bg} ${t.text} p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:rotate-[-0.6deg] hover:shadow-[10px_10px_0_0_var(--ink)]`}
+    >
+      <span className={`inline-block px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest ${t.chip}`}>{tier} Partner</span>
+      <div>
+        <div className={`font-chunk uppercase leading-none ${label}`}>your brand</div>
+        {tagline && <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest opacity-70">{tagline}</div>}
+      </div>
+      <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80 transition-transform group-hover:translate-x-1">inquire →</div>
+    </button>
+  );
+}
+
 
 /* ============= why sponsor ============= */
 
