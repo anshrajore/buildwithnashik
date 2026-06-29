@@ -144,45 +144,96 @@ function Nav({ onRegister }: { onRegister: () => void }) {
 /* ============= hero — unique BUILD/NASHIK logotype ============= */
 
 function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: () => void }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const towerRef = useRef<HTMLDivElement>(null);
+
+  // parallax on mouse move (disabled on touch / reduced motion)
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(hover: none)").matches) return;
+    const wrap = wrapRef.current;
+    const tower = towerRef.current;
+    if (!wrap || !tower) return;
+    let raf = 0;
+    const handle = (e: MouseEvent) => {
+      const r = wrap.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        tower.style.transform = `translate3d(${x * -22}px, ${y * -16}px, 0)`;
+      });
+    };
+    wrap.addEventListener("mousemove", handle);
+    return () => { wrap.removeEventListener("mousemove", handle); cancelAnimationFrame(raf); };
+  }, []);
+
   return (
-    <section id="top" className="relative">
-      {/* floating stickers */}
-      <Sticker className="left-[6%] top-24" rot={-12}>⚡</Sticker>
-      <Sticker className="right-[8%] top-36" rot={14} color="cobalt">★</Sticker>
-      <Sticker className="left-[14%] bottom-40" rot={6} color="rose">36h</Sticker>
-      <Sticker className="right-[12%] bottom-24" rot={-8} color="yellow">◆</Sticker>
+    <section id="top" ref={wrapRef} className="relative overflow-hidden">
+      <Sticker className="left-[4%] top-24" rot={-12}>⚡</Sticker>
+      <Sticker className="right-[6%] top-36" rot={14} color="cobalt">★</Sticker>
+      <Sticker className="left-[10%] bottom-24" rot={6} color="rose">36h</Sticker>
+      <Sticker className="right-[10%] bottom-32" rot={-8} color="yellow">◆</Sticker>
 
-      <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-24">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
-          <span className="chip bg-yellow">Date · Announce Soon</span>
-          <span className="chip">By Team Nest · Nashik</span>
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-12 pb-20 lg:grid-cols-[1fr,1.35fr] lg:gap-6 lg:pt-16">
+
+        {/* LEFT — clock tower illustration */}
+        <div className="relative order-2 hidden h-[70vh] max-h-[640px] items-center justify-center lg:order-1 lg:flex" aria-hidden>
+          {/* glow */}
+          <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
+            <div className="h-[58%] w-[58%] rounded-full bg-orange/45 blur-[80px] animate-glow" />
+          </div>
+          <div ref={towerRef} className="relative h-full w-full will-change-transform">
+            <img
+              src={towerAsset.url}
+              alt="Nashik Clock Tower"
+              loading="eager"
+              decoding="async"
+              className="animate-tower mx-auto h-full w-auto max-h-[640px] object-contain drop-shadow-[8px_14px_0_rgba(24,18,14,0.18)]"
+            />
+            {/* grain overlay */}
+            <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-multiply"
+              style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }}
+            />
+          </div>
+          {/* sticker tag */}
+          <div className="absolute right-2 top-12 ink-border-sm bg-cream px-3 py-1 font-script text-xl text-ink" style={{ transform: "rotate(6deg)" }}>
+            our clock tower <span className="text-orange">★</span>
+          </div>
+          <div className="absolute bottom-8 left-2 ink-border-sm tag-cobalt px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
+            Nashik · Maharashtra
+          </div>
         </div>
 
-        {/* Sticker-style wordmark */}
-        <div className="relative mt-12 select-none">
-          <div className="font-display text-[18vw] leading-[0.78] tracking-tight text-ink md:text-[15vw] lg:text-[210px]">
-            <span className="block">BUILD</span>
+        {/* RIGHT — copy */}
+        <div className="relative order-1 lg:order-2">
+          <div className="flex flex-wrap gap-2">
+            <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
+            <span className="chip bg-yellow">Date · Announce Soon</span>
+            <span className="chip">By Team Nest</span>
           </div>
-          <div className="-mt-6 flex items-end gap-4">
-            <span className="font-script text-[14vw] leading-none text-orange md:text-[10vw] lg:text-[140px] animate-wiggle inline-block" style={{ transformOrigin: "center" }}>
-              with
-            </span>
-            <span className="mb-2 hidden h-1 flex-1 bg-ink md:block" />
-            <span className="mb-3 hidden font-mono text-xs font-bold uppercase tracking-widest text-ink md:inline">/ Hackathon 2026</span>
-          </div>
-          <div className="-mt-4 inline-block ink-border bg-ink px-4 pb-2 pt-1 text-cream">
-            <span className="font-display text-[18vw] leading-[0.85] tracking-tight md:text-[15vw] lg:text-[210px]">NASHIK<span className="text-orange">.</span></span>
-          </div>
-        </div>
 
-        <div className="mt-12 grid items-end gap-10 md:grid-cols-[1.4fr,1fr]">
-          <p className="max-w-2xl font-sans text-xl text-ink/80 md:text-2xl">
-            Nashik's largest community-driven hackathon. <span className="tag-yellow font-bold">36 hours</span> to build, ship and win — alongside <span className="tag-orange font-bold">500+ developers</span>, mentors and founders.
+          <div className="relative mt-8 select-none">
+            <div className="font-display text-[16vw] leading-[0.78] tracking-tight text-ink lg:text-[140px]">
+              <span className="block">BUILD</span>
+            </div>
+            <div className="-mt-4 flex items-end gap-3">
+              <span className="font-script text-[11vw] leading-none text-orange animate-wiggle inline-block lg:text-[90px]">with</span>
+              <span className="mb-2 hidden h-1 flex-1 bg-ink md:block" />
+              <span className="mb-3 hidden font-mono text-[10px] font-bold uppercase tracking-widest text-ink md:inline">/ Hackathon 2026</span>
+            </div>
+            <div className="-mt-3 inline-block ink-border bg-ink px-4 pb-2 pt-1 text-cream">
+              <span className="font-display text-[16vw] leading-[0.85] tracking-tight lg:text-[140px]">NASHIK<span className="text-orange">.</span></span>
+            </div>
+          </div>
+
+          <p className="mt-10 max-w-2xl text-lg leading-relaxed text-ink/80 md:text-xl">
+            Great communities aren't built by companies. They're built by people who decide to <span className="tag-yellow font-bold">create instead of wait</span>. Build With Nashik exists to prove that <span className="tag-orange font-bold">world-class innovation</span> can start from any city, with anyone willing to build.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <button onClick={onRegister} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
-              Register Now →
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button onClick={onRegister} className="ink-border-sm group inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
+              Register Now <span className="transition-transform group-hover:translate-x-1">→</span>
             </button>
             <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5">
               Become Sponsor
@@ -191,17 +242,24 @@ function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: ()
               Join Community
             </a>
           </div>
-        </div>
 
-        <div className="mt-16 flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs font-bold uppercase tracking-widest">
-          {["36 Hours", "Innovation", "Networking", "Building", "Learning", "Winning"].map((w, i) => (
-            <span key={w} className="chip"><span className="text-orange">0{i + 1}</span> {w}</span>
-          ))}
+          <div className="mt-10 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs font-bold uppercase tracking-widest">
+            {["36 Hours", "500+ Builders", "Mentors", "Prizes", "Open Source"].map((w, i) => (
+              <span key={w} className="chip"><span className="text-orange">0{i + 1}</span> {w}</span>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* mobile-only tower under copy */}
+      <div className="relative mx-auto -mt-6 mb-12 grid w-full max-w-sm place-items-center px-6 lg:hidden" aria-hidden>
+        <div className="absolute inset-0 -z-10 grid place-items-center"><div className="h-56 w-56 rounded-full bg-orange/40 blur-2xl" /></div>
+        <img src={towerAsset.url} alt="" className="h-72 w-auto object-contain" loading="lazy" />
       </div>
     </section>
   );
 }
+
 
 function Sticker({ children, className = "", rot = 0, color = "orange" }: { children: React.ReactNode; className?: string; rot?: number; color?: "orange" | "cobalt" | "rose" | "yellow" }) {
   const map: Record<string, string> = {
