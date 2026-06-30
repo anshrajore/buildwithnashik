@@ -1226,13 +1226,20 @@ function Legacy() {
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {events.map((e, i) => (
             <article key={e.title} className="ink-border-lg group relative flex flex-col overflow-hidden rounded-3xl bg-cream transition-transform hover:-translate-y-1.5">
-              <div className={`relative h-44 ${tones[e.tone]} overflow-hidden`}>
-                <div className="absolute inset-0 opacity-20 mix-blend-multiply"
-                  style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }} />
-                <div className="relative flex h-full items-end justify-between p-6">
-                  <div className="font-display text-7xl leading-none">{e.icon}</div>
+              <div className={`relative h-48 ${tones[e.tone]} overflow-hidden`}>
+                {e.image ? (
+                  <>
+                    <img src={e.image} alt={`${e.title} — Team Nest`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 opacity-20 mix-blend-multiply"
+                    style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }} />
+                )}
+                <div className="relative flex h-full items-end justify-between p-6 text-cream">
+                  <div className={`font-display text-6xl leading-none ${e.image ? "drop-shadow-[2px_2px_0_rgba(0,0,0,0.5)]" : ""}`}>{e.icon}</div>
                   <div className="text-right">
-                    <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">/0{i + 1}</div>
+                    <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-90">/0{i + 1}</div>
                     <div className="mt-1 font-chunk text-2xl uppercase">{e.year}</div>
                   </div>
                 </div>
