@@ -404,20 +404,19 @@ function Timeline3D() {
 
   return (
     <section id="timeline" className="relative mx-auto max-w-7xl px-6 py-28">
-      {/* faint side tower watermark — decorative only */}
-      <img
-        src={towerAsset.url}
-        alt=""
-        aria-hidden
-        className="pointer-events-none absolute -left-16 top-32 hidden h-[520px] w-auto select-none object-contain opacity-[0.07] lg:block"
-      />
+      {/* giant background wordmark — Build With Nashik */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-10 select-none overflow-hidden">
+        <div className="font-display text-[18vw] leading-none tracking-tight text-ink/[0.05] whitespace-nowrap text-center">
+          BUILD&nbsp;WITH&nbsp;NASHIK
+        </div>
+      </div>
 
       <SectionTag n="03">Timeline</SectionTag>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
         <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
           The <span className="tag-cobalt text-cream">level path.</span>
         </h2>
-        <p className="max-w-md text-ink/70">Six checkpoints from our first hackathon to launching Build With Nashik. Scroll to unlock each level.</p>
+        <p className="max-w-md text-ink/70">From 2023 to 2026 — every checkpoint that led to Build With Nashik. Scroll to unlock each level.</p>
       </div>
 
       <ol className="relative mt-16">
