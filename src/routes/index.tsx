@@ -804,6 +804,7 @@ function Community() {
 
 function Team() {
   const core = [
+    { n: "Prathman Tiwari", r: "Engineering · Builder" },
     { n: "Vedant Lokhande", r: "Operations" },
     { n: "Aaryan Singh", r: "Tech Lead" },
     { n: "Rupali Patil", r: "Community" },
