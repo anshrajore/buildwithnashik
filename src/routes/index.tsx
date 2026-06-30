@@ -819,57 +819,40 @@ function Team() {
         Meet the <span className="tag-orange text-cream">builders.</span>
       </h2>
 
-      <div className="mt-16 grid gap-6 lg:grid-cols-2">
-        {/* founder spotlight — Ansh */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-6 text-cream">
-          <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
-          <div className="mt-5 flex gap-5">
+      <div className="mt-16">
+        {/* founder spotlight — Ansh (only main card) */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-10">
+          <div className="grid items-center gap-8 md:grid-cols-[auto,1fr]">
             <div className="relative shrink-0">
               <img
                 src={anshAsset.url}
                 alt="Ansh Rajore — Founder of Team Nest"
-                className="ink-border-sm h-32 w-32 rounded-2xl border-2 border-cream object-cover md:h-40 md:w-40"
+                className="ink-border-sm h-44 w-44 rounded-2xl border-2 border-cream object-cover md:h-56 md:w-56"
                 loading="lazy"
               />
-              <div className="absolute -left-2 -top-2 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
                 5× winner
               </div>
             </div>
             <div className="min-w-0">
-              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Ansh Rajore</h3>
-              <p className="font-script text-2xl text-orange">leading the charge</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
+              <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
+              <h3 className="mt-3 font-chunk text-4xl uppercase leading-none tracking-tight md:text-6xl">Ansh Rajore</h3>
+              <p className="font-script text-3xl text-orange">leading the charge</p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
                 <span className="chip bg-yellow text-ink">SUNHACKS</span>
+                <span className="chip bg-rose text-ink">Nashik</span>
               </div>
+              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+              <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
             </div>
           </div>
-          <p className="mt-5 text-sm text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
-          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
         </div>
+      </div>
 
-        {/* builder spotlight — Prathman */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-cream p-6 text-ink">
-          <div className="chip bg-cobalt text-cream">Core Builder</div>
-          <div className="mt-5 flex gap-5">
-            <div className="relative shrink-0">
-              <div className="ink-border-sm grid h-32 w-32 place-items-center rounded-2xl bg-yellow font-display text-5xl text-ink md:h-40 md:w-40">PT</div>
-              <div className="absolute -left-2 -top-2 ink-border-sm bg-ink px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight text-cream" style={{ transform: "rotate(-6deg)" }}>
-                builder
-              </div>
-            </div>
-            <div className="min-w-0">
-              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Prathman Tiwari</h3>
-              <p className="font-script text-2xl text-orange">ships the product</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <span className="chip">Engineering</span>
-                <span className="chip bg-orange text-cream">Build</span>
-              </div>
-            </div>
-          </div>
-          <p className="mt-5 text-sm text-ink/75">Builder on the Team Nest core — turning Build With Nashik from a doc into a shipping product. Code, infra, and the late-night problem-solving that holds a hackathon together.</p>
-          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
-        </div>
+      <div className="mt-10 flex items-center gap-3">
+        <span className="chip">Core Team</span>
+        <span className="h-0.5 flex-1 bg-ink/15" />
       </div>
 
       {/* core crew */}
