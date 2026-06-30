@@ -361,102 +361,121 @@ function Mission() {
   );
 }
 
-/* ============= 3D scrolling timeline ============= */
+/* ============= journey timeline (reliable scroll reveal) ============= */
 
 function Timeline3D() {
   const steps = [
-    { n: "01", t: "Registration Opens", s: "Coming Soon", c: "orange", icon: "▶" },
-    { n: "02", t: "Idea Submission", s: "Coming Soon", c: "yellow", icon: "✎" },
-    { n: "03", t: "Shortlisting", s: "Coming Soon", c: "cobalt", icon: "★" },
-    { n: "04", t: "Hackathon Begins", s: "36 Hours · Live", c: "orange", icon: "⚡" },
-    { n: "05", t: "Mentoring", s: "Expert Sessions", c: "rose", icon: "◆" },
-    { n: "06", t: "Judging", s: "Panel Reviews", c: "cobalt", icon: "⚖" },
-    { n: "07", t: "Winners Announced", s: "Reveal Stage", c: "orange", icon: "♛" },
-    { n: "08", t: "Networking", s: "Founders Mixer", c: "yellow", icon: "✦" },
-    { n: "09", t: "Aftermovie", s: "Coming Soon", c: "rose", icon: "▷" },
+    { n: "01", y: "2023", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Cut our teeth across India's biggest hackathon stages — learning what it really takes to ship under pressure." },
+    { n: "02", y: "2024", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for one of Asia's largest GenAI hackathons — thousands of builders, real outcomes." },
+    { n: "03", y: "2024", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Brought builders together across Nashik — open jams, hands-on workshops and late-night code sessions." },
+    { n: "04", y: "2025", t: "Connected Students & Startups", s: "Mumbai Tech Week · Founder Hours", c: "rose", icon: "★", d: "Opened doors between Nashik students and Maharashtra's startup ecosystem — internships, jobs, mentors." },
+    { n: "05", y: "2025", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "orange", icon: "⚡", d: "Grew from a tiny crew into a distributed network of builders, designers and operators across cities." },
+    { n: "06", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders." },
   ];
 
-  const ref = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const colorMap: Record<string, { chip: string; dot: string }> = {
+    orange: { chip: "bg-orange text-cream", dot: "bg-orange" },
+    yellow: { chip: "bg-yellow text-ink",   dot: "bg-yellow" },
+    cobalt: { chip: "bg-cobalt text-cream", dot: "bg-cobalt" },
+    rose:   { chip: "bg-rose text-ink",     dot: "bg-rose" },
+  };
+
+  const itemsRef = useRef<HTMLLIElement[]>([]);
+  const [revealed, setRevealed] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const onScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = rect.height - vh;
-      const p = Math.min(1, Math.max(0, -rect.top / total));
-      setActive(Math.min(steps.length - 1, Math.floor(p * steps.length)));
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [steps.length]);
+    const io = new IntersectionObserver(
+      (entries) => {
+        setRevealed((prev) => {
+          const next = new Set(prev);
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              const idx = Number((e.target as HTMLElement).dataset.idx);
+              next.add(idx);
+            }
+          }
+          return next;
+        });
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -10% 0px" }
+    );
+    itemsRef.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <section id="timeline" className="mx-auto max-w-7xl px-6 py-28">
+    <section id="timeline" className="relative mx-auto max-w-7xl px-6 py-28">
+      {/* faint side tower watermark — decorative only */}
+      <img
+        src={towerAsset.url}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute -left-16 top-32 hidden h-[520px] w-auto select-none object-contain opacity-[0.07] lg:block"
+      />
+
       <SectionTag n="03">Timeline</SectionTag>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
         <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
           The <span className="tag-cobalt text-cream">level path.</span>
         </h2>
-        <p className="max-w-md text-ink/70">Scroll through 9 checkpoints. Hit start, ship a product, claim the trophy.</p>
+        <p className="max-w-md text-ink/70">Six checkpoints from our first hackathon to launching Build With Nashik. Scroll to unlock each level.</p>
       </div>
 
-      {/* sticky stage with scroll-driven card stack */}
-      <div ref={ref} className="relative mt-16" style={{ height: `${steps.length * 80}vh` }}>
-        <div className="sticky top-20 perspective-stage">
-          <div className="relative mx-auto h-[70vh] max-h-[640px] w-full max-w-3xl">
-            {/* progress rail */}
-            <div className="absolute -left-2 top-0 hidden h-full w-1 bg-ink md:block">
-              <div className="w-full bg-orange transition-all duration-500" style={{ height: `${((active + 1) / steps.length) * 100}%` }} />
-            </div>
-
-            {steps.map((s, i) => {
-              const offset = i - active;
-              const visible = offset >= 0 && offset < 4;
-              const colorMap: Record<string, string> = {
-                orange: "bg-orange text-cream",
-                yellow: "bg-yellow text-ink",
-                cobalt: "bg-cobalt text-cream",
-                rose: "bg-rose text-ink",
-              };
-              return (
-                <article
-                  key={s.n}
-                  className="ink-border-lg tilt-card absolute inset-0 rounded-3xl bg-cream p-8 md:p-12"
-                  style={{
-                    transform: visible
-                      ? `translate3d(0, ${offset * 18}px, ${-offset * 80}px) rotateX(${offset * -3}deg) scale(${1 - offset * 0.04})`
-                      : offset < 0
-                        ? `translate3d(-30%, -40%, 400px) rotate(-8deg)`
-                        : `translate3d(0, 100%, -400px)`,
-                    opacity: visible ? 1 : 0,
-                    zIndex: 100 - i,
-                    pointerEvents: offset === 0 ? "auto" : "none",
-                    transition: "transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 400ms ease",
-                  }}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="font-mono text-xs font-bold uppercase tracking-widest text-ink/60">Checkpoint /{s.n}</div>
-                    <div className={`ink-border-sm grid h-14 w-14 place-items-center rounded-2xl font-display text-2xl ${colorMap[s.c]}`}>{s.icon}</div>
-                  </div>
-                  <h3 className="mt-10 font-chunk text-5xl uppercase leading-none tracking-tight md:text-7xl">{s.t}</h3>
-                  <div className="mt-4 inline-block tag-orange px-3 py-1 font-mono text-sm font-bold uppercase tracking-widest">{s.s}</div>
-                  <div className="mt-8 h-1.5 w-full overflow-hidden rounded-full bg-ink/10">
-                    <div className="h-full bg-ink transition-all duration-700" style={{ width: `${((i + 1) / steps.length) * 100}%` }} />
-                  </div>
-                  <div className="mt-3 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-ink/60">
-                    <span>{i + 1} of {steps.length}</span>
-                    <span>Keep scrolling →</span>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+      <ol className="relative mt-16">
+        {/* center rail */}
+        <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
+          <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / steps.length) * 100}%` }} />
         </div>
-      </div>
+
+        {steps.map((s, i) => {
+          const left = i % 2 === 0;
+          const cm = colorMap[s.c];
+          const isOn = revealed.has(i);
+          return (
+            <li
+              key={s.n}
+              data-idx={i}
+              ref={(el) => { if (el) itemsRef.current[i] = el; }}
+              className="relative grid grid-cols-[3rem,1fr] gap-4 pb-14 md:grid-cols-2 md:gap-10"
+            >
+              {/* node */}
+              <span
+                className={`absolute left-6 top-3 z-10 grid h-12 w-12 -translate-x-1/2 place-items-center rounded-2xl border-2 border-ink font-display text-lg shadow-[3px_3px_0_var(--ink)] md:left-1/2 ${cm.chip} transition-transform duration-500 ${isOn ? "scale-100 rotate-0" : "scale-50 rotate-45 opacity-0"}`}
+                aria-hidden
+              >
+                {s.icon}
+              </span>
+
+              {/* spacer for opposite side on desktop */}
+              <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
+
+              {/* card */}
+              <article
+                className={`ink-border-lg col-span-2 ml-14 rounded-3xl bg-cream p-6 md:col-span-1 md:ml-0 md:p-8 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
+                style={{
+                  transform: isOn ? "translateY(0) rotate(0)" : `translateY(28px) rotate(${left ? -1.2 : 1.2}deg)`,
+                  opacity: isOn ? 1 : 0,
+                  transition: "transform 700ms cubic-bezier(0.2,0.7,0.2,1), opacity 500ms ease",
+                  transitionDelay: `${i * 60}ms`,
+                }}
+              >
+                <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Checkpoint /{s.n}</span>
+                  <span className="chip">{s.y}</span>
+                </div>
+                <h3 className="mt-3 font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">{s.t}</h3>
+                <div className={`mt-2 inline-block ${cm.chip} ink-border-sm px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-widest`}>{s.s}</div>
+                <p className="mt-4 text-sm leading-relaxed text-ink/75">{s.d}</p>
+                <div className={`mt-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-ink/50 ${left ? "md:justify-end" : ""}`}>
+                  <span>level {i + 1} / {steps.length}</span>
+                  <span className="h-px w-10 bg-ink/30" />
+                  <span>{isOn ? "unlocked ✓" : "locked"}</span>
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
