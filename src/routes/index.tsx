@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import anshAsset from "@/assets/ansh.png.asset.json";
 import towerAsset from "@/assets/clock-tower.png.asset.json";
+import mtwAsset from "@/assets/mtw.jpeg.asset.json";
+import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
 
@@ -175,38 +177,10 @@ function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: ()
       <Sticker className="left-[10%] bottom-24" rot={6} color="rose">36h</Sticker>
       <Sticker className="right-[10%] bottom-32" rot={-8} color="yellow">◆</Sticker>
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-12 pb-20 lg:grid-cols-[1fr,1.35fr] lg:gap-6 lg:pt-16">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-12 pb-20 lg:grid-cols-[1.7fr,0.85fr] lg:gap-10 lg:pt-16">
 
-        {/* LEFT — clock tower illustration */}
-        <div className="relative order-2 hidden h-[70vh] max-h-[640px] items-center justify-center lg:order-1 lg:flex" aria-hidden>
-          {/* glow */}
-          <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
-            <div className="h-[58%] w-[58%] rounded-full bg-orange/45 blur-[80px] animate-glow" />
-          </div>
-          <div ref={towerRef} className="relative h-full w-full will-change-transform">
-            <img
-              src={towerAsset.url}
-              alt="Nashik Clock Tower"
-              loading="eager"
-              decoding="async"
-              className="animate-tower mx-auto h-full w-auto max-h-[640px] object-contain drop-shadow-[8px_14px_0_rgba(24,18,14,0.18)]"
-            />
-            {/* grain overlay */}
-            <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-multiply"
-              style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }}
-            />
-          </div>
-          {/* sticker tag */}
-          <div className="absolute right-2 top-12 ink-border-sm bg-cream px-3 py-1 font-script text-xl text-ink" style={{ transform: "rotate(6deg)" }}>
-            our clock tower <span className="text-orange">★</span>
-          </div>
-          <div className="absolute bottom-8 left-2 ink-border-sm tag-cobalt px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
-            Nashik · Maharashtra
-          </div>
-        </div>
-
-        {/* RIGHT — copy */}
-        <div className="relative order-1 lg:order-2">
+        {/* LEFT — copy (primary) */}
+        <div className="relative">
           <div className="flex flex-wrap gap-2">
             <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
             <span className="chip bg-yellow">Date · Announce Soon</span>
@@ -249,12 +223,35 @@ function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: ()
             ))}
           </div>
         </div>
+
+        {/* RIGHT — tower as small side accent */}
+        <aside className="relative hidden lg:block" aria-hidden>
+          <div className="relative mx-auto h-[420px] w-full max-w-[300px]">
+            <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
+              <div className="h-44 w-44 rounded-full bg-orange/40 blur-3xl animate-glow" />
+            </div>
+            <div ref={towerRef} className="relative h-full w-full will-change-transform">
+              <img
+                src={towerAsset.url}
+                alt="Nashik Clock Tower"
+                loading="eager"
+                decoding="async"
+                className="animate-tower mx-auto h-full w-auto object-contain drop-shadow-[6px_10px_0_rgba(24,18,14,0.18)]"
+              />
+            </div>
+            <div className="absolute -right-2 top-4 ink-border-sm bg-cream px-2.5 py-1 font-script text-base text-ink" style={{ transform: "rotate(6deg)" }}>
+              our clock tower <span className="text-orange">★</span>
+            </div>
+            <div className="absolute -bottom-2 -left-2 ink-border-sm tag-cobalt px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
+              Nashik · Maharashtra
+            </div>
+          </div>
+        </aside>
       </div>
 
-      {/* mobile-only tower under copy */}
-      <div className="relative mx-auto -mt-6 mb-12 grid w-full max-w-sm place-items-center px-6 lg:hidden" aria-hidden>
-        <div className="absolute inset-0 -z-10 grid place-items-center"><div className="h-56 w-56 rounded-full bg-orange/40 blur-2xl" /></div>
-        <img src={towerAsset.url} alt="" className="h-72 w-auto object-contain" loading="lazy" />
+      {/* mobile-only small tower */}
+      <div className="relative mx-auto -mt-6 mb-12 grid w-full max-w-xs place-items-center px-6 lg:hidden" aria-hidden>
+        <img src={towerAsset.url} alt="" className="h-48 w-auto object-contain" loading="lazy" />
       </div>
     </section>
   );
@@ -364,102 +361,121 @@ function Mission() {
   );
 }
 
-/* ============= 3D scrolling timeline ============= */
+/* ============= journey timeline (reliable scroll reveal) ============= */
 
 function Timeline3D() {
   const steps = [
-    { n: "01", t: "Registration Opens", s: "Coming Soon", c: "orange", icon: "▶" },
-    { n: "02", t: "Idea Submission", s: "Coming Soon", c: "yellow", icon: "✎" },
-    { n: "03", t: "Shortlisting", s: "Coming Soon", c: "cobalt", icon: "★" },
-    { n: "04", t: "Hackathon Begins", s: "36 Hours · Live", c: "orange", icon: "⚡" },
-    { n: "05", t: "Mentoring", s: "Expert Sessions", c: "rose", icon: "◆" },
-    { n: "06", t: "Judging", s: "Panel Reviews", c: "cobalt", icon: "⚖" },
-    { n: "07", t: "Winners Announced", s: "Reveal Stage", c: "orange", icon: "♛" },
-    { n: "08", t: "Networking", s: "Founders Mixer", c: "yellow", icon: "✦" },
-    { n: "09", t: "Aftermovie", s: "Coming Soon", c: "rose", icon: "▷" },
+    { n: "01", y: "2023", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Cut our teeth across India's biggest hackathon stages — learning what it really takes to ship under pressure." },
+    { n: "02", y: "2024", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for one of Asia's largest GenAI hackathons — thousands of builders, real outcomes." },
+    { n: "03", y: "2024", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Brought builders together across Nashik — open jams, hands-on workshops and late-night code sessions." },
+    { n: "04", y: "2025", t: "Connected Students & Startups", s: "Mumbai Tech Week · Founder Hours", c: "rose", icon: "★", d: "Opened doors between Nashik students and Maharashtra's startup ecosystem — internships, jobs, mentors." },
+    { n: "05", y: "2025", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "orange", icon: "⚡", d: "Grew from a tiny crew into a distributed network of builders, designers and operators across cities." },
+    { n: "06", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders." },
   ];
 
-  const ref = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const colorMap: Record<string, { chip: string; dot: string }> = {
+    orange: { chip: "bg-orange text-cream", dot: "bg-orange" },
+    yellow: { chip: "bg-yellow text-ink",   dot: "bg-yellow" },
+    cobalt: { chip: "bg-cobalt text-cream", dot: "bg-cobalt" },
+    rose:   { chip: "bg-rose text-ink",     dot: "bg-rose" },
+  };
+
+  const itemsRef = useRef<HTMLLIElement[]>([]);
+  const [revealed, setRevealed] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const onScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = rect.height - vh;
-      const p = Math.min(1, Math.max(0, -rect.top / total));
-      setActive(Math.min(steps.length - 1, Math.floor(p * steps.length)));
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [steps.length]);
+    const io = new IntersectionObserver(
+      (entries) => {
+        setRevealed((prev) => {
+          const next = new Set(prev);
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              const idx = Number((e.target as HTMLElement).dataset.idx);
+              next.add(idx);
+            }
+          }
+          return next;
+        });
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -10% 0px" }
+    );
+    itemsRef.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
 
   return (
-    <section id="timeline" className="mx-auto max-w-7xl px-6 py-28">
+    <section id="timeline" className="relative mx-auto max-w-7xl px-6 py-28">
+      {/* faint side tower watermark — decorative only */}
+      <img
+        src={towerAsset.url}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute -left-16 top-32 hidden h-[520px] w-auto select-none object-contain opacity-[0.07] lg:block"
+      />
+
       <SectionTag n="03">Timeline</SectionTag>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
         <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
           The <span className="tag-cobalt text-cream">level path.</span>
         </h2>
-        <p className="max-w-md text-ink/70">Scroll through 9 checkpoints. Hit start, ship a product, claim the trophy.</p>
+        <p className="max-w-md text-ink/70">Six checkpoints from our first hackathon to launching Build With Nashik. Scroll to unlock each level.</p>
       </div>
 
-      {/* sticky stage with scroll-driven card stack */}
-      <div ref={ref} className="relative mt-16" style={{ height: `${steps.length * 80}vh` }}>
-        <div className="sticky top-20 perspective-stage">
-          <div className="relative mx-auto h-[70vh] max-h-[640px] w-full max-w-3xl">
-            {/* progress rail */}
-            <div className="absolute -left-2 top-0 hidden h-full w-1 bg-ink md:block">
-              <div className="w-full bg-orange transition-all duration-500" style={{ height: `${((active + 1) / steps.length) * 100}%` }} />
-            </div>
-
-            {steps.map((s, i) => {
-              const offset = i - active;
-              const visible = offset >= 0 && offset < 4;
-              const colorMap: Record<string, string> = {
-                orange: "bg-orange text-cream",
-                yellow: "bg-yellow text-ink",
-                cobalt: "bg-cobalt text-cream",
-                rose: "bg-rose text-ink",
-              };
-              return (
-                <article
-                  key={s.n}
-                  className="ink-border-lg tilt-card absolute inset-0 rounded-3xl bg-cream p-8 md:p-12"
-                  style={{
-                    transform: visible
-                      ? `translate3d(0, ${offset * 18}px, ${-offset * 80}px) rotateX(${offset * -3}deg) scale(${1 - offset * 0.04})`
-                      : offset < 0
-                        ? `translate3d(-30%, -40%, 400px) rotate(-8deg)`
-                        : `translate3d(0, 100%, -400px)`,
-                    opacity: visible ? 1 : 0,
-                    zIndex: 100 - i,
-                    pointerEvents: offset === 0 ? "auto" : "none",
-                    transition: "transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 400ms ease",
-                  }}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="font-mono text-xs font-bold uppercase tracking-widest text-ink/60">Checkpoint /{s.n}</div>
-                    <div className={`ink-border-sm grid h-14 w-14 place-items-center rounded-2xl font-display text-2xl ${colorMap[s.c]}`}>{s.icon}</div>
-                  </div>
-                  <h3 className="mt-10 font-chunk text-5xl uppercase leading-none tracking-tight md:text-7xl">{s.t}</h3>
-                  <div className="mt-4 inline-block tag-orange px-3 py-1 font-mono text-sm font-bold uppercase tracking-widest">{s.s}</div>
-                  <div className="mt-8 h-1.5 w-full overflow-hidden rounded-full bg-ink/10">
-                    <div className="h-full bg-ink transition-all duration-700" style={{ width: `${((i + 1) / steps.length) * 100}%` }} />
-                  </div>
-                  <div className="mt-3 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-ink/60">
-                    <span>{i + 1} of {steps.length}</span>
-                    <span>Keep scrolling →</span>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+      <ol className="relative mt-16">
+        {/* center rail */}
+        <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
+          <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / steps.length) * 100}%` }} />
         </div>
-      </div>
+
+        {steps.map((s, i) => {
+          const left = i % 2 === 0;
+          const cm = colorMap[s.c];
+          const isOn = revealed.has(i);
+          return (
+            <li
+              key={s.n}
+              data-idx={i}
+              ref={(el) => { if (el) itemsRef.current[i] = el; }}
+              className="relative grid grid-cols-[3rem,1fr] gap-4 pb-14 md:grid-cols-2 md:gap-10"
+            >
+              {/* node */}
+              <span
+                className={`absolute left-6 top-3 z-10 grid h-12 w-12 -translate-x-1/2 place-items-center rounded-2xl border-2 border-ink font-display text-lg shadow-[3px_3px_0_var(--ink)] md:left-1/2 ${cm.chip} transition-transform duration-500 ${isOn ? "scale-100 rotate-0" : "scale-50 rotate-45 opacity-0"}`}
+                aria-hidden
+              >
+                {s.icon}
+              </span>
+
+              {/* spacer for opposite side on desktop */}
+              <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
+
+              {/* card */}
+              <article
+                className={`ink-border-lg col-span-2 ml-14 rounded-3xl bg-cream p-6 md:col-span-1 md:ml-0 md:p-8 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
+                style={{
+                  transform: isOn ? "translateY(0) rotate(0)" : `translateY(28px) rotate(${left ? -1.2 : 1.2}deg)`,
+                  opacity: isOn ? 1 : 0,
+                  transition: "transform 700ms cubic-bezier(0.2,0.7,0.2,1), opacity 500ms ease",
+                  transitionDelay: `${i * 60}ms`,
+                }}
+              >
+                <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Checkpoint /{s.n}</span>
+                  <span className="chip">{s.y}</span>
+                </div>
+                <h3 className="mt-3 font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">{s.t}</h3>
+                <div className={`mt-2 inline-block ${cm.chip} ink-border-sm px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-widest`}>{s.s}</div>
+                <p className="mt-4 text-sm leading-relaxed text-ink/75">{s.d}</p>
+                <div className={`mt-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-ink/50 ${left ? "md:justify-end" : ""}`}>
+                  <span>level {i + 1} / {steps.length}</span>
+                  <span className="h-px w-10 bg-ink/30" />
+                  <span>{isOn ? "unlocked ✓" : "locked"}</span>
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
@@ -764,50 +780,70 @@ function Team() {
         Meet the <span className="tag-orange text-cream">builders.</span>
       </h2>
 
-      <div className="mt-16 grid gap-6 md:grid-cols-[1.1fr,1.6fr]">
-        {/* founder spotlight */}
+      <div className="mt-16 grid gap-6 lg:grid-cols-2">
+        {/* founder spotlight — Ansh */}
         <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-6 text-cream">
           <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
-
-          <div className="relative mt-6 overflow-hidden rounded-2xl border-2 border-cream bg-ink">
-            <img
-              src={anshAsset.url}
-              alt="Ansh Rajore — Founder of Team Nest"
-              className="aspect-[4/5] w-full object-cover"
-              loading="lazy"
-            />
-            {/* sticker decorations on top of photo */}
-            <div className="absolute -left-3 top-4 ink-border-sm tag-orange px-3 py-1 font-chunk text-lg uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
-              5× hackathon winner
+          <div className="mt-5 flex gap-5">
+            <div className="relative shrink-0">
+              <img
+                src={anshAsset.url}
+                alt="Ansh Rajore — Founder of Team Nest"
+                className="ink-border-sm h-32 w-32 rounded-2xl border-2 border-cream object-cover md:h-40 md:w-40"
+                loading="lazy"
+              />
+              <div className="absolute -left-2 -top-2 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+                5× winner
+              </div>
             </div>
-            <div className="absolute -right-3 bottom-6 ink-border-sm bg-yellow px-3 py-1 font-chunk text-lg uppercase tracking-tight text-ink" style={{ transform: "rotate(4deg)" }}>
-              builds in public
-            </div>
-            <div className="absolute left-4 bottom-4 ink-border-sm bg-cobalt px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-2deg)" }}>
-              Founder · Team Nest
+            <div className="min-w-0">
+              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Ansh Rajore</h3>
+              <p className="font-script text-2xl text-orange">leading the charge</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
+                <span className="chip bg-yellow text-ink">SUNHACKS</span>
+              </div>
             </div>
           </div>
-
-          <h3 className="mt-6 font-chunk text-5xl uppercase leading-none tracking-tight">Ansh Rajore</h3>
-          <p className="font-script text-3xl text-orange">leading the charge</p>
-          <p className="mt-3 text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
-
-          <a href="#" className="ink-border-sm mt-6 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream">
-            LinkedIn →
-          </a>
+          <p className="mt-5 text-sm text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {core.map((m, i) => (
-            <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-5 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
-              <div className="ink-border-sm aspect-square w-full place-items-center rounded-xl bg-yellow grid font-display text-3xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
-                {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
+        {/* builder spotlight — Prathman */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-cream p-6 text-ink">
+          <div className="chip bg-cobalt text-cream">Core Builder</div>
+          <div className="mt-5 flex gap-5">
+            <div className="relative shrink-0">
+              <div className="ink-border-sm grid h-32 w-32 place-items-center rounded-2xl bg-yellow font-display text-5xl text-ink md:h-40 md:w-40">PT</div>
+              <div className="absolute -left-2 -top-2 ink-border-sm bg-ink px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight text-cream" style={{ transform: "rotate(-6deg)" }}>
+                builder
               </div>
-              <div className="mt-4 font-chunk text-lg uppercase leading-tight">{m.n}</div>
-              <div className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
             </div>
-          ))}
+            <div className="min-w-0">
+              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Prathman Tiwari</h3>
+              <p className="font-script text-2xl text-orange">ships the product</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="chip">Engineering</span>
+                <span className="chip bg-orange text-cream">Build</span>
+              </div>
+            </div>
+          </div>
+          <p className="mt-5 text-sm text-ink/75">Builder on the Team Nest core — turning Build With Nashik from a doc into a shipping product. Code, infra, and the late-night problem-solving that holds a hackathon together.</p>
+          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
         </div>
+      </div>
+
+      {/* core crew */}
+      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
+        {core.map((m, i) => (
+          <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
+            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-2xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
+              {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
+            </div>
+            <div className="mt-3 font-chunk text-base uppercase leading-tight">{m.n}</div>
+            <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -1121,6 +1157,7 @@ function Legacy() {
       year: "2024",
       tone: "orange",
       icon: "✦",
+      image: sunhacksAsset.url,
       body: "Successfully organized one of Asia's largest GenAI hackathons — bringing developers, founders, students, mentors and industry experts together to build AI-powered solutions while creating one of the largest innovation communities of the year.",
       tags: ["Large-scale GenAI", "Industry Mentors", "Startup Ecosystem", "AI Builders", "National Reach"],
     },
@@ -1131,6 +1168,7 @@ function Legacy() {
       year: "2024",
       tone: "cobalt",
       icon: "★",
+      image: null as string | null,
       body: "Participated in one of the world's largest global hackathons, collaborating with innovators across continents to solve real-world challenges inspired by space and Earth data.",
       tags: ["Global Innovation", "Team Collaboration", "Problem Solving", "International"],
     },
@@ -1141,6 +1179,7 @@ function Legacy() {
       year: "2025",
       tone: "yellow",
       icon: "◆",
+      image: mtwAsset.url,
       body: "Connected with founders, startups, recruiters and developers while expanding opportunities for students through one of Maharashtra's leading technology events.",
       tags: ["Startup Networking", "Career Opportunities", "Founder Connections", "Developer Community"],
     },
@@ -1187,13 +1226,20 @@ function Legacy() {
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
           {events.map((e, i) => (
             <article key={e.title} className="ink-border-lg group relative flex flex-col overflow-hidden rounded-3xl bg-cream transition-transform hover:-translate-y-1.5">
-              <div className={`relative h-44 ${tones[e.tone]} overflow-hidden`}>
-                <div className="absolute inset-0 opacity-20 mix-blend-multiply"
-                  style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }} />
-                <div className="relative flex h-full items-end justify-between p-6">
-                  <div className="font-display text-7xl leading-none">{e.icon}</div>
+              <div className={`relative h-48 ${tones[e.tone]} overflow-hidden`}>
+                {e.image ? (
+                  <>
+                    <img src={e.image} alt={`${e.title} — Team Nest`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 opacity-20 mix-blend-multiply"
+                    style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }} />
+                )}
+                <div className="relative flex h-full items-end justify-between p-6 text-cream">
+                  <div className={`font-display text-6xl leading-none ${e.image ? "drop-shadow-[2px_2px_0_rgba(0,0,0,0.5)]" : ""}`}>{e.icon}</div>
                   <div className="text-right">
-                    <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-80">/0{i + 1}</div>
+                    <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-90">/0{i + 1}</div>
                     <div className="mt-1 font-chunk text-2xl uppercase">{e.year}</div>
                   </div>
                 </div>
