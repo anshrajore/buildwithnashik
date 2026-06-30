@@ -365,12 +365,11 @@ function Mission() {
 
 function Timeline3D() {
   const steps = [
-    { n: "01", y: "2023", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Cut our teeth across India's biggest hackathon stages — learning what it really takes to ship under pressure." },
-    { n: "02", y: "2024", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for one of Asia's largest GenAI hackathons — thousands of builders, real outcomes." },
-    { n: "03", y: "2024", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Brought builders together across Nashik — open jams, hands-on workshops and late-night code sessions." },
-    { n: "04", y: "2025", t: "Connected Students & Startups", s: "Mumbai Tech Week · Founder Hours", c: "rose", icon: "★", d: "Opened doors between Nashik students and Maharashtra's startup ecosystem — internships, jobs, mentors." },
-    { n: "05", y: "2025", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "orange", icon: "⚡", d: "Grew from a tiny crew into a distributed network of builders, designers and operators across cities." },
-    { n: "06", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders." },
+    { n: "01", y: "2023 — 2026", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Three years on India's biggest hackathon stages — shipping under pressure, winning, losing, and learning what really makes a build community work." },
+    { n: "02", y: "2025", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for Asia's largest GenAI hackathon in 2025 — thousands of builders, real outcomes, a playbook we now bring home to Nashik." },
+    { n: "03", y: "2025", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Workshops, meetups and dev jams across the city — bringing Nashik's builders into one room, one Discord, one shipping culture." },
+    { n: "04", y: "2026", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "rose", icon: "⚡", d: "From a small crew to a multi-city volunteer network — builders, designers and operators rallying around one mission." },
+    { n: "05", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders. This is the level we've been training for." },
   ];
 
   const colorMap: Record<string, { chip: string; dot: string }> = {
@@ -405,20 +404,19 @@ function Timeline3D() {
 
   return (
     <section id="timeline" className="relative mx-auto max-w-7xl px-6 py-28">
-      {/* faint side tower watermark — decorative only */}
-      <img
-        src={towerAsset.url}
-        alt=""
-        aria-hidden
-        className="pointer-events-none absolute -left-16 top-32 hidden h-[520px] w-auto select-none object-contain opacity-[0.07] lg:block"
-      />
+      {/* giant background wordmark — Build With Nashik */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-10 select-none overflow-hidden">
+        <div className="font-display text-[18vw] leading-none tracking-tight text-ink/[0.05] whitespace-nowrap text-center">
+          BUILD&nbsp;WITH&nbsp;NASHIK
+        </div>
+      </div>
 
       <SectionTag n="03">Timeline</SectionTag>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
         <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
           The <span className="tag-cobalt text-cream">level path.</span>
         </h2>
-        <p className="max-w-md text-ink/70">Six checkpoints from our first hackathon to launching Build With Nashik. Scroll to unlock each level.</p>
+        <p className="max-w-md text-ink/70">From 2023 to 2026 — every checkpoint that led to Build With Nashik. Scroll to unlock each level.</p>
       </div>
 
       <ol className="relative mt-16">
@@ -476,6 +474,46 @@ function Timeline3D() {
           );
         })}
       </ol>
+
+      {/* ===== hackathon schedule sub-timeline ===== */}
+      <div className="relative mt-32">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="chip bg-orange text-cream">Hackathon Schedule</div>
+            <h3 className="mt-4 font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
+              The <span className="tag-yellow">36-hour</span> run.
+            </h3>
+            <p className="mt-3 max-w-xl text-ink/70">High-level phases for Build With Nashik 2026. Full 36-hour schedule will be shared soon.</p>
+          </div>
+          <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
+        </div>
+
+        <div className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+          {[
+            { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "bg-orange text-cream" },
+            { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "bg-yellow text-ink" },
+            { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "bg-cobalt text-cream" },
+            { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "bg-rose text-ink" },
+            { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "bg-ink text-cream" },
+            { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "bg-orange text-cream" },
+          ].map((ph, i) => (
+            <div
+              key={ph.p}
+              className="ink-border-sm relative rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1"
+              style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.5}deg)` }}
+            >
+              <div className={`chip ${ph.c} border-ink`}>{ph.p}</div>
+              <div className="mt-3 font-chunk text-lg uppercase leading-tight">{ph.t}</div>
+              <div className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Date · TBA</div>
+              <p className="mt-2 text-xs leading-relaxed text-ink/75">{ph.d}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="ink-border-sm mt-8 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream">
+          <span className="h-2 w-2 animate-blink rounded-full bg-orange" /> Full 36-hour schedule will share soon
+        </div>
+      </div>
     </section>
   );
 }
@@ -766,6 +804,7 @@ function Community() {
 
 function Team() {
   const core = [
+    { n: "Prathman Tiwari", r: "Engineering · Builder" },
     { n: "Vedant Lokhande", r: "Operations" },
     { n: "Aaryan Singh", r: "Tech Lead" },
     { n: "Rupali Patil", r: "Community" },
@@ -780,61 +819,44 @@ function Team() {
         Meet the <span className="tag-orange text-cream">builders.</span>
       </h2>
 
-      <div className="mt-16 grid gap-6 lg:grid-cols-2">
-        {/* founder spotlight — Ansh */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-6 text-cream">
-          <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
-          <div className="mt-5 flex gap-5">
+      <div className="mt-16">
+        {/* founder spotlight — Ansh (only main card) */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-10">
+          <div className="grid items-center gap-8 md:grid-cols-[auto,1fr]">
             <div className="relative shrink-0">
               <img
                 src={anshAsset.url}
                 alt="Ansh Rajore — Founder of Team Nest"
-                className="ink-border-sm h-32 w-32 rounded-2xl border-2 border-cream object-cover md:h-40 md:w-40"
+                className="ink-border-sm h-44 w-44 rounded-2xl border-2 border-cream object-cover md:h-56 md:w-56"
                 loading="lazy"
               />
-              <div className="absolute -left-2 -top-2 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
                 5× winner
               </div>
             </div>
             <div className="min-w-0">
-              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Ansh Rajore</h3>
-              <p className="font-script text-2xl text-orange">leading the charge</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
+              <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
+              <h3 className="mt-3 font-chunk text-4xl uppercase leading-none tracking-tight md:text-6xl">Ansh Rajore</h3>
+              <p className="font-script text-3xl text-orange">leading the charge</p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
                 <span className="chip bg-yellow text-ink">SUNHACKS</span>
+                <span className="chip bg-rose text-ink">Nashik</span>
               </div>
+              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+              <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
             </div>
           </div>
-          <p className="mt-5 text-sm text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
-          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
-        </div>
-
-        {/* builder spotlight — Prathman */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-cream p-6 text-ink">
-          <div className="chip bg-cobalt text-cream">Core Builder</div>
-          <div className="mt-5 flex gap-5">
-            <div className="relative shrink-0">
-              <div className="ink-border-sm grid h-32 w-32 place-items-center rounded-2xl bg-yellow font-display text-5xl text-ink md:h-40 md:w-40">PT</div>
-              <div className="absolute -left-2 -top-2 ink-border-sm bg-ink px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight text-cream" style={{ transform: "rotate(-6deg)" }}>
-                builder
-              </div>
-            </div>
-            <div className="min-w-0">
-              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Prathman Tiwari</h3>
-              <p className="font-script text-2xl text-orange">ships the product</p>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <span className="chip">Engineering</span>
-                <span className="chip bg-orange text-cream">Build</span>
-              </div>
-            </div>
-          </div>
-          <p className="mt-5 text-sm text-ink/75">Builder on the Team Nest core — turning Build With Nashik from a doc into a shipping product. Code, infra, and the late-night problem-solving that holds a hackathon together.</p>
-          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
         </div>
       </div>
 
+      <div className="mt-10 flex items-center gap-3">
+        <span className="chip">Core Team</span>
+        <span className="h-0.5 flex-1 bg-ink/15" />
+      </div>
+
       {/* core crew */}
-      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
         {core.map((m, i) => (
           <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
             <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-2xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
