@@ -177,38 +177,10 @@ function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: ()
       <Sticker className="left-[10%] bottom-24" rot={6} color="rose">36h</Sticker>
       <Sticker className="right-[10%] bottom-32" rot={-8} color="yellow">◆</Sticker>
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-12 pb-20 lg:grid-cols-[1fr,1.35fr] lg:gap-6 lg:pt-16">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-12 pb-20 lg:grid-cols-[1.7fr,0.85fr] lg:gap-10 lg:pt-16">
 
-        {/* LEFT — clock tower illustration */}
-        <div className="relative order-2 hidden h-[70vh] max-h-[640px] items-center justify-center lg:order-1 lg:flex" aria-hidden>
-          {/* glow */}
-          <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
-            <div className="h-[58%] w-[58%] rounded-full bg-orange/45 blur-[80px] animate-glow" />
-          </div>
-          <div ref={towerRef} className="relative h-full w-full will-change-transform">
-            <img
-              src={towerAsset.url}
-              alt="Nashik Clock Tower"
-              loading="eager"
-              decoding="async"
-              className="animate-tower mx-auto h-full w-auto max-h-[640px] object-contain drop-shadow-[8px_14px_0_rgba(24,18,14,0.18)]"
-            />
-            {/* grain overlay */}
-            <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-multiply"
-              style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")" }}
-            />
-          </div>
-          {/* sticker tag */}
-          <div className="absolute right-2 top-12 ink-border-sm bg-cream px-3 py-1 font-script text-xl text-ink" style={{ transform: "rotate(6deg)" }}>
-            our clock tower <span className="text-orange">★</span>
-          </div>
-          <div className="absolute bottom-8 left-2 ink-border-sm tag-cobalt px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
-            Nashik · Maharashtra
-          </div>
-        </div>
-
-        {/* RIGHT — copy */}
-        <div className="relative order-1 lg:order-2">
+        {/* LEFT — copy (primary) */}
+        <div className="relative">
           <div className="flex flex-wrap gap-2">
             <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
             <span className="chip bg-yellow">Date · Announce Soon</span>
@@ -251,12 +223,35 @@ function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: ()
             ))}
           </div>
         </div>
+
+        {/* RIGHT — tower as small side accent */}
+        <aside className="relative hidden lg:block" aria-hidden>
+          <div className="relative mx-auto h-[420px] w-full max-w-[300px]">
+            <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
+              <div className="h-44 w-44 rounded-full bg-orange/40 blur-3xl animate-glow" />
+            </div>
+            <div ref={towerRef} className="relative h-full w-full will-change-transform">
+              <img
+                src={towerAsset.url}
+                alt="Nashik Clock Tower"
+                loading="eager"
+                decoding="async"
+                className="animate-tower mx-auto h-full w-auto object-contain drop-shadow-[6px_10px_0_rgba(24,18,14,0.18)]"
+              />
+            </div>
+            <div className="absolute -right-2 top-4 ink-border-sm bg-cream px-2.5 py-1 font-script text-base text-ink" style={{ transform: "rotate(6deg)" }}>
+              our clock tower <span className="text-orange">★</span>
+            </div>
+            <div className="absolute -bottom-2 -left-2 ink-border-sm tag-cobalt px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
+              Nashik · Maharashtra
+            </div>
+          </div>
+        </aside>
       </div>
 
-      {/* mobile-only tower under copy */}
-      <div className="relative mx-auto -mt-6 mb-12 grid w-full max-w-sm place-items-center px-6 lg:hidden" aria-hidden>
-        <div className="absolute inset-0 -z-10 grid place-items-center"><div className="h-56 w-56 rounded-full bg-orange/40 blur-2xl" /></div>
-        <img src={towerAsset.url} alt="" className="h-72 w-auto object-contain" loading="lazy" />
+      {/* mobile-only small tower */}
+      <div className="relative mx-auto -mt-6 mb-12 grid w-full max-w-xs place-items-center px-6 lg:hidden" aria-hidden>
+        <img src={towerAsset.url} alt="" className="h-48 w-auto object-contain" loading="lazy" />
       </div>
     </section>
   );
