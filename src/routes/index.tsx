@@ -856,7 +856,7 @@ function Team() {
       </div>
 
       {/* core crew */}
-      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
         {core.map((m, i) => (
           <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
             <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-2xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
