@@ -780,50 +780,70 @@ function Team() {
         Meet the <span className="tag-orange text-cream">builders.</span>
       </h2>
 
-      <div className="mt-16 grid gap-6 md:grid-cols-[1.1fr,1.6fr]">
-        {/* founder spotlight */}
+      <div className="mt-16 grid gap-6 lg:grid-cols-2">
+        {/* founder spotlight — Ansh */}
         <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-6 text-cream">
           <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
-
-          <div className="relative mt-6 overflow-hidden rounded-2xl border-2 border-cream bg-ink">
-            <img
-              src={anshAsset.url}
-              alt="Ansh Rajore — Founder of Team Nest"
-              className="aspect-[4/5] w-full object-cover"
-              loading="lazy"
-            />
-            {/* sticker decorations on top of photo */}
-            <div className="absolute -left-3 top-4 ink-border-sm tag-orange px-3 py-1 font-chunk text-lg uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
-              5× hackathon winner
+          <div className="mt-5 flex gap-5">
+            <div className="relative shrink-0">
+              <img
+                src={anshAsset.url}
+                alt="Ansh Rajore — Founder of Team Nest"
+                className="ink-border-sm h-32 w-32 rounded-2xl border-2 border-cream object-cover md:h-40 md:w-40"
+                loading="lazy"
+              />
+              <div className="absolute -left-2 -top-2 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+                5× winner
+              </div>
             </div>
-            <div className="absolute -right-3 bottom-6 ink-border-sm bg-yellow px-3 py-1 font-chunk text-lg uppercase tracking-tight text-ink" style={{ transform: "rotate(4deg)" }}>
-              builds in public
-            </div>
-            <div className="absolute left-4 bottom-4 ink-border-sm bg-cobalt px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-2deg)" }}>
-              Founder · Team Nest
+            <div className="min-w-0">
+              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Ansh Rajore</h3>
+              <p className="font-script text-2xl text-orange">leading the charge</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
+                <span className="chip bg-yellow text-ink">SUNHACKS</span>
+              </div>
             </div>
           </div>
-
-          <h3 className="mt-6 font-chunk text-5xl uppercase leading-none tracking-tight">Ansh Rajore</h3>
-          <p className="font-script text-3xl text-orange">leading the charge</p>
-          <p className="mt-3 text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
-
-          <a href="#" className="ink-border-sm mt-6 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream">
-            LinkedIn →
-          </a>
+          <p className="mt-5 text-sm text-cream/80">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {core.map((m, i) => (
-            <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-5 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
-              <div className="ink-border-sm aspect-square w-full place-items-center rounded-xl bg-yellow grid font-display text-3xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
-                {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
+        {/* builder spotlight — Prathman */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-cream p-6 text-ink">
+          <div className="chip bg-cobalt text-cream">Core Builder</div>
+          <div className="mt-5 flex gap-5">
+            <div className="relative shrink-0">
+              <div className="ink-border-sm grid h-32 w-32 place-items-center rounded-2xl bg-yellow font-display text-5xl text-ink md:h-40 md:w-40">PT</div>
+              <div className="absolute -left-2 -top-2 ink-border-sm bg-ink px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight text-cream" style={{ transform: "rotate(-6deg)" }}>
+                builder
               </div>
-              <div className="mt-4 font-chunk text-lg uppercase leading-tight">{m.n}</div>
-              <div className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
             </div>
-          ))}
+            <div className="min-w-0">
+              <h3 className="font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">Prathman Tiwari</h3>
+              <p className="font-script text-2xl text-orange">ships the product</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="chip">Engineering</span>
+                <span className="chip bg-orange text-cream">Build</span>
+              </div>
+            </div>
+          </div>
+          <p className="mt-5 text-sm text-ink/75">Builder on the Team Nest core — turning Build With Nashik from a doc into a shipping product. Code, infra, and the late-night problem-solving that holds a hackathon together.</p>
+          <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
         </div>
+      </div>
+
+      {/* core crew */}
+      <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
+        {core.map((m, i) => (
+          <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
+            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-2xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
+              {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
+            </div>
+            <div className="mt-3 font-chunk text-base uppercase leading-tight">{m.n}</div>
+            <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
+          </div>
+        ))}
       </div>
     </section>
   );
