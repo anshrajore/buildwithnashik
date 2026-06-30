@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import anshAsset from "@/assets/ansh.png.asset.json";
 import towerAsset from "@/assets/clock-tower.png.asset.json";
+import mtwAsset from "@/assets/mtw.jpeg.asset.json";
+import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
 
