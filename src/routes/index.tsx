@@ -365,12 +365,11 @@ function Mission() {
 
 function Timeline3D() {
   const steps = [
-    { n: "01", y: "2023", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Cut our teeth across India's biggest hackathon stages — learning what it really takes to ship under pressure." },
-    { n: "02", y: "2024", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for one of Asia's largest GenAI hackathons — thousands of builders, real outcomes." },
-    { n: "03", y: "2024", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Brought builders together across Nashik — open jams, hands-on workshops and late-night code sessions." },
-    { n: "04", y: "2025", t: "Connected Students & Startups", s: "Mumbai Tech Week · Founder Hours", c: "rose", icon: "★", d: "Opened doors between Nashik students and Maharashtra's startup ecosystem — internships, jobs, mentors." },
-    { n: "05", y: "2025", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "orange", icon: "⚡", d: "Grew from a tiny crew into a distributed network of builders, designers and operators across cities." },
-    { n: "06", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders." },
+    { n: "01", y: "2023 — 2026", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Three years on India's biggest hackathon stages — shipping under pressure, winning, losing, and learning what really makes a build community work." },
+    { n: "02", y: "2025", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for Asia's largest GenAI hackathon in 2025 — thousands of builders, real outcomes, a playbook we now bring home to Nashik." },
+    { n: "03", y: "2025", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Workshops, meetups and dev jams across the city — bringing Nashik's builders into one room, one Discord, one shipping culture." },
+    { n: "04", y: "2026", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "rose", icon: "⚡", d: "From a small crew to a multi-city volunteer network — builders, designers and operators rallying around one mission." },
+    { n: "05", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders. This is the level we've been training for." },
   ];
 
   const colorMap: Record<string, { chip: string; dot: string }> = {
