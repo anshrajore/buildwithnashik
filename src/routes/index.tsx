@@ -712,20 +712,64 @@ function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
         </h2>
         <p className="mt-4 max-w-xl text-ink/80">Different tiers, different stages. Pick the level that fits your brand — every inquiry reaches Team Nest directly.</p>
 
-        {/* TITLE — single hero card */}
+        {/* TITLE — editorial hero card (professional, not bubbly) */}
         <button
           onClick={() => onSponsor("Title")}
-          className="ink-border-lg group relative mt-12 block w-full overflow-hidden rounded-3xl bg-ink p-1 text-cream"
+          className="ink-border-lg group relative mt-12 block w-full overflow-hidden rounded-3xl bg-ink text-left text-cream"
         >
-          <div className="relative grid min-h-[220px] place-items-center rounded-[20px] bg-gradient-to-br from-[#2a1d0a] via-ink to-[#2a1d0a] px-8 py-12">
-            <div className="absolute -inset-1 -z-0 opacity-40 blur-3xl"
-              style={{ background: "radial-gradient(circle at 30% 50%, #f5d76e, transparent 60%), radial-gradient(circle at 70% 50%, #b8860b, transparent 60%)" }} />
-            <div className="relative text-center">
-              <div className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-yellow/80">— Tier 01 · Headline —</div>
-              <div className="mt-3 font-display text-5xl uppercase tracking-tight text-gold-shimmer md:text-7xl">Title Sponsor</div>
-              <div className="mt-4 font-script text-3xl text-cream">your brand · everywhere.</div>
-              <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-yellow/60 bg-ink/40 px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-yellow transition-transform group-hover:-translate-y-0.5">
-                Inquire for headline tier →
+          <div className="relative grid gap-8 px-8 py-10 md:grid-cols-[1.6fr,1fr] md:px-12 md:py-14">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-60"
+              style={{ background: "radial-gradient(circle at 15% 30%, rgba(245,215,110,0.18), transparent 55%), radial-gradient(circle at 85% 70%, rgba(184,134,11,0.25), transparent 60%)" }}
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 top-auto h-px bg-gradient-to-r from-transparent via-yellow/60 to-transparent"
+            />
+
+            <div className="relative">
+              <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-yellow/80">
+                <span className="h-px w-6 bg-yellow/60" />
+                Tier 01 · Presenting Partner
+              </div>
+              <h3 className="mt-4 font-chunk text-5xl uppercase leading-[0.9] tracking-tight md:text-7xl">
+                Title <span className="text-gold-shimmer">Sponsor</span>
+              </h3>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/75 md:text-base">
+                Own the event. Your brand shares the wordmark, the stage, the certificates and every piece of media Build With Nashik 2026 ships — for the full 36 hours and beyond.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream/70">
+                {["Naming rights", "Stage keynote", "Wordmark placement", "Press & PR", "Booth + demo zone", "Recruit access"].map((b) => (
+                  <span key={b} className="rounded-full border border-yellow/40 bg-cream/5 px-2.5 py-1">{b}</span>
+                ))}
+              </div>
+              <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-yellow/70 bg-yellow/10 px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-yellow transition-transform group-hover:-translate-y-0.5">
+                Inquire for Title tier <span>→</span>
+              </div>
+            </div>
+
+            {/* right — logo lockup preview */}
+            <div className="relative grid place-items-center">
+              <div className="relative w-full max-w-[280px] rounded-2xl border border-yellow/25 bg-cream/[0.03] p-6">
+                <div className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-yellow/70">Wordmark lockup preview</div>
+                <div className="mt-4 flex items-baseline gap-2">
+                  <span className="font-chunk text-3xl uppercase tracking-tight text-cream">Build/Nashik</span>
+                  <span className="font-mono text-[9px] text-cream/50">2026</span>
+                </div>
+                <div className="my-4 h-px w-full bg-yellow/20" />
+                <div className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-yellow/70">Presented by</div>
+                <div className="mt-2 grid h-16 place-items-center rounded-lg border border-dashed border-yellow/40 font-mono text-[10px] uppercase tracking-widest text-yellow/80">
+                  your logo here
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-1.5 font-mono text-[8px] uppercase tracking-widest text-cream/50">
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Web</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Stage</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Merch</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Press</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Social</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Video</span>
+                </div>
               </div>
             </div>
           </div>
@@ -750,6 +794,33 @@ function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
             <SponsorCard key={t} onClick={() => onSponsor(t)} tier={t} tone="rose" size="sm" />
           ))}
         </div>
+
+        {/* CATEGORY partners — extra logo slots */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          {[
+            { t: "Venue Partner", s: "host the 36 hours" },
+            { t: "Food & Beverage", s: "fuel 500 builders" },
+            { t: "Travel Partner", s: "get teams to Nashik" },
+            { t: "Media Partner", s: "tell the story" },
+            { t: "Swag Partner", s: "hoodies · tees · stickers" },
+            { t: "Hardware Partner", s: "kits · devices · gear" },
+            { t: "Prize Partner", s: "back a track prize" },
+            { t: "Startup Zone", s: "showcase your product" },
+          ].map((x) => (
+            <button
+              key={x.t}
+              onClick={() => onSponsor(x.t.replace(" Partner", ""))}
+              className="ink-border-sm group flex w-full items-center justify-between gap-3 rounded-2xl bg-cream p-4 text-left transition-transform hover:-translate-y-1"
+            >
+              <div>
+                <div className="font-chunk text-base uppercase leading-none">{x.t}</div>
+                <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{x.s}</div>
+              </div>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border-2 border-dashed border-ink/30 font-mono text-[9px] uppercase tracking-widest text-ink/40 group-hover:border-orange group-hover:text-orange">logo</span>
+            </button>
+          ))}
+        </div>
+
 
         {/* COMMUNITY pills */}
         <div className="mt-8 flex flex-wrap gap-2">
