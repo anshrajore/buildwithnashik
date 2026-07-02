@@ -1341,7 +1341,7 @@ function Legacy() {
 
 /* ============= join team CTA ============= */
 
-function JoinTeam() {
+function JoinTeam({ onVolunteer, onSponsor }: { onVolunteer: () => void; onSponsor: () => void }) {
   return (
     <section className="relative overflow-hidden border-y-2 border-ink bg-yellow py-24">
       {/* sticker decorations */}
@@ -1364,9 +1364,9 @@ function JoinTeam() {
               Help organize one of Maharashtra's fastest-growing developer communities. Whether you're a designer, developer, marketer, photographer, content creator or community builder — there's a place for you.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">Join Team →</a>
-              <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">Become Volunteer →</a>
-              <a href="#sponsors" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">Partner With Us →</a>
+              <button onClick={onVolunteer} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">Join Team →</button>
+              <button onClick={onVolunteer} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">Become Volunteer →</button>
+              <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5">Partner With Us →</button>
             </div>
           </div>
 
