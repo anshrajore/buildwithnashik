@@ -956,21 +956,10 @@ function Team() {
       </h2>
 
       <div className="mt-16">
-        {/* founder spotlight — Ansh (only main card) */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-10">
-          <div className="grid items-center gap-8 md:grid-cols-[auto,1fr]">
-            <div className="relative shrink-0">
-              <img
-                src={anshAsset.url}
-                alt="Ansh Rajore — Founder of Team Nest"
-                className="ink-border-sm h-44 w-44 rounded-2xl border-2 border-cream object-cover md:h-56 md:w-56"
-                loading="lazy"
-              />
-              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
-                5× winner
-              </div>
-            </div>
-            <div className="min-w-0">
+        {/* founder spotlight — content LEFT, image RIGHT */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-12">
+          <div className="grid items-center gap-10 md:grid-cols-[1fr,auto]">
+            <div className="min-w-0 md:order-1">
               <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
               <h3 className="mt-3 font-chunk text-4xl uppercase leading-none tracking-tight md:text-6xl">Ansh Rajore</h3>
               <p className="font-script text-3xl text-orange">leading the charge</p>
@@ -979,27 +968,49 @@ function Team() {
                 <span className="chip bg-yellow text-ink">SUNHACKS</span>
                 <span className="chip bg-rose text-ink">Nashik</span>
               </div>
-              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">
+                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.
+              </p>
               <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
+            </div>
+
+            <div className="relative shrink-0 md:order-2">
+              <img
+                src={anshAsset.url}
+                alt="Ansh Rajore — Founder of Team Nest"
+                className="ink-border-sm h-52 w-52 rounded-2xl border-2 border-cream object-cover md:h-64 md:w-64"
+                loading="lazy"
+              />
+              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+                5× winner
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-10 flex items-center gap-3">
+      <div className="mt-12 flex items-center gap-3">
         <span className="chip">Core Team</span>
         <span className="h-0.5 flex-1 bg-ink/15" />
       </div>
 
-      {/* core crew */}
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
+      {/* core crew — larger cards */}
+      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {core.map((m, i) => (
-          <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
-            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-2xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
+          <div
+            key={m.n}
+            className="ink-border-lg group rounded-3xl bg-cream p-6 transition-transform hover:-translate-y-1.5"
+            style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.5}deg)` }}
+          >
+            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-2xl bg-yellow font-display text-6xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream md:text-7xl">
               {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
             </div>
-            <div className="mt-3 font-chunk text-base uppercase leading-tight">{m.n}</div>
-            <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="chip">/{String(i + 1).padStart(2, "0")}</span>
+              <span className="h-px flex-1 bg-ink/15" />
+            </div>
+            <div className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{m.n}</div>
+            <div className="mt-1 font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
           </div>
         ))}
       </div>
