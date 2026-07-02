@@ -25,6 +25,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [openReg, setOpenReg] = useState(false);
   const [openSponsor, setOpenSponsor] = useState(false);
+  const [openVol, setOpenVol] = useState(false);
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
 
   function openSponsorFor(tier?: string) {
@@ -50,14 +51,15 @@ function Home() {
       <WhySponsor onSponsor={() => openSponsorFor("Title")} />
       <Community />
       <Team />
-      <JoinTeam />
+      <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
       <Venue onSponsor={() => openSponsorFor("Venue")} />
       <Faq />
-      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
       <Footer />
 
       <RegisterDialog open={openReg} onClose={() => setOpenReg(false)} />
       <SponsorDialog open={openSponsor} onClose={() => setOpenSponsor(false)} defaultTier={sponsorTier} />
+      <VolunteerDialog open={openVol} onClose={() => setOpenVol(false)} />
     </div>
   );
 }
