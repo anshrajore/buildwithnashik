@@ -478,48 +478,112 @@ function Timeline3D() {
         })}
       </ol>
 
-      {/* ===== hackathon schedule sub-timeline ===== */}
-      <div className="relative mt-32">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div className="chip bg-orange text-cream">Hackathon Schedule</div>
-            <h3 className="mt-4 font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
-              The <span className="tag-yellow">36-hour</span> run.
-            </h3>
-            <p className="mt-3 max-w-xl text-ink/70">High-level phases for Build With Nashik 2026. Full 36-hour schedule will be shared soon.</p>
-          </div>
-          <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
-        </div>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {[
-            { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "bg-orange text-cream" },
-            { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "bg-yellow text-ink" },
-            { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "bg-cobalt text-cream" },
-            { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "bg-rose text-ink" },
-            { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "bg-ink text-cream" },
-            { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "bg-orange text-cream" },
-          ].map((ph, i) => (
-            <div
-              key={ph.p}
-              className="ink-border-sm relative rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1"
-              style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.5}deg)` }}
-            >
-              <div className={`chip ${ph.c} border-ink`}>{ph.p}</div>
-              <div className="mt-3 font-chunk text-lg uppercase leading-tight">{ph.t}</div>
-              <div className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Date · TBA</div>
-              <p className="mt-2 text-xs leading-relaxed text-ink/75">{ph.d}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="ink-border-sm mt-8 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream">
-          <span className="h-2 w-2 animate-blink rounded-full bg-orange" /> Full 36-hour schedule will share soon
-        </div>
-      </div>
+      {/* ===== hackathon schedule sub-timeline (scroll reveal) ===== */}
+      <ScheduleTimeline />
     </section>
   );
 }
+
+function ScheduleTimeline() {
+  const phases = [
+    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "orange", icon: "▶" },
+    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "yellow", icon: "✕" },
+    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "cobalt", icon: "✎" },
+    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "rose", icon: "★" },
+    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "orange", icon: "⚡" },
+    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "cobalt", icon: "♛" },
+  ];
+  const colorMap: Record<string, { chip: string; ring: string }> = {
+    orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]" },
+    yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]" },
+    cobalt: { chip: "bg-cobalt text-cream", ring: "shadow-[6px_6px_0_var(--cobalt)]" },
+    rose:   { chip: "bg-rose text-ink",     ring: "shadow-[6px_6px_0_var(--rose)]" },
+  };
+
+  const itemsRef = useRef<HTMLLIElement[]>([]);
+  const [revealed, setRevealed] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      setRevealed((prev) => {
+        const next = new Set(prev);
+        for (const e of entries) {
+          if (e.isIntersecting) next.add(Number((e.target as HTMLElement).dataset.idx));
+        }
+        return next;
+      });
+    }, { threshold: 0.3, rootMargin: "0px 0px -8% 0px" });
+    itemsRef.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div className="relative mt-32">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div className="chip bg-orange text-cream">Hackathon Schedule</div>
+          <h3 className="mt-4 font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
+            The <span className="tag-yellow">36-hour</span> run.
+          </h3>
+          <p className="mt-3 max-w-xl text-ink/70">High-level phases for Build With Nashik 2026. Full 36-hour schedule will be shared soon.</p>
+        </div>
+        <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
+      </div>
+
+      <ol className="relative mt-12">
+        {/* horizontal rail on md+, vertical on mobile */}
+        <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
+          <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / phases.length) * 100}%` }} />
+        </div>
+
+        {phases.map((ph, i) => {
+          const left = i % 2 === 0;
+          const cm = colorMap[ph.c];
+          const isOn = revealed.has(i);
+          return (
+            <li
+              key={ph.p}
+              data-idx={i}
+              ref={(el) => { if (el) itemsRef.current[i] = el; }}
+              className="relative grid grid-cols-[3rem,1fr] gap-4 pb-10 md:grid-cols-2 md:gap-10"
+            >
+              <span
+                className={`absolute left-6 top-3 z-10 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-2xl border-2 border-ink font-display text-base shadow-[3px_3px_0_var(--ink)] md:left-1/2 ${cm.chip} transition-all duration-500 ${isOn ? "scale-100 rotate-0 opacity-100" : "scale-50 rotate-45 opacity-0"}`}
+                aria-hidden
+              >
+                {ph.icon}
+              </span>
+              <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
+              <article
+                className={`ink-border-lg col-span-2 ml-14 rounded-2xl bg-cream p-5 md:col-span-1 md:ml-0 md:p-6 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
+                style={{
+                  transform: isOn ? "translateY(0) rotate(0)" : `translateY(24px) rotate(${left ? -1 : 1}deg)`,
+                  opacity: isOn ? 1 : 0,
+                  transition: "transform 700ms cubic-bezier(0.2,0.7,0.2,1), opacity 500ms ease",
+                  transitionDelay: `${i * 70}ms`,
+                }}
+              >
+                <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
+                  <span className={`ink-border-sm inline-block px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${cm.chip}`}>{ph.p}</span>
+                  <span className="chip">Date · TBA</span>
+                </div>
+                <h4 className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{ph.t}</h4>
+                <p className="mt-2 text-sm text-ink/75">{ph.d}</p>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="ink-border-sm mt-6 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream">
+        <span className="h-2 w-2 animate-blink rounded-full bg-orange" /> Full 36-hour schedule will share soon
+      </div>
+    </div>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _ScheduleTimelineAnchor() { return null;
 
 /* ============= tracks ============= */
 
