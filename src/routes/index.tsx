@@ -7,6 +7,7 @@ import mtwAsset from "@/assets/mtw.jpeg.asset.json";
 import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
+import { VolunteerDialog } from "@/components/VolunteerDialog";
 
 
 export const Route = createFileRoute("/")({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [openReg, setOpenReg] = useState(false);
   const [openSponsor, setOpenSponsor] = useState(false);
+  const [openVol, setOpenVol] = useState(false);
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
 
   function openSponsorFor(tier?: string) {
@@ -49,14 +51,15 @@ function Home() {
       <WhySponsor onSponsor={() => openSponsorFor("Title")} />
       <Community />
       <Team />
-      <JoinTeam />
+      <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
       <Venue onSponsor={() => openSponsorFor("Venue")} />
       <Faq />
-      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
       <Footer />
 
       <RegisterDialog open={openReg} onClose={() => setOpenReg(false)} />
       <SponsorDialog open={openSponsor} onClose={() => setOpenSponsor(false)} defaultTier={sponsorTier} />
+      <VolunteerDialog open={openVol} onClose={() => setOpenVol(false)} />
     </div>
   );
 }
@@ -475,48 +478,110 @@ function Timeline3D() {
         })}
       </ol>
 
-      {/* ===== hackathon schedule sub-timeline ===== */}
-      <div className="relative mt-32">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div className="chip bg-orange text-cream">Hackathon Schedule</div>
-            <h3 className="mt-4 font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
-              The <span className="tag-yellow">36-hour</span> run.
-            </h3>
-            <p className="mt-3 max-w-xl text-ink/70">High-level phases for Build With Nashik 2026. Full 36-hour schedule will be shared soon.</p>
-          </div>
-          <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
-        </div>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {[
-            { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "bg-orange text-cream" },
-            { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "bg-yellow text-ink" },
-            { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "bg-cobalt text-cream" },
-            { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "bg-rose text-ink" },
-            { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "bg-ink text-cream" },
-            { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "bg-orange text-cream" },
-          ].map((ph, i) => (
-            <div
-              key={ph.p}
-              className="ink-border-sm relative rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1"
-              style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.5}deg)` }}
-            >
-              <div className={`chip ${ph.c} border-ink`}>{ph.p}</div>
-              <div className="mt-3 font-chunk text-lg uppercase leading-tight">{ph.t}</div>
-              <div className="mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Date · TBA</div>
-              <p className="mt-2 text-xs leading-relaxed text-ink/75">{ph.d}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="ink-border-sm mt-8 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream">
-          <span className="h-2 w-2 animate-blink rounded-full bg-orange" /> Full 36-hour schedule will share soon
-        </div>
-      </div>
+      {/* ===== hackathon schedule sub-timeline (scroll reveal) ===== */}
+      <ScheduleTimeline />
     </section>
   );
 }
+
+function ScheduleTimeline() {
+  const phases = [
+    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "orange", icon: "▶" },
+    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "yellow", icon: "✕" },
+    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "cobalt", icon: "✎" },
+    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "rose", icon: "★" },
+    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "orange", icon: "⚡" },
+    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "cobalt", icon: "♛" },
+  ];
+  const colorMap: Record<string, { chip: string; ring: string }> = {
+    orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]" },
+    yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]" },
+    cobalt: { chip: "bg-cobalt text-cream", ring: "shadow-[6px_6px_0_var(--cobalt)]" },
+    rose:   { chip: "bg-rose text-ink",     ring: "shadow-[6px_6px_0_var(--rose)]" },
+  };
+
+  const itemsRef = useRef<HTMLLIElement[]>([]);
+  const [revealed, setRevealed] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      setRevealed((prev) => {
+        const next = new Set(prev);
+        for (const e of entries) {
+          if (e.isIntersecting) next.add(Number((e.target as HTMLElement).dataset.idx));
+        }
+        return next;
+      });
+    }, { threshold: 0.3, rootMargin: "0px 0px -8% 0px" });
+    itemsRef.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div className="relative mt-32">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div className="chip bg-orange text-cream">Hackathon Schedule</div>
+          <h3 className="mt-4 font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
+            The <span className="tag-yellow">36-hour</span> run.
+          </h3>
+          <p className="mt-3 max-w-xl text-ink/70">High-level phases for Build With Nashik 2026. Full 36-hour schedule will be shared soon.</p>
+        </div>
+        <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
+      </div>
+
+      <ol className="relative mt-12">
+        {/* horizontal rail on md+, vertical on mobile */}
+        <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
+          <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / phases.length) * 100}%` }} />
+        </div>
+
+        {phases.map((ph, i) => {
+          const left = i % 2 === 0;
+          const cm = colorMap[ph.c];
+          const isOn = revealed.has(i);
+          return (
+            <li
+              key={ph.p}
+              data-idx={i}
+              ref={(el) => { if (el) itemsRef.current[i] = el; }}
+              className="relative grid grid-cols-[3rem,1fr] gap-4 pb-10 md:grid-cols-2 md:gap-10"
+            >
+              <span
+                className={`absolute left-6 top-3 z-10 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-2xl border-2 border-ink font-display text-base shadow-[3px_3px_0_var(--ink)] md:left-1/2 ${cm.chip} transition-all duration-500 ${isOn ? "scale-100 rotate-0 opacity-100" : "scale-50 rotate-45 opacity-0"}`}
+                aria-hidden
+              >
+                {ph.icon}
+              </span>
+              <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
+              <article
+                className={`ink-border-lg col-span-2 ml-14 rounded-2xl bg-cream p-5 md:col-span-1 md:ml-0 md:p-6 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
+                style={{
+                  transform: isOn ? "translateY(0) rotate(0)" : `translateY(24px) rotate(${left ? -1 : 1}deg)`,
+                  opacity: isOn ? 1 : 0,
+                  transition: "transform 700ms cubic-bezier(0.2,0.7,0.2,1), opacity 500ms ease",
+                  transitionDelay: `${i * 70}ms`,
+                }}
+              >
+                <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
+                  <span className={`ink-border-sm inline-block px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${cm.chip}`}>{ph.p}</span>
+                  <span className="chip">Date · TBA</span>
+                </div>
+                <h4 className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{ph.t}</h4>
+                <p className="mt-2 text-sm text-ink/75">{ph.d}</p>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="ink-border-sm mt-6 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream">
+        <span className="h-2 w-2 animate-blink rounded-full bg-orange" /> Full 36-hour schedule will share soon
+      </div>
+    </div>
+  );
+}
+
 
 /* ============= tracks ============= */
 
@@ -647,20 +712,64 @@ function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
         </h2>
         <p className="mt-4 max-w-xl text-ink/80">Different tiers, different stages. Pick the level that fits your brand — every inquiry reaches Team Nest directly.</p>
 
-        {/* TITLE — single hero card */}
+        {/* TITLE — editorial hero card (professional, not bubbly) */}
         <button
           onClick={() => onSponsor("Title")}
-          className="ink-border-lg group relative mt-12 block w-full overflow-hidden rounded-3xl bg-ink p-1 text-cream"
+          className="ink-border-lg group relative mt-12 block w-full overflow-hidden rounded-3xl bg-ink text-left text-cream"
         >
-          <div className="relative grid min-h-[220px] place-items-center rounded-[20px] bg-gradient-to-br from-[#2a1d0a] via-ink to-[#2a1d0a] px-8 py-12">
-            <div className="absolute -inset-1 -z-0 opacity-40 blur-3xl"
-              style={{ background: "radial-gradient(circle at 30% 50%, #f5d76e, transparent 60%), radial-gradient(circle at 70% 50%, #b8860b, transparent 60%)" }} />
-            <div className="relative text-center">
-              <div className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-yellow/80">— Tier 01 · Headline —</div>
-              <div className="mt-3 font-display text-5xl uppercase tracking-tight text-gold-shimmer md:text-7xl">Title Sponsor</div>
-              <div className="mt-4 font-script text-3xl text-cream">your brand · everywhere.</div>
-              <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-yellow/60 bg-ink/40 px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-yellow transition-transform group-hover:-translate-y-0.5">
-                Inquire for headline tier →
+          <div className="relative grid gap-8 px-8 py-10 md:grid-cols-[1.6fr,1fr] md:px-12 md:py-14">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-60"
+              style={{ background: "radial-gradient(circle at 15% 30%, rgba(245,215,110,0.18), transparent 55%), radial-gradient(circle at 85% 70%, rgba(184,134,11,0.25), transparent 60%)" }}
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 top-auto h-px bg-gradient-to-r from-transparent via-yellow/60 to-transparent"
+            />
+
+            <div className="relative">
+              <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-yellow/80">
+                <span className="h-px w-6 bg-yellow/60" />
+                Tier 01 · Presenting Partner
+              </div>
+              <h3 className="mt-4 font-chunk text-5xl uppercase leading-[0.9] tracking-tight md:text-7xl">
+                Title <span className="text-gold-shimmer">Sponsor</span>
+              </h3>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/75 md:text-base">
+                Own the event. Your brand shares the wordmark, the stage, the certificates and every piece of media Build With Nashik 2026 ships — for the full 36 hours and beyond.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream/70">
+                {["Naming rights", "Stage keynote", "Wordmark placement", "Press & PR", "Booth + demo zone", "Recruit access"].map((b) => (
+                  <span key={b} className="rounded-full border border-yellow/40 bg-cream/5 px-2.5 py-1">{b}</span>
+                ))}
+              </div>
+              <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-yellow/70 bg-yellow/10 px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-yellow transition-transform group-hover:-translate-y-0.5">
+                Inquire for Title tier <span>→</span>
+              </div>
+            </div>
+
+            {/* right — logo lockup preview */}
+            <div className="relative grid place-items-center">
+              <div className="relative w-full max-w-[280px] rounded-2xl border border-yellow/25 bg-cream/[0.03] p-6">
+                <div className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-yellow/70">Wordmark lockup preview</div>
+                <div className="mt-4 flex items-baseline gap-2">
+                  <span className="font-chunk text-3xl uppercase tracking-tight text-cream">Build/Nashik</span>
+                  <span className="font-mono text-[9px] text-cream/50">2026</span>
+                </div>
+                <div className="my-4 h-px w-full bg-yellow/20" />
+                <div className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-yellow/70">Presented by</div>
+                <div className="mt-2 grid h-16 place-items-center rounded-lg border border-dashed border-yellow/40 font-mono text-[10px] uppercase tracking-widest text-yellow/80">
+                  your logo here
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-1.5 font-mono text-[8px] uppercase tracking-widest text-cream/50">
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Web</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Stage</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Merch</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Press</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Social</span>
+                  <span className="rounded border border-yellow/20 px-1.5 py-1 text-center">Video</span>
+                </div>
               </div>
             </div>
           </div>
@@ -685,6 +794,33 @@ function Sponsors({ onSponsor }: { onSponsor: (tier?: string) => void }) {
             <SponsorCard key={t} onClick={() => onSponsor(t)} tier={t} tone="rose" size="sm" />
           ))}
         </div>
+
+        {/* CATEGORY partners — extra logo slots */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          {[
+            { t: "Venue Partner", s: "host the 36 hours" },
+            { t: "Food & Beverage", s: "fuel 500 builders" },
+            { t: "Travel Partner", s: "get teams to Nashik" },
+            { t: "Media Partner", s: "tell the story" },
+            { t: "Swag Partner", s: "hoodies · tees · stickers" },
+            { t: "Hardware Partner", s: "kits · devices · gear" },
+            { t: "Prize Partner", s: "back a track prize" },
+            { t: "Startup Zone", s: "showcase your product" },
+          ].map((x) => (
+            <button
+              key={x.t}
+              onClick={() => onSponsor(x.t.replace(" Partner", ""))}
+              className="ink-border-sm group flex w-full items-center justify-between gap-3 rounded-2xl bg-cream p-4 text-left transition-transform hover:-translate-y-1"
+            >
+              <div>
+                <div className="font-chunk text-base uppercase leading-none">{x.t}</div>
+                <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{x.s}</div>
+              </div>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border-2 border-dashed border-ink/30 font-mono text-[9px] uppercase tracking-widest text-ink/40 group-hover:border-orange group-hover:text-orange">logo</span>
+            </button>
+          ))}
+        </div>
+
 
         {/* COMMUNITY pills */}
         <div className="mt-8 flex flex-wrap gap-2">
@@ -820,21 +956,10 @@ function Team() {
       </h2>
 
       <div className="mt-16">
-        {/* founder spotlight — Ansh (only main card) */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-10">
-          <div className="grid items-center gap-8 md:grid-cols-[auto,1fr]">
-            <div className="relative shrink-0">
-              <img
-                src={anshAsset.url}
-                alt="Ansh Rajore — Founder of Team Nest"
-                className="ink-border-sm h-44 w-44 rounded-2xl border-2 border-cream object-cover md:h-56 md:w-56"
-                loading="lazy"
-              />
-              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
-                5× winner
-              </div>
-            </div>
-            <div className="min-w-0">
+        {/* founder spotlight — content LEFT, image RIGHT */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-12">
+          <div className="grid items-center gap-10 md:grid-cols-[1fr,auto]">
+            <div className="min-w-0 md:order-1">
               <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
               <h3 className="mt-3 font-chunk text-4xl uppercase leading-none tracking-tight md:text-6xl">Ansh Rajore</h3>
               <p className="font-script text-3xl text-orange">leading the charge</p>
@@ -843,27 +968,49 @@ function Team() {
                 <span className="chip bg-yellow text-ink">SUNHACKS</span>
                 <span className="chip bg-rose text-ink">Nashik</span>
               </div>
-              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.</p>
+              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">
+                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.
+              </p>
               <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
+            </div>
+
+            <div className="relative shrink-0 md:order-2">
+              <img
+                src={anshAsset.url}
+                alt="Ansh Rajore — Founder of Team Nest"
+                className="ink-border-sm h-52 w-52 rounded-2xl border-2 border-cream object-cover md:h-64 md:w-64"
+                loading="lazy"
+              />
+              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+                5× winner
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-10 flex items-center gap-3">
+      <div className="mt-12 flex items-center gap-3">
         <span className="chip">Core Team</span>
         <span className="h-0.5 flex-1 bg-ink/15" />
       </div>
 
-      {/* core crew */}
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
+      {/* core crew — larger cards */}
+      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {core.map((m, i) => (
-          <div key={m.n} className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1" style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.6}deg)` }}>
-            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-2xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream">
+          <div
+            key={m.n}
+            className="ink-border-lg group rounded-3xl bg-cream p-6 transition-transform hover:-translate-y-1.5"
+            style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.5}deg)` }}
+          >
+            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-2xl bg-yellow font-display text-6xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream md:text-7xl">
               {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
             </div>
-            <div className="mt-3 font-chunk text-base uppercase leading-tight">{m.n}</div>
-            <div className="mt-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
+            <div className="mt-5 flex items-center gap-2">
+              <span className="chip">/{String(i + 1).padStart(2, "0")}</span>
+              <span className="h-px flex-1 bg-ink/15" />
+            </div>
+            <div className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{m.n}</div>
+            <div className="mt-1 font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
           </div>
         ))}
       </div>
@@ -1032,7 +1179,7 @@ function Faq() {
 
 /* ============= final cta ============= */
 
-function FinalCta({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: () => void }) {
+function FinalCta({ onRegister, onSponsor, onVolunteer }: { onRegister: () => void; onSponsor: () => void; onVolunteer: () => void }) {
   return (
     <section id="register" className="relative overflow-hidden border-t-2 border-ink bg-ink text-cream">
       <div className="relative mx-auto max-w-7xl px-6 py-32 text-center">
@@ -1051,7 +1198,10 @@ function FinalCta({ onRegister, onSponsor }: { onRegister: () => void; onSponsor
           <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-yellow px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
             Become Sponsor →
           </button>
-          {[["Join Discord", "#"], ["Join WhatsApp", "#"], ["Become Volunteer", "#"]].map(([l, h]) => (
+          <button onClick={onVolunteer} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
+            Become Volunteer →
+          </button>
+          {[["Join Discord", "#"], ["Join WhatsApp", "#"]].map(([l, h]) => (
             <a key={l} href={h} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
               {l} →
             </a>
@@ -1338,7 +1488,7 @@ function Legacy() {
 
 /* ============= join team CTA ============= */
 
-function JoinTeam() {
+function JoinTeam({ onVolunteer, onSponsor }: { onVolunteer: () => void; onSponsor: () => void }) {
   return (
     <section className="relative overflow-hidden border-y-2 border-ink bg-yellow py-24">
       {/* sticker decorations */}
@@ -1361,9 +1511,9 @@ function JoinTeam() {
               Help organize one of Maharashtra's fastest-growing developer communities. Whether you're a designer, developer, marketer, photographer, content creator or community builder — there's a place for you.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">Join Team →</a>
-              <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">Become Volunteer →</a>
-              <a href="#sponsors" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">Partner With Us →</a>
+              <button onClick={onVolunteer} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">Join Team →</button>
+              <button onClick={onVolunteer} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">Become Volunteer →</button>
+              <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5">Partner With Us →</button>
             </div>
           </div>
 

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const TIERS = ["Title", "Gold", "Silver", "Community", "Education", "Hiring", "Cloud", "AI", "Developer Tools"];
+const TIERS = ["Title", "Powered By", "Platinum", "Gold", "Silver", "Cloud", "AI", "Education", "Hiring", "Developer Tools", "Community", "Venue", "Food & Beverage", "Travel", "Media", "Swag"];
 
 const schema = z.object({
   company_name: z.string().trim().min(2).max(120),
