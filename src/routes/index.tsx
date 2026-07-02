@@ -7,6 +7,7 @@ import mtwAsset from "@/assets/mtw.jpeg.asset.json";
 import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
+import { VolunteerDialog } from "@/components/VolunteerDialog";
 
 
 export const Route = createFileRoute("/")({
