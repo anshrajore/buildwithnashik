@@ -1035,7 +1035,7 @@ function Faq() {
 
 /* ============= final cta ============= */
 
-function FinalCta({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: () => void }) {
+function FinalCta({ onRegister, onSponsor, onVolunteer }: { onRegister: () => void; onSponsor: () => void; onVolunteer: () => void }) {
   return (
     <section id="register" className="relative overflow-hidden border-t-2 border-ink bg-ink text-cream">
       <div className="relative mx-auto max-w-7xl px-6 py-32 text-center">
@@ -1054,7 +1054,10 @@ function FinalCta({ onRegister, onSponsor }: { onRegister: () => void; onSponsor
           <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-yellow px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
             Become Sponsor →
           </button>
-          {[["Join Discord", "#"], ["Join WhatsApp", "#"], ["Become Volunteer", "#"]].map(([l, h]) => (
+          <button onClick={onVolunteer} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
+            Become Volunteer →
+          </button>
+          {[["Join Discord", "#"], ["Join WhatsApp", "#"]].map(([l, h]) => (
             <a key={l} href={h} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink">
               {l} →
             </a>
