@@ -41,7 +41,7 @@ function Home() {
       <Toaster position="top-center" theme="light" toastOptions={{ style: { fontFamily: "var(--font-sans)" } }} />
       <Ticker />
       <Nav onRegister={() => setOpenReg(true)} />
-      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onChangeMembers={() => setOpenChange(true)} />
       <Legacy />
       <Stats />
       <About />
