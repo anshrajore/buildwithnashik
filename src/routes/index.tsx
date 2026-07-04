@@ -8,6 +8,7 @@ import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
 import { VolunteerDialog } from "@/components/VolunteerDialog";
+import { ChangeMembersDialog } from "@/components/ChangeMembersDialog";
 
 
 export const Route = createFileRoute("/")({
@@ -26,6 +27,7 @@ function Home() {
   const [openReg, setOpenReg] = useState(false);
   const [openSponsor, setOpenSponsor] = useState(false);
   const [openVol, setOpenVol] = useState(false);
+  const [openChange, setOpenChange] = useState(false);
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
 
   function openSponsorFor(tier?: string) {
@@ -39,7 +41,7 @@ function Home() {
       <Toaster position="top-center" theme="light" toastOptions={{ style: { fontFamily: "var(--font-sans)" } }} />
       <Ticker />
       <Nav onRegister={() => setOpenReg(true)} />
-      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} />
+      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onChangeMembers={() => setOpenChange(true)} />
       <Legacy />
       <Stats />
       <About />
@@ -60,6 +62,7 @@ function Home() {
       <RegisterDialog open={openReg} onClose={() => setOpenReg(false)} />
       <SponsorDialog open={openSponsor} onClose={() => setOpenSponsor(false)} defaultTier={sponsorTier} />
       <VolunteerDialog open={openVol} onClose={() => setOpenVol(false)} />
+      <ChangeMembersDialog open={openChange} onClose={() => setOpenChange(false)} />
     </div>
   );
 }
@@ -148,11 +151,10 @@ function Nav({ onRegister }: { onRegister: () => void }) {
 
 /* ============= hero — unique BUILD/NASHIK logotype ============= */
 
-function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: () => void }) {
+function Hero({ onRegister, onSponsor, onChangeMembers }: { onRegister: () => void; onSponsor: () => void; onChangeMembers: () => void }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const towerRef = useRef<HTMLDivElement>(null);
 
-  // parallax on mouse move (disabled on touch / reduced motion)
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(hover: none)").matches) return;
@@ -177,82 +179,87 @@ function Hero({ onRegister, onSponsor }: { onRegister: () => void; onSponsor: ()
     <section id="top" ref={wrapRef} className="relative overflow-hidden">
       <Sticker className="left-[4%] top-24" rot={-12}>⚡</Sticker>
       <Sticker className="right-[6%] top-36" rot={14} color="cobalt">★</Sticker>
-      <Sticker className="left-[10%] bottom-24" rot={6} color="rose">36h</Sticker>
-      <Sticker className="right-[10%] bottom-32" rot={-8} color="yellow">◆</Sticker>
+      <Sticker className="left-[8%] bottom-24" rot={6} color="rose">36h</Sticker>
+      <Sticker className="right-[8%] bottom-32" rot={-8} color="yellow">◆</Sticker>
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 pt-12 pb-20 lg:grid-cols-[1.7fr,0.85fr] lg:gap-10 lg:pt-16">
-
-        {/* LEFT — copy (primary) */}
-        <div className="relative">
-          <div className="flex flex-wrap gap-2">
-            <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
-            <span className="chip bg-yellow">Date · Announce Soon</span>
-            <span className="chip">By Team Nest</span>
+      {/* Desktop side image — floats to the right, does not push text */}
+      <aside className="pointer-events-none absolute right-4 top-1/2 hidden -translate-y-1/2 lg:block xl:right-10" aria-hidden>
+        <div className="relative h-[440px] w-[260px]">
+          <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
+            <div className="h-44 w-44 rounded-full bg-orange/40 blur-3xl animate-glow" />
           </div>
-
-          <div className="relative mt-8 select-none">
-            <div className="font-display text-[16vw] leading-[0.78] tracking-tight text-ink lg:text-[140px]">
-              <span className="block">BUILD</span>
-            </div>
-            <div className="-mt-4 flex items-end gap-3">
-              <span className="font-script text-[11vw] leading-none text-orange animate-wiggle inline-block lg:text-[90px]">with</span>
-              <span className="mb-2 hidden h-1 flex-1 bg-ink md:block" />
-              <span className="mb-3 hidden font-mono text-[10px] font-bold uppercase tracking-widest text-ink md:inline">/ Hackathon 2026</span>
-            </div>
-            <div className="-mt-3 inline-block ink-border bg-ink px-4 pb-2 pt-1 text-cream">
-              <span className="font-display text-[16vw] leading-[0.85] tracking-tight lg:text-[140px]">NASHIK<span className="text-orange">.</span></span>
-            </div>
+          <div ref={towerRef} className="relative h-full w-full will-change-transform">
+            <img
+              src={towerAsset.url}
+              alt=""
+              loading="eager"
+              decoding="async"
+              className="animate-tower mx-auto h-full w-auto object-contain drop-shadow-[6px_10px_0_rgba(24,18,14,0.18)]"
+            />
           </div>
-
-          <p className="mt-10 max-w-2xl text-lg leading-relaxed text-ink/80 md:text-xl">
-            Great communities aren't built by companies. They're built by people who decide to <span className="tag-yellow font-bold">create instead of wait</span>. Build With Nashik exists to prove that <span className="tag-orange font-bold">world-class innovation</span> can start from any city, with anyone willing to build.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <button onClick={onRegister} className="ink-border-sm group inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
-              Register Now <span className="transition-transform group-hover:translate-x-1">→</span>
-            </button>
-            <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5">
-              Become Sponsor
-            </button>
-            <a href="#community" className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-colors hover:bg-ink hover:text-cream">
-              Join Community
-            </a>
+          <div className="absolute -right-2 top-4 ink-border-sm bg-cream px-2.5 py-1 font-script text-base text-ink" style={{ transform: "rotate(6deg)" }}>
+            our clock tower <span className="text-orange">★</span>
           </div>
-
-          <div className="mt-10 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs font-bold uppercase tracking-widest">
-            {["36 Hours", "500+ Builders", "Mentors", "Prizes", "Open Source"].map((w, i) => (
-              <span key={w} className="chip"><span className="text-orange">0{i + 1}</span> {w}</span>
-            ))}
+          <div className="absolute -bottom-2 -left-2 ink-border-sm tag-cobalt px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
+            Nashik · Maharashtra
           </div>
         </div>
+      </aside>
 
-        {/* RIGHT — tower as small side accent */}
-        <aside className="relative hidden lg:block" aria-hidden>
-          <div className="relative mx-auto h-[420px] w-full max-w-[300px]">
-            <div className="pointer-events-none absolute inset-0 -z-10 grid place-items-center">
-              <div className="h-44 w-44 rounded-full bg-orange/40 blur-3xl animate-glow" />
-            </div>
-            <div ref={towerRef} className="relative h-full w-full will-change-transform">
-              <img
-                src={towerAsset.url}
-                alt="Nashik Clock Tower"
-                loading="eager"
-                decoding="async"
-                className="animate-tower mx-auto h-full w-auto object-contain drop-shadow-[6px_10px_0_rgba(24,18,14,0.18)]"
-              />
-            </div>
-            <div className="absolute -right-2 top-4 ink-border-sm bg-cream px-2.5 py-1 font-script text-base text-ink" style={{ transform: "rotate(6deg)" }}>
-              our clock tower <span className="text-orange">★</span>
-            </div>
-            <div className="absolute -bottom-2 -left-2 ink-border-sm tag-cobalt px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(-4deg)" }}>
-              Nashik · Maharashtra
-            </div>
+      {/* CENTERED HERO CONTENT */}
+      <div className="relative mx-auto max-w-5xl px-6 pt-14 pb-20 text-center lg:pt-20">
+        <div className="flex flex-wrap justify-center gap-2">
+          <span className="chip"><span className="h-2 w-2 rounded-full bg-orange animate-blink" /> Edition 01</span>
+          <span className="chip bg-yellow">Date · Announce Soon</span>
+          <span className="chip">By Team Nest</span>
+        </div>
+
+        <div className="relative mt-10 select-none">
+          <div className="font-display text-[18vw] leading-[0.78] tracking-tight text-ink lg:text-[160px]">
+            <span className="block">BUILD</span>
           </div>
-        </aside>
+          <div className="-mt-4 flex items-end justify-center gap-3">
+            <span className="hidden h-1 w-16 self-center bg-ink md:block" />
+            <span className="font-script text-[12vw] leading-none text-orange animate-wiggle inline-block lg:text-[100px]">with</span>
+            <span className="hidden h-1 w-16 self-center bg-ink md:block" />
+          </div>
+          <div className="-mt-3 inline-block ink-border bg-ink px-5 pb-2 pt-1 text-cream">
+            <span className="font-display text-[18vw] leading-[0.85] tracking-tight lg:text-[160px]">NASHIK<span className="text-orange">.</span></span>
+          </div>
+          <div className="mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">/ Hackathon 2026</div>
+        </div>
+
+        <p className="mx-auto mt-10 max-w-2xl text-lg leading-relaxed text-ink/80 md:text-xl">
+          Great communities aren't built by companies. They're built by people who decide to <span className="tag-yellow font-bold">create instead of wait</span>. Build With Nashik exists to prove that <span className="tag-orange font-bold">world-class innovation</span> can start from any city, with anyone willing to build.
+        </p>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <button onClick={onRegister} className="ink-border-sm group inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
+            Register Now <span className="transition-transform group-hover:translate-x-1">→</span>
+          </button>
+          <button onClick={onSponsor} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5">
+            Become Sponsor
+          </button>
+          <a href="#community" className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-colors hover:bg-ink hover:text-cream">
+            Join Community
+          </a>
+        </div>
+
+        <button
+          onClick={onChangeMembers}
+          className="mt-4 inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60 underline decoration-orange decoration-2 underline-offset-4 hover:text-ink"
+        >
+          Already registered? Change team members →
+        </button>
+
+        <div className="mt-10 flex flex-wrap justify-center gap-x-5 gap-y-2 font-mono text-xs font-bold uppercase tracking-widest">
+          {["36 Hours", "500+ Builders", "Mentors", "Prizes", "Open Source"].map((w, i) => (
+            <span key={w} className="chip"><span className="text-orange">0{i + 1}</span> {w}</span>
+          ))}
+        </div>
       </div>
 
-      {/* mobile-only small tower */}
+      {/* Mobile-only tower */}
       <div className="relative mx-auto -mt-6 mb-12 grid w-full max-w-xs place-items-center px-6 lg:hidden" aria-hidden>
         <img src={towerAsset.url} alt="" className="h-48 w-auto object-contain" loading="lazy" />
       </div>

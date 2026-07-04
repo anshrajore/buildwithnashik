@@ -49,7 +49,14 @@ export function RegisterDialog({ open, onClose }: { open: boolean; onClose: () =
     });
     setSubmitting(false);
     if (error) {
-      toast.error("Could not register. Try again in a moment.");
+      const dup =
+        error.code === "23505" ||
+        /duplicate key|teams_team_name_ci_unique|unique constraint/i.test(error.message ?? "");
+      if (dup) {
+        toast.error(`"${parsed.data.team_name}" is already taken — pick another team name.`);
+      } else {
+        toast.error("Could not register. Try again in a moment.");
+      }
       return;
     }
     setDone(true);
