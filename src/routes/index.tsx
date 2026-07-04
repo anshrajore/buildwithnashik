@@ -27,6 +27,7 @@ function Home() {
   const [openReg, setOpenReg] = useState(false);
   const [openSponsor, setOpenSponsor] = useState(false);
   const [openVol, setOpenVol] = useState(false);
+  const [openChange, setOpenChange] = useState(false);
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
 
   function openSponsorFor(tier?: string) {
