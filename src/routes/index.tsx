@@ -8,6 +8,7 @@ import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
 import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
 import { VolunteerDialog } from "@/components/VolunteerDialog";
+import { ChangeMembersDialog } from "@/components/ChangeMembersDialog";
 
 
 export const Route = createFileRoute("/")({
