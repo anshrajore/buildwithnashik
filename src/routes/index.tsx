@@ -62,6 +62,7 @@ function Home() {
       <RegisterDialog open={openReg} onClose={() => setOpenReg(false)} />
       <SponsorDialog open={openSponsor} onClose={() => setOpenSponsor(false)} defaultTier={sponsorTier} />
       <VolunteerDialog open={openVol} onClose={() => setOpenVol(false)} />
+      <ChangeMembersDialog open={openChange} onClose={() => setOpenChange(false)} />
     </div>
   );
 }
