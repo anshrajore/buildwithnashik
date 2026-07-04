@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "build-with-nashik-mcp",
+      "version": "0.1.0",
+      "title": "Build With Nashik MCP"
+    },
+    "tools": [
+      {
+        "name": "get_event_info",
+        "title": "Get event info",
+        "description": "Return high-level info about Build With Nashik 2026: what it is, who runs it, format, and current status.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_schedule",
+        "title": "Get hackathon schedule",
+        "description": "Return the 6 high-level phases of the Build With Nashik 2026 36-hour run.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_sponsor_tiers",
+        "title": "Get sponsor tiers",
+        "description": "List sponsorship tiers available for Build With Nashik 2026.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "submit_volunteer_signup",
+        "title": "Submit volunteer signup",
+        "description": "Register a new volunteer for Build With Nashik 2026. Stores the signup in the volunteer_signups table.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "full_name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Volunteer's full name."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+              "description": "Contact email."
+            },
+            "phone": {
+              "description": "Phone number (optional).",
+              "type": "string"
+            },
+            "interest": {
+              "description": "Area of interest (operations, tech, design, content, etc.).",
+              "type": "string"
+            },
+            "experience": {
+              "description": "Short note on relevant experience.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "full_name",
+            "email"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
