@@ -63,6 +63,7 @@ export type Database = {
           lead_phone: string
           member_count: number
           members: Json
+          members_changed_at: string | null
           project_idea: string | null
           status: string
           team_name: string
@@ -77,6 +78,7 @@ export type Database = {
           lead_phone: string
           member_count?: number
           members?: Json
+          members_changed_at?: string | null
           project_idea?: string | null
           status?: string
           team_name: string
@@ -91,6 +93,7 @@ export type Database = {
           lead_phone?: string
           member_count?: number
           members?: Json
+          members_changed_at?: string | null
           project_idea?: string | null
           status?: string
           team_name?: string
@@ -142,7 +145,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      request_member_change: {
+        Args: {
+          p_lead_email: string
+          p_lead_phone: string
+          p_member_count: number
+          p_members: Json
+          p_team_name: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
