@@ -422,17 +422,26 @@ function ScheduleTimeline() {
   }, []);
 
   return (
-    <div className="relative mt-32">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="relative">
+      <SectionTag n="03">Schedule Timeline</SectionTag>
+      <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
         <div>
-          <div className="chip bg-orange text-cream">Hackathon Schedule</div>
-          <h3 className="mt-4 font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
-            The <span className="tag-yellow">36-hour</span> run.
-          </h3>
-          <p className="mt-3 max-w-xl text-ink/70">High-level phases for Build With Nashik 2026. Full 36-hour schedule will be shared soon.</p>
+          <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
+            Schedule <span className="tag-yellow">timeline.</span>
+          </h2>
+          <p className="mt-4 max-w-2xl text-ink/75 md:text-lg">
+            A precision-run 36 hours — from onboarding to final demo. Every round is engineered for velocity: registration, ideation, build sprints, mentor gates, judging and the closing showcase. Full minute-by-minute rundown drops with the venue reveal.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2 font-mono text-[11px] font-bold uppercase tracking-widest">
+            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">36-Hour Build</span>
+            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">6 Phases</span>
+            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">Mentor Gates</span>
+            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">Live Judging</span>
+          </div>
         </div>
         <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
       </div>
+
 
       <ol className="relative mt-12">
         {/* horizontal rail on md+, vertical on mobile */}
