@@ -907,26 +907,27 @@ function Team() {
         <span className="h-0.5 flex-1 bg-ink/15" />
       </div>
 
-      {/* core crew — larger cards */}
-      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* core crew — compact cards */}
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {core.map((m, i) => (
           <div
             key={m.n}
-            className="ink-border-lg group rounded-3xl bg-cream p-6 transition-transform hover:-translate-y-1.5"
-            style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.5}deg)` }}
+            className="ink-border-sm group rounded-2xl bg-cream p-4 transition-transform hover:-translate-y-1"
+            style={{ transform: `rotate(${(i % 2 ? 1 : -1) * 0.4}deg)` }}
           >
-            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-2xl bg-yellow font-display text-6xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream md:text-7xl">
+            <div className="ink-border-sm grid aspect-square w-full place-items-center rounded-xl bg-yellow font-display text-3xl uppercase text-ink transition-colors group-hover:bg-orange group-hover:text-cream md:text-4xl">
               {m.n.split(" ").map((s) => s[0]).join("").slice(0, 2)}
             </div>
-            <div className="mt-5 flex items-center gap-2">
-              <span className="chip">/{String(i + 1).padStart(2, "0")}</span>
+            <div className="mt-3 flex items-center gap-2">
+              <span className="chip !px-2 !py-0.5 text-[9px]">/{String(i + 1).padStart(2, "0")}</span>
               <span className="h-px flex-1 bg-ink/15" />
             </div>
-            <div className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{m.n}</div>
-            <div className="mt-1 font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
+            <div className="mt-2 font-chunk text-base uppercase leading-tight md:text-lg">{m.n}</div>
+            <div className="mt-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">{m.r}</div>
           </div>
         ))}
       </div>
+
     </section>
   );
 }
