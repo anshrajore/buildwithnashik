@@ -389,23 +389,35 @@ function ScheduleSection() {
 
 
 function ScheduleTimeline() {
-  const phases = [
-    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "orange", icon: "▶" },
-    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "yellow", icon: "✕" },
-    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "cobalt", icon: "✎" },
-    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "rose", icon: "★" },
-    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "orange", icon: "⚡" },
-    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "cobalt", icon: "♛" },
+  type Phase = {
+    p: string;
+    t: string;
+    d: string;
+    date: string;
+    round: string;
+    duration: string;
+    actions: string[];
+    c: "orange" | "yellow" | "cobalt" | "rose";
+    icon: string;
+  };
+  const phases: Phase[] = [
+    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", date: "TBA · Jan 2026", round: "Round 0 · Onboarding", duration: "~3 weeks", actions: ["Create team & pick track", "Submit lead details", "Get confirmation email"], c: "orange", icon: "▶" },
+    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", date: "TBA · Feb 2026", round: "Round 0 · Cutoff", duration: "1 day", actions: ["Final team edits locked", "Payment / confirmation window closes", "Waitlist opens"], c: "yellow", icon: "✕" },
+    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", date: "TBA · Feb 2026", round: "Round 1 · Idea Screening", duration: "7 days", actions: ["Submit idea + scope doc", "Track alignment review", "Mentor feedback loop"], c: "cobalt", icon: "✎" },
+    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", date: "TBA · Mar 2026", round: "Round 2 · Selection", duration: "1 day", actions: ["Shortlist announced", "On-ground slot confirmed", "Travel & stay guide sent"], c: "rose", icon: "★" },
+    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", date: "TBA · Mar 2026", round: "Round 3 · The 36-Hour Build", duration: "36 hours", actions: ["Opening ceremony & kickoff", "Build sprints + mentor gates", "Midnight energy checkpoints"], c: "orange", icon: "⚡" },
+    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", date: "TBA · Mar 2026", round: "Round 4 · Final Showcase", duration: "Day 2 evening", actions: ["Live demos to judging panel", "Winner announcements", "After-party & networking"], c: "cobalt", icon: "♛" },
   ];
-  const colorMap: Record<string, { chip: string; ring: string }> = {
-    orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]" },
-    yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]" },
-    cobalt: { chip: "bg-cobalt text-cream", ring: "shadow-[6px_6px_0_var(--cobalt)]" },
-    rose:   { chip: "bg-rose text-ink",     ring: "shadow-[6px_6px_0_var(--rose)]" },
+  const colorMap: Record<string, { chip: string; ring: string; text: string }> = {
+    orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]", text: "text-orange" },
+    yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]", text: "text-ink" },
+    cobalt: { chip: "bg-cobalt text-cream", ring: "shadow-[6px_6px_0_var(--cobalt)]", text: "text-cobalt" },
+    rose:   { chip: "bg-rose text-ink",     ring: "shadow-[6px_6px_0_var(--rose)]", text: "text-rose" },
   };
 
   const itemsRef = useRef<HTMLLIElement[]>([]);
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
+  const [openIdx, setOpenIdx] = useState<number>(0);
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {
@@ -421,30 +433,122 @@ function ScheduleTimeline() {
     return () => io.disconnect();
   }, []);
 
+  const unlockedPct = Math.round((revealed.size / phases.length) * 100);
+
   return (
     <div className="relative">
-      <SectionTag n="03">Schedule Timeline</SectionTag>
+      <SectionTag n="03">Schedule & Rounds</SectionTag>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
         <div>
           <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
-            Schedule <span className="tag-yellow">timeline.</span>
+            Schedule &<br /><span className="tag-yellow">rounds.</span>
           </h2>
           <p className="mt-4 max-w-2xl text-ink/75 md:text-lg">
-            A precision-run 36 hours — from onboarding to final demo. Every round is engineered for velocity: registration, ideation, build sprints, mentor gates, judging and the closing showcase. Full minute-by-minute rundown drops with the venue reveal.
+            A precision-run 36 hours across 6 phases and 4 rounds — from onboarding to final demo. Tap any phase chip to reveal the exact date, round and key actions. Full minute-by-minute rundown drops with the venue reveal.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 font-mono text-[11px] font-bold uppercase tracking-widest">
             <span className="ink-border-sm rounded-full bg-cream px-3 py-1">36-Hour Build</span>
             <span className="ink-border-sm rounded-full bg-cream px-3 py-1">6 Phases</span>
+            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">4 Rounds</span>
             <span className="ink-border-sm rounded-full bg-cream px-3 py-1">Mentor Gates</span>
-            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">Live Judging</span>
           </div>
         </div>
-        <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
+        <div className="ink-border-sm flex items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-cream">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-orange font-display text-lg text-cream">{String(revealed.size).padStart(2, "0")}</div>
+          <div className="font-mono text-[10px] uppercase tracking-widest leading-tight">
+            <div className="opacity-70">Unlocked</div>
+            <div className="text-cream">{unlockedPct}% · {revealed.size}/{phases.length}</div>
+          </div>
+        </div>
       </div>
 
+      {/* progress rail */}
+      <div className="mt-8 h-2 w-full overflow-hidden rounded-full border-2 border-ink bg-cream">
+        <div
+          className="h-full bg-orange transition-all duration-700"
+          style={{ width: `${unlockedPct}%` }}
+        />
+      </div>
 
-      <ol className="relative mt-12">
-        {/* horizontal rail on md+, vertical on mobile */}
+      {/* phase chip strip — click to expand */}
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        {phases.map((ph, i) => {
+          const cm = colorMap[ph.c];
+          const isOpen = openIdx === i;
+          const isUnlocked = revealed.has(i);
+          return (
+            <button
+              key={ph.p}
+              type="button"
+              onClick={() => setOpenIdx(i)}
+              className={`ink-border-sm group flex flex-col items-start gap-1 rounded-2xl px-3 py-3 text-left transition-all ${isOpen ? `${cm.chip} scale-[1.02]` : "bg-cream hover:-translate-y-0.5"}`}
+            >
+              <div className="flex w-full items-center justify-between">
+                <span className={`font-mono text-[9px] font-bold uppercase tracking-widest ${isOpen ? "opacity-90" : "text-ink/60"}`}>{ph.p}</span>
+                <span className={`font-display text-sm ${isOpen ? "" : "opacity-70"}`}>{ph.icon}</span>
+              </div>
+              <span className="font-chunk text-sm uppercase leading-tight">{ph.t}</span>
+              <span className={`mt-0.5 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${isOpen ? "opacity-80" : "text-ink/50"}`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${isUnlocked ? "bg-orange" : "bg-ink/25"}`} />
+                {isUnlocked ? "unlocked" : "locked"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* expanded panel */}
+      <div className="ink-border-lg mt-6 overflow-hidden rounded-3xl bg-ink text-cream">
+        {phases.map((ph, i) => {
+          if (openIdx !== i) return null;
+          const cm = colorMap[ph.c];
+          return (
+            <div key={ph.p} className="grid gap-6 p-6 md:grid-cols-[auto,1fr] md:gap-10 md:p-10 animate-fade-in">
+              <div className="flex flex-col items-start gap-3">
+                <span className={`ink-border-sm inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${cm.chip}`}>
+                  {ph.p} · {ph.icon}
+                </span>
+                <div className="font-display text-7xl leading-none text-cream md:text-8xl">{String(i + 1).padStart(2, "0")}</div>
+                <div className={`font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60`}>of {String(phases.length).padStart(2, "0")}</div>
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">📅 {ph.date}</span>
+                  <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">🎯 {ph.round}</span>
+                  <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">⏱ {ph.duration}</span>
+                </div>
+                <h4 className="mt-4 font-chunk text-4xl uppercase leading-none tracking-tight md:text-5xl">{ph.t}</h4>
+                <p className="mt-3 max-w-2xl text-cream/80">{ph.d}</p>
+                <ul className="mt-5 grid gap-2 sm:grid-cols-3">
+                  {ph.actions.map((a, ai) => (
+                    <li key={a} className="ink-border-sm rounded-xl bg-cream/5 px-3 py-2.5 text-sm text-cream/90">
+                      <span className={`mr-1.5 font-mono text-[10px] font-bold ${cm.text}`}>0{ai + 1}</span>
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx((v) => Math.max(0, v - 1))}
+                    disabled={openIdx === 0}
+                    className="ink-border-sm rounded-full bg-cream px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink disabled:opacity-40"
+                  >← Prev phase</button>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx((v) => Math.min(phases.length - 1, v + 1))}
+                    disabled={openIdx === phases.length - 1}
+                    className="ink-border-sm rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream disabled:opacity-40"
+                  >Next phase →</button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* scroll-reveal timeline rail (immersive alternative to removed level path) */}
+      <ol className="relative mt-16">
         <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
           <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / phases.length) * 100}%` }} />
         </div>
@@ -467,8 +571,10 @@ function ScheduleTimeline() {
                 {ph.icon}
               </span>
               <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
-              <article
-                className={`ink-border-lg col-span-2 ml-14 rounded-2xl bg-cream p-5 md:col-span-1 md:ml-0 md:p-6 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
+              <button
+                type="button"
+                onClick={() => setOpenIdx(i)}
+                className={`ink-border-lg col-span-2 ml-14 rounded-2xl bg-cream p-5 text-left md:col-span-1 md:ml-0 md:p-6 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
                 style={{
                   transform: isOn ? "translateY(0) rotate(0)" : `translateY(24px) rotate(${left ? -1 : 1}deg)`,
                   opacity: isOn ? 1 : 0,
@@ -478,11 +584,14 @@ function ScheduleTimeline() {
               >
                 <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
                   <span className={`ink-border-sm inline-block px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${cm.chip}`}>{ph.p}</span>
-                  <span className="chip">Date · TBA</span>
+                  <span className="chip">{ph.date}</span>
                 </div>
                 <h4 className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{ph.t}</h4>
                 <p className="mt-2 text-sm text-ink/75">{ph.d}</p>
-              </article>
+                <div className={`mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60 ${left ? "md:text-right" : ""}`}>
+                  {ph.round} · Tap to expand ↑
+                </div>
+              </button>
             </li>
           );
         })}
@@ -494,6 +603,7 @@ function ScheduleTimeline() {
     </div>
   );
 }
+
 
 
 /* ============= tracks ============= */
