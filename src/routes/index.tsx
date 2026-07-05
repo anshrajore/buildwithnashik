@@ -979,38 +979,90 @@ function Team() {
       </h2>
 
       <div className="mt-16">
-        {/* founder spotlight — content LEFT, image RIGHT */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-12">
-          <div className="grid items-center gap-10 md:grid-cols-[1fr,auto]">
-            <div className="min-w-0 md:order-1">
-              <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
-              <h3 className="mt-3 font-chunk text-4xl uppercase leading-none tracking-tight md:text-6xl">Ansh Rajore</h3>
-              <p className="font-script text-3xl text-orange">leading the charge</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+        {/* founder spotlight — editorial split with stats */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink text-cream">
+          {/* decorative wordmark */}
+          <div aria-hidden className="pointer-events-none absolute -right-6 -top-8 select-none font-display text-[14rem] leading-none text-cream/[0.04] md:text-[20rem]">
+            ANSH
+          </div>
+          {/* corner tag */}
+          <div className="absolute right-5 top-5 z-10 ink-border-sm tag-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(3deg)" }}>
+            Founder · Team Nest
+          </div>
+
+          <div className="grid gap-0 md:grid-cols-[minmax(0,1fr),minmax(0,1.15fr)]">
+            {/* LEFT — copy */}
+            <div className="relative z-10 flex flex-col justify-center p-8 md:p-12">
+              <div className="chip bg-orange text-cream border-cream w-max">Founder & Organizer</div>
+              <h3 className="mt-4 font-chunk text-5xl uppercase leading-[0.9] tracking-tight md:text-7xl">
+                Ansh<br />
+                <span className="tag-orange text-cream inline-block">Rajore.</span>
+              </h3>
+              <p className="mt-2 font-script text-3xl text-orange md:text-4xl">leading the charge</p>
+
+              <div className="mt-5 flex flex-wrap gap-1.5">
                 <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
-                <span className="chip bg-yellow text-ink">SUNHACKS</span>
+                <span className="chip bg-yellow text-ink">SUNHACKS · 08/2025</span>
                 <span className="chip bg-rose text-ink">Nashik</span>
               </div>
-              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">
-                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.
+
+              <p className="mt-5 max-w-xl text-cream/80 md:text-base">
+                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026 — a hackathon designed by builders, for builders.
               </p>
-              <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
+
+              {/* stat strip */}
+              <div className="mt-6 grid grid-cols-3 gap-2">
+                {[
+                  { k: "5×", v: "Hackathon Winner" },
+                  { k: "3000+", v: "Devs Connected" },
+                  { k: "12+", v: "Events Shipped" },
+                ].map((s) => (
+                  <div key={s.v} className="ink-border-sm rounded-xl bg-cream/5 p-3">
+                    <div className="font-display text-2xl leading-none text-cream md:text-3xl">{s.k}</div>
+                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream/60">{s.v}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <a href="#" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale">
+                  LinkedIn →
+                </a>
+                <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale">
+                  Build with him →
+                </a>
+              </div>
             </div>
 
-            <div className="relative shrink-0 md:order-2">
+            {/* RIGHT — big image with overlay tags */}
+            <div className="relative min-h-[360px] md:min-h-[520px]">
               <img
                 src={anshAsset.url}
                 alt="Ansh Rajore — Founder of Team Nest"
-                className="ink-border-sm h-52 w-52 rounded-2xl border-2 border-cream object-cover md:h-64 md:w-64"
+                className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+              {/* grain / ink gradient overlay */}
+              <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ink/60 md:to-ink/40" />
+              <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
+
+              {/* floating tags */}
+              <div className="absolute left-4 top-4 ink-border-sm tag-orange px-2.5 py-1 font-chunk text-xs uppercase tracking-tight text-cream" style={{ transform: "rotate(-4deg)" }}>
                 5× winner
+              </div>
+              <div className="absolute right-4 top-4 ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
+                ● On mission
+              </div>
+              <div className="absolute bottom-4 left-4 right-4 ink-border-sm rounded-2xl bg-cream/95 px-4 py-3 text-ink backdrop-blur-sm">
+                <div className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">Currently shipping</div>
+                <div className="mt-0.5 font-chunk text-lg uppercase leading-tight">Build With Nashik · 2026</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
 
       <div className="mt-12 flex items-center gap-3">
         <span className="chip">Core Team</span>
