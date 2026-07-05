@@ -373,123 +373,20 @@ function Mission() {
 
 /* ============= journey timeline (reliable scroll reveal) ============= */
 
-function Timeline3D() {
-  const steps = [
-    { n: "01", y: "2023 — 2026", t: "Participated in National Hackathons", s: "India's biggest builder stages", c: "orange", icon: "▶", d: "Three years on India's biggest hackathon stages — shipping under pressure, winning, losing, and learning what really makes a build community work." },
-    { n: "02", y: "2025", t: "Organized SUNHACKS", s: "Asia's Largest GenAI Hackathon", c: "cobalt", icon: "✦", d: "Ran operations end-to-end for Asia's largest GenAI hackathon in 2025 — thousands of builders, real outcomes, a playbook we now bring home to Nashik." },
-    { n: "03", y: "2025", t: "Hosted Community Events", s: "Workshops · Meetups · Dev Jams", c: "yellow", icon: "✎", d: "Workshops, meetups and dev jams across the city — bringing Nashik's builders into one room, one Discord, one shipping culture." },
-    { n: "04", y: "2026", t: "Expanded Team Nest", s: "Multi-city Volunteer Network", c: "rose", icon: "⚡", d: "From a small crew to a multi-city volunteer network — builders, designers and operators rallying around one mission." },
-    { n: "05", y: "2026", t: "Launching Build With Nashik", s: "The flagship — applied", c: "cobalt", icon: "♛", d: "Everything we've learned, applied. A 36-hour flagship hackathon built for the next wave of Nashik builders. This is the level we've been training for." },
-  ];
-
-  const colorMap: Record<string, { chip: string; dot: string }> = {
-    orange: { chip: "bg-orange text-cream", dot: "bg-orange" },
-    yellow: { chip: "bg-yellow text-ink",   dot: "bg-yellow" },
-    cobalt: { chip: "bg-cobalt text-cream", dot: "bg-cobalt" },
-    rose:   { chip: "bg-rose text-ink",     dot: "bg-rose" },
-  };
-
-  const itemsRef = useRef<HTMLLIElement[]>([]);
-  const [revealed, setRevealed] = useState<Set<number>>(new Set());
-
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        setRevealed((prev) => {
-          const next = new Set(prev);
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              const idx = Number((e.target as HTMLElement).dataset.idx);
-              next.add(idx);
-            }
-          }
-          return next;
-        });
-      },
-      { threshold: 0.25, rootMargin: "0px 0px -10% 0px" }
-    );
-    itemsRef.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
-
+function ScheduleSection() {
   return (
     <section id="timeline" className="relative mx-auto max-w-7xl px-6 py-28">
-      {/* giant background wordmark — Build With Nashik */}
+      {/* giant background wordmark */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-10 select-none overflow-hidden">
         <div className="font-display text-[18vw] leading-none tracking-tight text-ink/[0.05] whitespace-nowrap text-center">
           BUILD&nbsp;WITH&nbsp;NASHIK
         </div>
       </div>
-
-      <SectionTag n="03">Timeline</SectionTag>
-      <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
-        <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
-          The <span className="tag-cobalt text-cream">level path.</span>
-        </h2>
-        <p className="max-w-md text-ink/70">From 2023 to 2026 — every checkpoint that led to Build With Nashik. Scroll to unlock each level.</p>
-      </div>
-
-      <ol className="relative mt-16">
-        {/* center rail */}
-        <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
-          <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / steps.length) * 100}%` }} />
-        </div>
-
-        {steps.map((s, i) => {
-          const left = i % 2 === 0;
-          const cm = colorMap[s.c];
-          const isOn = revealed.has(i);
-          return (
-            <li
-              key={s.n}
-              data-idx={i}
-              ref={(el) => { if (el) itemsRef.current[i] = el; }}
-              className="relative grid grid-cols-[3rem,1fr] gap-4 pb-14 md:grid-cols-2 md:gap-10"
-            >
-              {/* node */}
-              <span
-                className={`absolute left-6 top-3 z-10 grid h-12 w-12 -translate-x-1/2 place-items-center rounded-2xl border-2 border-ink font-display text-lg shadow-[3px_3px_0_var(--ink)] md:left-1/2 ${cm.chip} transition-transform duration-500 ${isOn ? "scale-100 rotate-0" : "scale-50 rotate-45 opacity-0"}`}
-                aria-hidden
-              >
-                {s.icon}
-              </span>
-
-              {/* spacer for opposite side on desktop */}
-              <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
-
-              {/* card */}
-              <article
-                className={`ink-border-lg col-span-2 ml-14 rounded-3xl bg-cream p-6 md:col-span-1 md:ml-0 md:p-8 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
-                style={{
-                  transform: isOn ? "translateY(0) rotate(0)" : `translateY(28px) rotate(${left ? -1.2 : 1.2}deg)`,
-                  opacity: isOn ? 1 : 0,
-                  transition: "transform 700ms cubic-bezier(0.2,0.7,0.2,1), opacity 500ms ease",
-                  transitionDelay: `${i * 60}ms`,
-                }}
-              >
-                <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Checkpoint /{s.n}</span>
-                  <span className="chip">{s.y}</span>
-                </div>
-                <h3 className="mt-3 font-chunk text-3xl uppercase leading-none tracking-tight md:text-4xl">{s.t}</h3>
-                <div className={`mt-2 inline-block ${cm.chip} ink-border-sm px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-widest`}>{s.s}</div>
-                <p className="mt-4 text-sm leading-relaxed text-ink/75">{s.d}</p>
-                <div className={`mt-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-ink/50 ${left ? "md:justify-end" : ""}`}>
-                  <span>level {i + 1} / {steps.length}</span>
-                  <span className="h-px w-10 bg-ink/30" />
-                  <span>{isOn ? "unlocked ✓" : "locked"}</span>
-                </div>
-              </article>
-            </li>
-          );
-        })}
-      </ol>
-
-      {/* ===== hackathon schedule sub-timeline (scroll reveal) ===== */}
       <ScheduleTimeline />
     </section>
   );
 }
+
 
 function ScheduleTimeline() {
   const phases = [
