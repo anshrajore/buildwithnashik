@@ -1096,7 +1096,137 @@ function Team() {
   );
 }
 
+/* ============= builder manifesto ============= */
+
+function BuilderManifesto({ onRegister }: { onRegister: () => void }) {
+  const highlights = [
+    { k: "01", icon: "⚡", t: "Ship in 36", d: "No fluff. Just build. Pressure that turns ideas into demos." },
+    { k: "02", icon: "🎯", t: "Mentor gates", d: "Checkpoints with founders & senior engineers — feedback that moves the needle." },
+    { k: "03", icon: "🏆", t: "Real prizes", d: "Cash, cloud credits, hardware, and interviews with hiring partners." },
+    { k: "04", icon: "🤝", t: "Builder network", d: "Land in a room full of the people you actually want to build with next." },
+    { k: "05", icon: "🚀", t: "Launchpad demo", d: "Pitch to a judging panel of founders, investors and community leaders." },
+    { k: "06", icon: "🔥", t: "On-ground energy", d: "Nashik's first flagship builder stage — designed for makers, by makers." },
+  ];
+
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const nodes = gridRef.current?.querySelectorAll<HTMLElement>("[data-hi]") ?? [];
+    const io = new IntersectionObserver((entries) => {
+      setVisible((prev) => {
+        const next = new Set(prev);
+        for (const e of entries) if (e.isIntersecting) next.add(Number(e.target.getAttribute("data-hi")));
+        return next;
+      });
+    }, { threshold: 0.25 });
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section className="relative border-y-2 border-ink bg-cobalt py-28 text-cream">
+      {/* decorative BG type */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-6 select-none overflow-hidden">
+        <div className="font-display text-[16vw] leading-none tracking-tight text-cream/[0.06] whitespace-nowrap text-center">
+          FOR&nbsp;THE&nbsp;BUILDERS
+        </div>
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        <SectionTag n="10">For Builders</SectionTag>
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr,1fr] lg:items-end">
+          <div>
+            <h2 className="font-chunk text-6xl uppercase leading-[0.9] tracking-tight md:text-8xl">
+              This one's for the <span className="tag-yellow text-ink">builders.</span>
+            </h2>
+            <p className="mt-5 max-w-2xl text-cream/85 md:text-lg">
+              If you'd rather ship a rough v1 than talk about a perfect v10 — you're the reason this exists. Build With Nashik 2026 is engineered to move fast: real problems, real mentors, real judges, real prizes. No hoodies-in-exchange-for-your-idea nonsense.
+            </p>
+          </div>
+          <div className="ink-border-sm rounded-2xl bg-ink/40 p-5 backdrop-blur-sm">
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-cream/70">Next step for builders</div>
+            <div className="mt-2 font-chunk text-3xl uppercase leading-none">Lock your team →</div>
+            <p className="mt-2 text-sm text-cream/75">Team of 2–4. Pick a track. We'll take it from there.</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onRegister}
+                className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale"
+              >
+                Register team →
+              </button>
+              <a
+                href="#timeline"
+                className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale"
+              >
+                See schedule
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* animated feature highlights */}
+        <div ref={gridRef} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {highlights.map((h, i) => {
+            const on = visible.has(i);
+            return (
+              <div
+                key={h.k}
+                data-hi={i}
+                className="ink-border-sm group relative overflow-hidden rounded-2xl bg-cream p-5 text-ink transition-transform hover:-translate-y-1"
+                style={{
+                  transform: on ? "translateY(0)" : "translateY(20px)",
+                  opacity: on ? 1 : 0,
+                  transition: `transform 600ms cubic-bezier(0.2,0.7,0.2,1) ${i * 60}ms, opacity 500ms ease ${i * 60}ms`,
+                }}
+              >
+                <div aria-hidden className="pointer-events-none absolute -right-4 -top-8 font-display text-[7rem] leading-none text-ink/[0.06]">
+                  {h.k}
+                </div>
+                <div className="relative flex items-center gap-3">
+                  <div className="ink-border-sm grid h-11 w-11 place-items-center rounded-xl bg-yellow text-xl">{h.icon}</div>
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Highlight / {h.k}</div>
+                </div>
+                <div className="relative mt-4 font-chunk text-2xl uppercase leading-tight">{h.t}</div>
+                <p className="relative mt-1 text-sm text-ink/75">{h.d}</p>
+                <div className="relative mt-4 h-0.5 w-0 bg-orange transition-all duration-700 group-hover:w-full" />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* pro-line CTA row */}
+        <div className="ink-border-lg mt-10 flex flex-col items-start justify-between gap-4 rounded-3xl bg-ink p-6 md:flex-row md:items-center md:p-8">
+          <div className="min-w-0">
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60">Ready when you are</div>
+            <div className="mt-1 font-chunk text-3xl uppercase leading-none md:text-4xl">
+              Stop scrolling. <span className="text-orange">Start building.</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={onRegister}
+              className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream hover-scale"
+            >
+              Register your team →
+            </button>
+            <a
+              href="#tracks"
+              className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink hover-scale"
+            >
+              Explore tracks
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ============= venue ============= */
+
 
 function Venue({ onSponsor }: { onSponsor: () => void }) {
   const items: Array<{ icon: string; t: string; sub: string; body: string; bullets?: string[]; cta?: { label: string; onClick?: () => void; href?: string } }> = [
