@@ -46,7 +46,7 @@ function Home() {
       <Stats />
       <About />
       <Mission />
-      <Timeline3D />
+      <ScheduleSection />
       <Tracks />
       <Prizes />
       <Sponsors onSponsor={openSponsorFor} />
