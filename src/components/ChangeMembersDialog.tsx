@@ -20,6 +20,7 @@ const schema = z.object({
 export function ChangeMembersDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const changeMembers = useServerFn(requestMemberChange);
 
   if (!open) return null;
 
@@ -38,36 +39,37 @@ export function ChangeMembersDialog({ open, onClose }: { open: boolean; onClose:
       .map((name) => ({ name }));
 
     setSubmitting(true);
-    const { data, error } = await (supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: { ok: boolean; code?: string; message?: string } | null; error: { message: string } | null }>)(
-      "request_member_change",
-      {
-        p_team_name: parsed.data.team_name,
-        p_lead_email: parsed.data.lead_email,
-        p_lead_phone: parsed.data.lead_phone,
-        p_members: members,
-        p_member_count: parsed.data.member_count,
-      },
-    );
-    setSubmitting(false);
+    try {
+      const result = await changeMembers({
+        data: {
+          team_name: parsed.data.team_name,
+          lead_email: parsed.data.lead_email,
+          lead_phone: parsed.data.lead_phone,
+          member_count: parsed.data.member_count,
+          members,
+        },
+      });
+      setSubmitting(false);
 
-    if (error) {
+      if (!result.ok) {
+        const map: Record<string, string> = {
+          not_found: "No team found with that name.",
+          verify_failed: "Lead email or phone doesn't match our records.",
+          already_changed: "Members were already updated once. Further changes are locked.",
+          invalid_count: "Team size must be between 2 and 4.",
+          invalid_members: "Members list is invalid.",
+        };
+        toast.error(map[result.code] ?? result.message ?? "Request rejected.");
+        return;
+      }
+      setDone(true);
+      toast.success("Members updated. This change is final.");
+    } catch {
+      setSubmitting(false);
       toast.error("Could not process request. Try again.");
-      return;
     }
-    if (!data?.ok) {
-      const map: Record<string, string> = {
-        not_found: "No team found with that name.",
-        verify_failed: "Lead email or phone doesn't match our records.",
-        already_changed: "Members were already updated once. Further changes are locked.",
-        invalid_count: "Team size must be between 2 and 4.",
-        invalid_members: "Members list is invalid.",
-      };
-      toast.error(map[data?.code ?? ""] ?? data?.message ?? "Request rejected.");
-      return;
-    }
-    setDone(true);
-    toast.success("Members updated. This change is final.");
   }
+
 
   return (
     <div className="fixed inset-0 z-[100] grid place-items-center bg-ink/70 p-4 backdrop-blur-sm" onClick={onClose}>
