@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { requestMemberChange } from "@/lib/team-members.functions";
 import { toast } from "sonner";
+
 
 const schema = z.object({
   team_name: z.string().trim().min(2).max(80),
