@@ -53,6 +53,8 @@ function Home() {
       <WhySponsor onSponsor={() => openSponsorFor("Title")} />
       <Community />
       <Team />
+      <BuilderManifesto onRegister={() => setOpenReg(true)} />
+
       <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
       <Venue onSponsor={() => openSponsorFor("Venue")} />
       <Faq />
@@ -389,23 +391,35 @@ function ScheduleSection() {
 
 
 function ScheduleTimeline() {
-  const phases = [
-    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", c: "orange", icon: "▶" },
-    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", c: "yellow", icon: "✕" },
-    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", c: "cobalt", icon: "✎" },
-    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", c: "rose", icon: "★" },
-    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", c: "orange", icon: "⚡" },
-    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", c: "cobalt", icon: "♛" },
+  type Phase = {
+    p: string;
+    t: string;
+    d: string;
+    date: string;
+    round: string;
+    duration: string;
+    actions: string[];
+    c: "orange" | "yellow" | "cobalt" | "rose";
+    icon: string;
+  };
+  const phases: Phase[] = [
+    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", date: "TBA · Jan 2026", round: "Round 0 · Onboarding", duration: "~3 weeks", actions: ["Create team & pick track", "Submit lead details", "Get confirmation email"], c: "orange", icon: "▶" },
+    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", date: "TBA · Feb 2026", round: "Round 0 · Cutoff", duration: "1 day", actions: ["Final team edits locked", "Payment / confirmation window closes", "Waitlist opens"], c: "yellow", icon: "✕" },
+    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", date: "TBA · Feb 2026", round: "Round 1 · Idea Screening", duration: "7 days", actions: ["Submit idea + scope doc", "Track alignment review", "Mentor feedback loop"], c: "cobalt", icon: "✎" },
+    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", date: "TBA · Mar 2026", round: "Round 2 · Selection", duration: "1 day", actions: ["Shortlist announced", "On-ground slot confirmed", "Travel & stay guide sent"], c: "rose", icon: "★" },
+    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", date: "TBA · Mar 2026", round: "Round 3 · The 36-Hour Build", duration: "36 hours", actions: ["Opening ceremony & kickoff", "Build sprints + mentor gates", "Midnight energy checkpoints"], c: "orange", icon: "⚡" },
+    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", date: "TBA · Mar 2026", round: "Round 4 · Final Showcase", duration: "Day 2 evening", actions: ["Live demos to judging panel", "Winner announcements", "After-party & networking"], c: "cobalt", icon: "♛" },
   ];
-  const colorMap: Record<string, { chip: string; ring: string }> = {
-    orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]" },
-    yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]" },
-    cobalt: { chip: "bg-cobalt text-cream", ring: "shadow-[6px_6px_0_var(--cobalt)]" },
-    rose:   { chip: "bg-rose text-ink",     ring: "shadow-[6px_6px_0_var(--rose)]" },
+  const colorMap: Record<string, { chip: string; ring: string; text: string }> = {
+    orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]", text: "text-orange" },
+    yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]", text: "text-ink" },
+    cobalt: { chip: "bg-cobalt text-cream", ring: "shadow-[6px_6px_0_var(--cobalt)]", text: "text-cobalt" },
+    rose:   { chip: "bg-rose text-ink",     ring: "shadow-[6px_6px_0_var(--rose)]", text: "text-rose" },
   };
 
   const itemsRef = useRef<HTMLLIElement[]>([]);
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
+  const [openIdx, setOpenIdx] = useState<number>(0);
 
   useEffect(() => {
     const io = new IntersectionObserver((entries) => {
@@ -421,30 +435,122 @@ function ScheduleTimeline() {
     return () => io.disconnect();
   }, []);
 
+  const unlockedPct = Math.round((revealed.size / phases.length) * 100);
+
   return (
     <div className="relative">
-      <SectionTag n="03">Schedule Timeline</SectionTag>
+      <SectionTag n="03">Schedule & Rounds</SectionTag>
       <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
         <div>
           <h2 className="font-chunk text-6xl uppercase leading-[0.95] tracking-tight md:text-8xl">
-            Schedule <span className="tag-yellow">timeline.</span>
+            Schedule &<br /><span className="tag-yellow">rounds.</span>
           </h2>
           <p className="mt-4 max-w-2xl text-ink/75 md:text-lg">
-            A precision-run 36 hours — from onboarding to final demo. Every round is engineered for velocity: registration, ideation, build sprints, mentor gates, judging and the closing showcase. Full minute-by-minute rundown drops with the venue reveal.
+            A precision-run 36 hours across 6 phases and 4 rounds — from onboarding to final demo. Tap any phase chip to reveal the exact date, round and key actions. Full minute-by-minute rundown drops with the venue reveal.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 font-mono text-[11px] font-bold uppercase tracking-widest">
             <span className="ink-border-sm rounded-full bg-cream px-3 py-1">36-Hour Build</span>
             <span className="ink-border-sm rounded-full bg-cream px-3 py-1">6 Phases</span>
+            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">4 Rounds</span>
             <span className="ink-border-sm rounded-full bg-cream px-3 py-1">Mentor Gates</span>
-            <span className="ink-border-sm rounded-full bg-cream px-3 py-1">Live Judging</span>
           </div>
         </div>
-        <div className="chip animate-blink bg-ink text-cream">● Dates locking in</div>
+        <div className="ink-border-sm flex items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-cream">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-orange font-display text-lg text-cream">{String(revealed.size).padStart(2, "0")}</div>
+          <div className="font-mono text-[10px] uppercase tracking-widest leading-tight">
+            <div className="opacity-70">Unlocked</div>
+            <div className="text-cream">{unlockedPct}% · {revealed.size}/{phases.length}</div>
+          </div>
+        </div>
       </div>
 
+      {/* progress rail */}
+      <div className="mt-8 h-2 w-full overflow-hidden rounded-full border-2 border-ink bg-cream">
+        <div
+          className="h-full bg-orange transition-all duration-700"
+          style={{ width: `${unlockedPct}%` }}
+        />
+      </div>
 
-      <ol className="relative mt-12">
-        {/* horizontal rail on md+, vertical on mobile */}
+      {/* phase chip strip — click to expand */}
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        {phases.map((ph, i) => {
+          const cm = colorMap[ph.c];
+          const isOpen = openIdx === i;
+          const isUnlocked = revealed.has(i);
+          return (
+            <button
+              key={ph.p}
+              type="button"
+              onClick={() => setOpenIdx(i)}
+              className={`ink-border-sm group flex flex-col items-start gap-1 rounded-2xl px-3 py-3 text-left transition-all ${isOpen ? `${cm.chip} scale-[1.02]` : "bg-cream hover:-translate-y-0.5"}`}
+            >
+              <div className="flex w-full items-center justify-between">
+                <span className={`font-mono text-[9px] font-bold uppercase tracking-widest ${isOpen ? "opacity-90" : "text-ink/60"}`}>{ph.p}</span>
+                <span className={`font-display text-sm ${isOpen ? "" : "opacity-70"}`}>{ph.icon}</span>
+              </div>
+              <span className="font-chunk text-sm uppercase leading-tight">{ph.t}</span>
+              <span className={`mt-0.5 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-widest ${isOpen ? "opacity-80" : "text-ink/50"}`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${isUnlocked ? "bg-orange" : "bg-ink/25"}`} />
+                {isUnlocked ? "unlocked" : "locked"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* expanded panel */}
+      <div className="ink-border-lg mt-6 overflow-hidden rounded-3xl bg-ink text-cream">
+        {phases.map((ph, i) => {
+          if (openIdx !== i) return null;
+          const cm = colorMap[ph.c];
+          return (
+            <div key={ph.p} className="grid gap-6 p-6 md:grid-cols-[auto,1fr] md:gap-10 md:p-10 animate-fade-in">
+              <div className="flex flex-col items-start gap-3">
+                <span className={`ink-border-sm inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${cm.chip}`}>
+                  {ph.p} · {ph.icon}
+                </span>
+                <div className="font-display text-7xl leading-none text-cream md:text-8xl">{String(i + 1).padStart(2, "0")}</div>
+                <div className={`font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60`}>of {String(phases.length).padStart(2, "0")}</div>
+              </div>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">📅 {ph.date}</span>
+                  <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">🎯 {ph.round}</span>
+                  <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">⏱ {ph.duration}</span>
+                </div>
+                <h4 className="mt-4 font-chunk text-4xl uppercase leading-none tracking-tight md:text-5xl">{ph.t}</h4>
+                <p className="mt-3 max-w-2xl text-cream/80">{ph.d}</p>
+                <ul className="mt-5 grid gap-2 sm:grid-cols-3">
+                  {ph.actions.map((a, ai) => (
+                    <li key={a} className="ink-border-sm rounded-xl bg-cream/5 px-3 py-2.5 text-sm text-cream/90">
+                      <span className={`mr-1.5 font-mono text-[10px] font-bold ${cm.text}`}>0{ai + 1}</span>
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx((v) => Math.max(0, v - 1))}
+                    disabled={openIdx === 0}
+                    className="ink-border-sm rounded-full bg-cream px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink disabled:opacity-40"
+                  >← Prev phase</button>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIdx((v) => Math.min(phases.length - 1, v + 1))}
+                    disabled={openIdx === phases.length - 1}
+                    className="ink-border-sm rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream disabled:opacity-40"
+                  >Next phase →</button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* scroll-reveal timeline rail (immersive alternative to removed level path) */}
+      <ol className="relative mt-16">
         <div className="pointer-events-none absolute left-6 top-0 h-full w-1 bg-ink/15 md:left-1/2 md:-translate-x-1/2" aria-hidden>
           <div className="w-full bg-orange transition-all duration-700" style={{ height: `${(revealed.size / phases.length) * 100}%` }} />
         </div>
@@ -467,8 +573,10 @@ function ScheduleTimeline() {
                 {ph.icon}
               </span>
               <div className={`hidden md:block ${left ? "order-2" : "order-1"}`} />
-              <article
-                className={`ink-border-lg col-span-2 ml-14 rounded-2xl bg-cream p-5 md:col-span-1 md:ml-0 md:p-6 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
+              <button
+                type="button"
+                onClick={() => setOpenIdx(i)}
+                className={`ink-border-lg col-span-2 ml-14 rounded-2xl bg-cream p-5 text-left md:col-span-1 md:ml-0 md:p-6 ${left ? "md:order-1 md:mr-12 md:text-right" : "md:order-2 md:ml-12"}`}
                 style={{
                   transform: isOn ? "translateY(0) rotate(0)" : `translateY(24px) rotate(${left ? -1 : 1}deg)`,
                   opacity: isOn ? 1 : 0,
@@ -478,11 +586,14 @@ function ScheduleTimeline() {
               >
                 <div className={`flex items-center gap-2 ${left ? "md:justify-end" : ""}`}>
                   <span className={`ink-border-sm inline-block px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${cm.chip}`}>{ph.p}</span>
-                  <span className="chip">Date · TBA</span>
+                  <span className="chip">{ph.date}</span>
                 </div>
                 <h4 className="mt-3 font-chunk text-2xl uppercase leading-tight md:text-3xl">{ph.t}</h4>
                 <p className="mt-2 text-sm text-ink/75">{ph.d}</p>
-              </article>
+                <div className={`mt-3 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60 ${left ? "md:text-right" : ""}`}>
+                  {ph.round} · Tap to expand ↑
+                </div>
+              </button>
             </li>
           );
         })}
@@ -494,6 +605,7 @@ function ScheduleTimeline() {
     </div>
   );
 }
+
 
 
 /* ============= tracks ============= */
@@ -869,38 +981,90 @@ function Team() {
       </h2>
 
       <div className="mt-16">
-        {/* founder spotlight — content LEFT, image RIGHT */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink p-8 text-cream md:p-12">
-          <div className="grid items-center gap-10 md:grid-cols-[1fr,auto]">
-            <div className="min-w-0 md:order-1">
-              <div className="chip bg-orange text-cream border-cream">Founder & Organizer</div>
-              <h3 className="mt-3 font-chunk text-4xl uppercase leading-none tracking-tight md:text-6xl">Ansh Rajore</h3>
-              <p className="font-script text-3xl text-orange">leading the charge</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+        {/* founder spotlight — editorial split with stats */}
+        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink text-cream">
+          {/* decorative wordmark */}
+          <div aria-hidden className="pointer-events-none absolute -right-6 -top-8 select-none font-display text-[14rem] leading-none text-cream/[0.04] md:text-[20rem]">
+            ANSH
+          </div>
+          {/* corner tag */}
+          <div className="absolute right-5 top-5 z-10 ink-border-sm tag-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(3deg)" }}>
+            Founder · Team Nest
+          </div>
+
+          <div className="grid gap-0 md:grid-cols-[minmax(0,1fr),minmax(0,1.15fr)]">
+            {/* LEFT — copy */}
+            <div className="relative z-10 flex flex-col justify-center p-8 md:p-12">
+              <div className="chip bg-orange text-cream border-cream w-max">Founder & Organizer</div>
+              <h3 className="mt-4 font-chunk text-5xl uppercase leading-[0.9] tracking-tight md:text-7xl">
+                Ansh<br />
+                <span className="tag-orange text-cream inline-block">Rajore.</span>
+              </h3>
+              <p className="mt-2 font-script text-3xl text-orange md:text-4xl">leading the charge</p>
+
+              <div className="mt-5 flex flex-wrap gap-1.5">
                 <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
-                <span className="chip bg-yellow text-ink">SUNHACKS</span>
+                <span className="chip bg-yellow text-ink">SUNHACKS · 08/2025</span>
                 <span className="chip bg-rose text-ink">Nashik</span>
               </div>
-              <p className="mt-4 max-w-2xl text-sm text-cream/80 md:text-base">
-                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026.
+
+              <p className="mt-5 max-w-xl text-cream/80 md:text-base">
+                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026 — a hackathon designed by builders, for builders.
               </p>
-              <a href="#" className="ink-border-sm mt-5 inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">LinkedIn →</a>
+
+              {/* stat strip */}
+              <div className="mt-6 grid grid-cols-3 gap-2">
+                {[
+                  { k: "5×", v: "Hackathon Winner" },
+                  { k: "3000+", v: "Devs Connected" },
+                  { k: "12+", v: "Events Shipped" },
+                ].map((s) => (
+                  <div key={s.v} className="ink-border-sm rounded-xl bg-cream/5 p-3">
+                    <div className="font-display text-2xl leading-none text-cream md:text-3xl">{s.k}</div>
+                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream/60">{s.v}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <a href="#" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale">
+                  LinkedIn →
+                </a>
+                <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale">
+                  Build with him →
+                </a>
+              </div>
             </div>
 
-            <div className="relative shrink-0 md:order-2">
+            {/* RIGHT — big image with overlay tags */}
+            <div className="relative min-h-[360px] md:min-h-[520px]">
               <img
                 src={anshAsset.url}
                 alt="Ansh Rajore — Founder of Team Nest"
-                className="ink-border-sm h-52 w-52 rounded-2xl border-2 border-cream object-cover md:h-64 md:w-64"
+                className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute -left-3 -top-3 ink-border-sm tag-orange px-2 py-0.5 font-chunk text-[11px] uppercase tracking-tight" style={{ transform: "rotate(-6deg)" }}>
+              {/* grain / ink gradient overlay */}
+              <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ink/60 md:to-ink/40" />
+              <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
+
+              {/* floating tags */}
+              <div className="absolute left-4 top-4 ink-border-sm tag-orange px-2.5 py-1 font-chunk text-xs uppercase tracking-tight text-cream" style={{ transform: "rotate(-4deg)" }}>
                 5× winner
+              </div>
+              <div className="absolute right-4 top-4 ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
+                ● On mission
+              </div>
+              <div className="absolute bottom-4 left-4 right-4 ink-border-sm rounded-2xl bg-cream/95 px-4 py-3 text-ink backdrop-blur-sm">
+                <div className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">Currently shipping</div>
+                <div className="mt-0.5 font-chunk text-lg uppercase leading-tight">Build With Nashik · 2026</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
 
       <div className="mt-12 flex items-center gap-3">
         <span className="chip">Core Team</span>
@@ -932,7 +1096,137 @@ function Team() {
   );
 }
 
+/* ============= builder manifesto ============= */
+
+function BuilderManifesto({ onRegister }: { onRegister: () => void }) {
+  const highlights = [
+    { k: "01", icon: "⚡", t: "Ship in 36", d: "No fluff. Just build. Pressure that turns ideas into demos." },
+    { k: "02", icon: "🎯", t: "Mentor gates", d: "Checkpoints with founders & senior engineers — feedback that moves the needle." },
+    { k: "03", icon: "🏆", t: "Real prizes", d: "Cash, cloud credits, hardware, and interviews with hiring partners." },
+    { k: "04", icon: "🤝", t: "Builder network", d: "Land in a room full of the people you actually want to build with next." },
+    { k: "05", icon: "🚀", t: "Launchpad demo", d: "Pitch to a judging panel of founders, investors and community leaders." },
+    { k: "06", icon: "🔥", t: "On-ground energy", d: "Nashik's first flagship builder stage — designed for makers, by makers." },
+  ];
+
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const nodes = gridRef.current?.querySelectorAll<HTMLElement>("[data-hi]") ?? [];
+    const io = new IntersectionObserver((entries) => {
+      setVisible((prev) => {
+        const next = new Set(prev);
+        for (const e of entries) if (e.isIntersecting) next.add(Number(e.target.getAttribute("data-hi")));
+        return next;
+      });
+    }, { threshold: 0.25 });
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section className="relative border-y-2 border-ink bg-cobalt py-28 text-cream">
+      {/* decorative BG type */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-6 select-none overflow-hidden">
+        <div className="font-display text-[16vw] leading-none tracking-tight text-cream/[0.06] whitespace-nowrap text-center">
+          FOR&nbsp;THE&nbsp;BUILDERS
+        </div>
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        <SectionTag n="10">For Builders</SectionTag>
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr,1fr] lg:items-end">
+          <div>
+            <h2 className="font-chunk text-6xl uppercase leading-[0.9] tracking-tight md:text-8xl">
+              This one's for the <span className="tag-yellow text-ink">builders.</span>
+            </h2>
+            <p className="mt-5 max-w-2xl text-cream/85 md:text-lg">
+              If you'd rather ship a rough v1 than talk about a perfect v10 — you're the reason this exists. Build With Nashik 2026 is engineered to move fast: real problems, real mentors, real judges, real prizes. No hoodies-in-exchange-for-your-idea nonsense.
+            </p>
+          </div>
+          <div className="ink-border-sm rounded-2xl bg-ink/40 p-5 backdrop-blur-sm">
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-cream/70">Next step for builders</div>
+            <div className="mt-2 font-chunk text-3xl uppercase leading-none">Lock your team →</div>
+            <p className="mt-2 text-sm text-cream/75">Team of 2–4. Pick a track. We'll take it from there.</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onRegister}
+                className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale"
+              >
+                Register team →
+              </button>
+              <a
+                href="#timeline"
+                className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale"
+              >
+                See schedule
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* animated feature highlights */}
+        <div ref={gridRef} className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {highlights.map((h, i) => {
+            const on = visible.has(i);
+            return (
+              <div
+                key={h.k}
+                data-hi={i}
+                className="ink-border-sm group relative overflow-hidden rounded-2xl bg-cream p-5 text-ink transition-transform hover:-translate-y-1"
+                style={{
+                  transform: on ? "translateY(0)" : "translateY(20px)",
+                  opacity: on ? 1 : 0,
+                  transition: `transform 600ms cubic-bezier(0.2,0.7,0.2,1) ${i * 60}ms, opacity 500ms ease ${i * 60}ms`,
+                }}
+              >
+                <div aria-hidden className="pointer-events-none absolute -right-4 -top-8 font-display text-[7rem] leading-none text-ink/[0.06]">
+                  {h.k}
+                </div>
+                <div className="relative flex items-center gap-3">
+                  <div className="ink-border-sm grid h-11 w-11 place-items-center rounded-xl bg-yellow text-xl">{h.icon}</div>
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">Highlight / {h.k}</div>
+                </div>
+                <div className="relative mt-4 font-chunk text-2xl uppercase leading-tight">{h.t}</div>
+                <p className="relative mt-1 text-sm text-ink/75">{h.d}</p>
+                <div className="relative mt-4 h-0.5 w-0 bg-orange transition-all duration-700 group-hover:w-full" />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* pro-line CTA row */}
+        <div className="ink-border-lg mt-10 flex flex-col items-start justify-between gap-4 rounded-3xl bg-ink p-6 md:flex-row md:items-center md:p-8">
+          <div className="min-w-0">
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60">Ready when you are</div>
+            <div className="mt-1 font-chunk text-3xl uppercase leading-none md:text-4xl">
+              Stop scrolling. <span className="text-orange">Start building.</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={onRegister}
+              className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream hover-scale"
+            >
+              Register your team →
+            </button>
+            <a
+              href="#tracks"
+              className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink hover-scale"
+            >
+              Explore tracks
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ============= venue ============= */
+
 
 function Venue({ onSponsor }: { onSponsor: () => void }) {
   const items: Array<{ icon: string; t: string; sub: string; body: string; bullets?: string[]; cta?: { label: string; onClick?: () => void; href?: string } }> = [
