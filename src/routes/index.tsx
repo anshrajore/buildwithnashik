@@ -53,6 +53,8 @@ function Home() {
       <WhySponsor onSponsor={() => openSponsorFor("Title")} />
       <Community />
       <Team />
+      <BuilderManifesto onRegister={() => setOpenReg(true)} />
+
       <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
       <Venue onSponsor={() => openSponsorFor("Venue")} />
       <Faq />
