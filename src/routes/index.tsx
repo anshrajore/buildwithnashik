@@ -1239,7 +1239,8 @@ function Legacy() {
       title: "SUNHACKS",
       sub: "Asia's Largest GenAI Hackathon",
       role: "Organizer",
-      year: "2024",
+      year: "08 / 2025",
+
       tone: "orange",
       icon: "✦",
       image: sunhacksAsset.url,
@@ -1283,7 +1284,7 @@ function Legacy() {
 
   const milestones = [
     { y: "2023", t: "Participated in National Hackathons", d: "Cut our teeth across India's biggest builder stages." },
-    { y: "2024", t: "Organized SUNHACKS", d: "Asia's largest GenAI hackathon — operations end-to-end." },
+    { y: "08/2025", t: "Organized SUNHACKS", d: "Asia's largest GenAI hackathon — operations end-to-end." },
     { y: "2024", t: "Hosted Community Events", d: "Workshops, meetups and dev jams across Nashik." },
     { y: "2025", t: "Connected Students & Startups", d: "Mumbai Tech Week + founder office hours." },
     { y: "2025", t: "Expanded Team Nest", d: "From a small crew to a multi-city volunteer network." },
