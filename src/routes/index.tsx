@@ -29,7 +29,14 @@ function Home() {
   const [openSponsor, setOpenSponsor] = useState(false);
   const [openVol, setOpenVol] = useState(false);
   const [openChange, setOpenChange] = useState(false);
+  const [openMj, setOpenMj] = useState(false);
+  const [mjType, setMjType] = useState<"mentor" | "judge">("mentor");
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
+
+  function openMentorJudge(t: "mentor" | "judge") {
+    setMjType(t);
+    setOpenMj(true);
+  }
 
   function openSponsorFor(tier?: string) {
     setSponsorTier(tier);
