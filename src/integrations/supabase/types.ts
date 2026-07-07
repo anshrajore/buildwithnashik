@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      mentor_judge_applications: {
+        Row: {
+          application_type: string
+          availability: string | null
+          bio: string
+          city: string | null
+          created_at: string
+          current_title: string
+          email: string
+          experience_years: number
+          expertise: string
+          full_name: string
+          id: string
+          linkedin_url: string | null
+          motivation: string | null
+          organization: string
+          phone: string
+          status: string
+        }
+        Insert: {
+          application_type: string
+          availability?: string | null
+          bio: string
+          city?: string | null
+          created_at?: string
+          current_title: string
+          email: string
+          experience_years: number
+          expertise: string
+          full_name: string
+          id?: string
+          linkedin_url?: string | null
+          motivation?: string | null
+          organization: string
+          phone: string
+          status?: string
+        }
+        Update: {
+          application_type?: string
+          availability?: string | null
+          bio?: string
+          city?: string | null
+          created_at?: string
+          current_title?: string
+          email?: string
+          experience_years?: number
+          expertise?: string
+          full_name?: string
+          id?: string
+          linkedin_url?: string | null
+          motivation?: string | null
+          organization?: string
+          phone?: string
+          status?: string
+        }
+        Relationships: []
+      }
       sponsor_inquiries: {
         Row: {
           company_name: string
