@@ -537,6 +537,35 @@ function ScheduleTimeline() {
                 </div>
                 <h4 className="mt-4 font-chunk text-4xl uppercase leading-none tracking-tight md:text-5xl">{ph.t}</h4>
                 <p className="mt-3 max-w-2xl text-cream/80">{ph.d}</p>
+
+                {/* countdown */}
+                {(() => {
+                  const cd = countdown(ph.target);
+                  const units: [string, number][] = [["Days", cd.d], ["Hours", cd.h], ["Mins", cd.m], ["Secs", cd.s]];
+                  return (
+                    <div className="ink-border-sm mt-5 rounded-2xl bg-cream/[0.06] p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60">
+                          {cd.done ? "● Phase live / passed" : "T-minus until phase"}
+                        </div>
+                        <div className={`font-mono text-[10px] font-bold uppercase tracking-widest ${cm.text}`}>
+                          {cd.done ? "unlocked" : "counting"}
+                        </div>
+                      </div>
+                      <div className="mt-3 grid grid-cols-4 gap-2" role="timer" aria-live="polite" aria-label={`Time until ${ph.t}`}>
+                        {units.map(([label, val]) => (
+                          <div key={label} className="ink-border-sm rounded-xl bg-ink px-2 py-3 text-center">
+                            <div className="font-display text-3xl leading-none text-cream tabular-nums md:text-4xl">
+                              {String(val).padStart(2, "0")}
+                            </div>
+                            <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream/60">{label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 <ul className="mt-5 grid gap-2 sm:grid-cols-3">
                   {ph.actions.map((a, ai) => (
                     <li key={a} className="ink-border-sm rounded-xl bg-cream/5 px-3 py-2.5 text-sm text-cream/90">
