@@ -1260,6 +1260,176 @@ function Team() {
   );
 }
 
+/* ============= mentors & judges ============= */
+
+function MentorsJudges({ onApply }: { onApply: (t: "mentor" | "judge") => void }) {
+  const cards = [
+    {
+      k: "mentor" as const,
+      badge: "Mentor",
+      title: "Mentor a team.",
+      accent: "cobalt",
+      pill: "bg-cobalt text-cream",
+      cta: "Apply as mentor →",
+      copy: "Ride shotgun with builders through the 36-hour push. Debug, scope, unblock, and push demos across the line.",
+      bullets: [
+        "6-hour mentor shifts across the build window",
+        "Matched to teams by your expertise tags",
+        "Private mentor lounge · food & drinks handled",
+        "First look at hiring pipelines from partner teams",
+      ],
+      req: ["3+ yrs shipping in your domain", "Willing to give real feedback", "On-ground in Nashik or async video"],
+      icon: "🧭",
+    },
+    {
+      k: "judge" as const,
+      badge: "Judge",
+      title: "Judge the demos.",
+      accent: "rose",
+      pill: "bg-rose text-ink",
+      cta: "Apply as judge →",
+      copy: "Come in on day 2. Watch live demos from shortlisted teams and pick who takes home cash, credits and interviews.",
+      bullets: [
+        "Day-2 evening judging panel · 3–4 hours",
+        "Score projects against a shared rubric",
+        "Meet finalist teams over dinner & networking",
+        "Recognition across all event and press channels",
+      ],
+      req: ["Founder / senior IC / investor / researcher", "Comfortable scoring across tracks", "On-ground preferred, remote ok"],
+      icon: "⚖",
+    },
+  ];
+
+  const process = [
+    { n: "01", t: "Apply", d: "Fill the form. Tell us your expertise + why you want in." },
+    { n: "02", t: "Curate", d: "Team Nest reviews. We match mentors to tracks, judges to panels." },
+    { n: "03", t: "Confirm", d: "You get an invite with schedule, comms channel, and briefing docs." },
+    { n: "04", t: "Show up", d: "36 hours of mentoring, or a day-2 judging block. We handle the rest." },
+  ];
+
+  return (
+    <section id="mentors" className="relative mx-auto max-w-7xl px-6 py-28">
+      {/* backdrop wordmark */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-6 select-none overflow-hidden">
+        <div className="font-display text-[18vw] leading-none tracking-tight text-ink/[0.05] whitespace-nowrap text-center">
+          MENTORS&nbsp;·&nbsp;JUDGES
+        </div>
+      </div>
+
+      <div className="relative">
+        <SectionTag n="11">Mentors & Judges</SectionTag>
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1.15fr,1fr] lg:items-end">
+          <h2 className="font-chunk text-6xl uppercase leading-[0.9] tracking-tight md:text-8xl">
+            Shape the <span className="tag-orange text-cream">next wave.</span>
+          </h2>
+          <p className="max-w-xl text-ink/80 md:text-lg">
+            The best hackathons live and die by who's in the mentor room and behind the judging table. If you've shipped
+            something real and want to pay it forward — apply to mentor. If you can pick winners with sharp taste —
+            apply to judge.
+          </p>
+        </div>
+
+        {/* two-role split */}
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {cards.map((c) => (
+            <div
+              key={c.k}
+              className="ink-border-lg relative flex flex-col overflow-hidden rounded-3xl bg-cream p-6 md:p-8"
+            >
+              {/* corner icon disc */}
+              <div className="flex items-center justify-between">
+                <span className={`ink-border-sm inline-flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${c.pill}`}>
+                  <span aria-hidden>{c.icon}</span> {c.badge}
+                </span>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50">
+                  Role / {c.k === "mentor" ? "01" : "02"}
+                </span>
+              </div>
+
+              <h3 className="mt-5 font-chunk text-4xl uppercase leading-none tracking-tight md:text-5xl">{c.title}</h3>
+              <p className="mt-3 max-w-md text-ink/75">{c.copy}</p>
+
+              <div className="mt-6 grid gap-2">
+                {c.bullets.map((b, i) => (
+                  <div key={b} className="flex items-start gap-3">
+                    <span className={`ink-border-sm mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md font-mono text-[10px] font-bold ${c.pill}`}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-sm text-ink/85">{b}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 ink-border-sm rounded-2xl bg-ink/5 p-4">
+                <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/60">
+                  Who fits
+                </div>
+                <ul className="mt-2 flex flex-wrap gap-1.5">
+                  {c.req.map((r) => (
+                    <li key={r} className="ink-border-sm rounded-full bg-cream px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/80">
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between gap-3">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50">
+                  Rolling review · 1 week reply
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onApply(c.k)}
+                  className={`ink-border-sm inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest hover-scale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${c.pill}`}
+                >
+                  {c.cta}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* how it works strip */}
+        <div className="ink-border-lg mt-8 overflow-hidden rounded-3xl bg-ink p-6 text-cream md:p-8">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60">How it works</div>
+              <div className="mt-1 font-chunk text-3xl uppercase leading-none md:text-4xl">
+                Four steps. <span className="text-orange">Zero fluff.</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => onApply("mentor")}
+                className="ink-border-sm rounded-full bg-cobalt px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale"
+              >
+                Mentor form
+              </button>
+              <button
+                type="button"
+                onClick={() => onApply("judge")}
+                className="ink-border-sm rounded-full bg-rose px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale"
+              >
+                Judge form
+              </button>
+            </div>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {process.map((p) => (
+              <div key={p.n} className="ink-border-sm rounded-2xl bg-cream/[0.06] p-4">
+                <div className="font-display text-3xl leading-none text-cream">{p.n}</div>
+                <div className="mt-2 font-chunk text-lg uppercase leading-tight">{p.t}</div>
+                <p className="mt-1 text-sm text-cream/75">{p.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ============= builder manifesto ============= */
 
 function BuilderManifesto({ onRegister }: { onRegister: () => void }) {
