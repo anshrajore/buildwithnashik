@@ -1026,87 +1026,195 @@ function Team() {
       </h2>
 
       <div className="mt-16">
-        {/* founder spotlight — editorial split with stats */}
+        {/* ============= FOUNDER DOSSIER — redesigned ============= */}
         <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink text-cream">
-          {/* decorative wordmark */}
-          <div aria-hidden className="pointer-events-none absolute -right-6 -top-8 select-none font-display text-[14rem] leading-none text-cream/[0.04] md:text-[20rem]">
-            ANSH
-          </div>
-          {/* corner tag */}
-          <div className="absolute right-5 top-5 z-10 ink-border-sm tag-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream" style={{ transform: "rotate(3deg)" }}>
-            Founder · Team Nest
+          {/* dot-grid backdrop */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage: "radial-gradient(var(--cream) 1px, transparent 1px)",
+              backgroundSize: "22px 22px",
+            }}
+          />
+          {/* massive wordmark */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -left-2 -bottom-6 select-none whitespace-nowrap font-display text-[22vw] leading-[0.8] tracking-tight text-cream/[0.05] md:text-[16rem]"
+          >
+            RAJORE
           </div>
 
-          <div className="grid gap-0 md:grid-cols-[minmax(0,1fr),minmax(0,1.15fr)]">
-            {/* LEFT — copy */}
-            <div className="relative z-10 flex flex-col justify-center p-8 md:p-12">
-              <div className="chip bg-orange text-cream border-cream w-max">Founder & Organizer</div>
-              <h3 className="mt-4 font-chunk text-5xl uppercase leading-[0.9] tracking-tight md:text-7xl">
-                Ansh<br />
-                <span className="tag-orange text-cream inline-block">Rajore.</span>
-              </h3>
-              <p className="mt-2 font-script text-3xl text-orange md:text-4xl">leading the charge</p>
+          {/* top ticker */}
+          <div
+            aria-hidden
+            className="relative flex items-center gap-3 border-b border-cream/15 bg-ink/60 px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream/70"
+          >
+            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-orange" />
+            <span>Dossier · 001</span>
+            <span className="opacity-40">/</span>
+            <span>Founder file</span>
+            <span className="opacity-40">/</span>
+            <span>Team Nest</span>
+            <span className="ml-auto hidden sm:inline">buildwithnashik.in · 2026</span>
+          </div>
 
-              <div className="mt-5 flex flex-wrap gap-1.5">
-                <span className="chip bg-cobalt text-cream border-cream">Team Nest</span>
-                <span className="chip bg-yellow text-ink">SUNHACKS · 08/2025</span>
-                <span className="chip bg-rose text-ink">Nashik</span>
+          <div className="relative grid gap-0 lg:grid-cols-[minmax(0,0.95fr),minmax(0,1fr)]">
+            {/* LEFT — the story */}
+            <div className="relative z-10 flex flex-col justify-center gap-5 p-6 sm:p-8 md:p-10 lg:p-12">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="ink-border-sm rounded-full bg-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
+                  Founder · Organizer
+                </span>
+                <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
+                  Est. 2023
+                </span>
               </div>
 
-              <p className="mt-5 max-w-xl text-cream/80 md:text-base">
-                Organizer of SUNHACKS and the driving force behind Team Nest's community work in Nashik. Now bringing everything we've learned to Build With Nashik 2026 — a hackathon designed by builders, for builders.
+              <div>
+                <h3 className="font-chunk text-[13vw] uppercase leading-[0.85] tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+                  Ansh
+                  <br />
+                  <span className="tag-orange text-cream inline-block">Rajore.</span>
+                </h3>
+                <p className="mt-2 font-script text-3xl text-orange sm:text-4xl">building in public</p>
+              </div>
+
+              <p className="max-w-xl text-sm text-cream/85 sm:text-base md:text-lg">
+                Organizer of <span className="text-cream">SUNHACKS · 08/2025</span> and the driving force behind{" "}
+                <span className="text-cream">Team Nest</span>'s community work in Nashik. Now bringing everything he's learned to Build With Nashik 2026 — a hackathon designed by builders, for builders.
               </p>
 
+              {/* mini résumé timeline */}
+              <div className="ink-border-sm rounded-2xl bg-cream/[0.05] p-4">
+                <div className="mb-3 font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60">
+                  Recent shipments
+                </div>
+                <ol className="grid gap-2">
+                  {[
+                    { y: "2023", t: "Founded Team Nest · Nashik" },
+                    { y: "08/2025", t: "Organized SUNHACKS · flagship hackathon" },
+                    { y: "2026", t: "Ships Build With Nashik · you're here" },
+                  ].map((r) => (
+                    <li key={r.y} className="flex items-center gap-3">
+                      <span className="ink-border-sm rounded-md bg-yellow px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-ink">
+                        {r.y}
+                      </span>
+                      <span className="text-sm text-cream/90">{r.t}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
               {/* stat strip */}
-              <div className="mt-6 grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {[
                   { k: "5×", v: "Hackathon Winner" },
                   { k: "3000+", v: "Devs Connected" },
                   { k: "12+", v: "Events Shipped" },
                 ].map((s) => (
-                  <div key={s.v} className="ink-border-sm rounded-xl bg-cream/5 p-3">
+                  <div key={s.v} className="ink-border-sm rounded-xl bg-cream/[0.05] p-3">
                     <div className="font-display text-2xl leading-none text-cream md:text-3xl">{s.k}</div>
-                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream/60">{s.v}</div>
+                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream/60">
+                      {s.v}
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                <a href="#" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale">
-                  LinkedIn →
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href="https://www.linkedin.com/in/ansh-rajore/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Ansh Rajore on LinkedIn (opens in a new tab)"
+                  className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
+                >
+                  LinkedIn ↗
                 </a>
-                <a href="#register" className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale">
+                <a
+                  href="#register"
+                  className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
+                >
                   Build with him →
                 </a>
               </div>
             </div>
 
-            {/* RIGHT — big image with overlay tags */}
-            <div className="relative min-h-[360px] md:min-h-[520px]">
-              <img
-                src={anshAsset.url}
-                alt="Ansh Rajore — Founder of Team Nest"
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
-              />
-              {/* grain / ink gradient overlay */}
-              <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ink/60 md:to-ink/40" />
-              <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
+            {/* RIGHT — portrait card (no face cropping) */}
+            <div className="relative p-4 sm:p-6 lg:p-8">
+              <div className="ink-border-lg relative mx-auto w-full max-w-md overflow-hidden rounded-3xl bg-cream lg:max-w-none">
+                {/* portrait area — aspect ratio so face never crops on desktop */}
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-ink sm:aspect-[3/4] lg:aspect-[4/5]">
+                  <img
+                    src={anshAsset.url}
+                    alt="Portrait of Ansh Rajore, founder of Team Nest, smiling in a hoodie with a code editor visible in the background"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    style={{ objectPosition: "50% 22%" }}
+                    loading="lazy"
+                    decoding="async"
+                  />
 
-              {/* floating tags */}
-              <div className="absolute left-4 top-4 ink-border-sm tag-orange px-2.5 py-1 font-chunk text-xs uppercase tracking-tight text-cream" style={{ transform: "rotate(-4deg)" }}>
-                5× winner
+                  {/* subtle top-fade for tag legibility */}
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/50 to-transparent"
+                  />
+
+                  {/* corner tags */}
+                  <div
+                    className="ink-border-sm absolute left-3 top-3 rounded-md bg-orange px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
+                    style={{ transform: "rotate(-4deg)" }}
+                  >
+                    ★ 5× Winner
+                  </div>
+                  <div className="ink-border-sm absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
+                    <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-orange" />
+                    On mission
+                  </div>
+
+                  {/* film-strip perforations on left edge */}
+                  <div aria-hidden className="pointer-events-none absolute left-1.5 top-1/2 hidden -translate-y-1/2 flex-col gap-1.5 lg:flex">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <span key={i} className="block h-2 w-2 rounded-sm bg-cream/70" />
+                    ))}
+                  </div>
+                </div>
+
+                {/* trading-card footer */}
+                <div className="grid gap-3 border-t-2 border-ink bg-cream p-4 text-ink sm:p-5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">Currently shipping</div>
+                      <div className="mt-0.5 truncate font-chunk text-lg uppercase leading-tight sm:text-xl">
+                        Build With Nashik · 2026
+                      </div>
+                    </div>
+                    <div className="ink-border-sm shrink-0 rounded-lg bg-yellow px-2 py-1 text-center">
+                      <div className="font-display text-lg leading-none text-ink">36h</div>
+                      <div className="font-mono text-[8px] font-bold uppercase tracking-widest text-ink/70">build</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="chip !text-[9px]">Team Nest</span>
+                    <span className="chip bg-cobalt text-cream border-ink !text-[9px]">SUNHACKS · 08/2025</span>
+                    <span className="chip !text-[9px]">Nashik</span>
+                  </div>
+                </div>
               </div>
-              <div className="absolute right-4 top-4 ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
-                ● On mission
-              </div>
-              <div className="absolute bottom-4 left-4 right-4 ink-border-sm rounded-2xl bg-cream/95 px-4 py-3 text-ink backdrop-blur-sm">
-                <div className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">Currently shipping</div>
-                <div className="mt-0.5 font-chunk text-lg uppercase leading-tight">Build With Nashik · 2026</div>
+
+              {/* floating stamp */}
+              <div
+                aria-hidden
+                className="ink-border-sm absolute -bottom-2 right-4 hidden rounded-full bg-rose px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink shadow-[4px_4px_0_var(--ink)] sm:block"
+                style={{ transform: "rotate(6deg)" }}
+              >
+                ✓ Verified builder
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
 
