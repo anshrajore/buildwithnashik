@@ -402,14 +402,30 @@ function ScheduleTimeline() {
     c: "orange" | "yellow" | "cobalt" | "rose";
     icon: string;
   };
-  const phases: Phase[] = [
-    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", date: "TBA · Jan 2026", round: "Round 0 · Onboarding", duration: "~3 weeks", actions: ["Create team & pick track", "Submit lead details", "Get confirmation email"], c: "orange", icon: "▶" },
-    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", date: "TBA · Feb 2026", round: "Round 0 · Cutoff", duration: "1 day", actions: ["Final team edits locked", "Payment / confirmation window closes", "Waitlist opens"], c: "yellow", icon: "✕" },
-    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", date: "TBA · Feb 2026", round: "Round 1 · Idea Screening", duration: "7 days", actions: ["Submit idea + scope doc", "Track alignment review", "Mentor feedback loop"], c: "cobalt", icon: "✎" },
-    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", date: "TBA · Mar 2026", round: "Round 2 · Selection", duration: "1 day", actions: ["Shortlist announced", "On-ground slot confirmed", "Travel & stay guide sent"], c: "rose", icon: "★" },
-    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", date: "TBA · Mar 2026", round: "Round 3 · The 36-Hour Build", duration: "36 hours", actions: ["Opening ceremony & kickoff", "Build sprints + mentor gates", "Midnight energy checkpoints"], c: "orange", icon: "⚡" },
-    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", date: "TBA · Mar 2026", round: "Round 4 · Final Showcase", duration: "Day 2 evening", actions: ["Live demos to judging panel", "Winner announcements", "After-party & networking"], c: "cobalt", icon: "♛" },
+  const phases: (Phase & { target: string })[] = [
+    { p: "Phase 01", t: "Team Registration Opens", d: "Lock your team of 2–4 and pick a track.", date: "15 Jan 2026", target: "2026-01-15T09:00:00+05:30", round: "Round 0 · Onboarding", duration: "~3 weeks", actions: ["Create team & pick track", "Submit lead details", "Get confirmation email"], c: "orange", icon: "▶" },
+    { p: "Phase 02", t: "Registration Closes", d: "Last call. After this, the gates lock.", date: "05 Feb 2026", target: "2026-02-05T23:59:00+05:30", round: "Round 0 · Cutoff", duration: "1 day", actions: ["Final team edits locked", "Payment / confirmation window closes", "Waitlist opens"], c: "yellow", icon: "✕" },
+    { p: "Phase 03", t: "Submission Window", d: "Ideas, scoping & shortlists begin.", date: "12 Feb 2026", target: "2026-02-12T09:00:00+05:30", round: "Round 1 · Idea Screening", duration: "7 days", actions: ["Submit idea + scope doc", "Track alignment review", "Mentor feedback loop"], c: "cobalt", icon: "✎" },
+    { p: "Phase 04", t: "Final Shortlist", d: "Selected teams confirmed for on-ground.", date: "01 Mar 2026", target: "2026-03-01T18:00:00+05:30", round: "Round 2 · Selection", duration: "1 day", actions: ["Shortlist announced", "On-ground slot confirmed", "Travel & stay guide sent"], c: "rose", icon: "★" },
+    { p: "Phase 05", t: "Hackathon Begins", d: "36 hours. The clock starts in Nashik.", date: "14 Mar 2026", target: "2026-03-14T10:00:00+05:30", round: "Round 3 · The 36-Hour Build", duration: "36 hours", actions: ["Opening ceremony & kickoff", "Build sprints + mentor gates", "Midnight energy checkpoints"], c: "orange", icon: "⚡" },
+    { p: "Phase 06", t: "Conclusion & Awards", d: "Demos, judging, winners, after-party.", date: "15 Mar 2026", target: "2026-03-15T20:00:00+05:30", round: "Round 4 · Final Showcase", duration: "Day 2 evening", actions: ["Live demos to judging panel", "Winner announcements", "After-party & networking"], c: "cobalt", icon: "♛" },
   ];
+
+  // live countdown ticker
+  const [now, setNow] = useState<number>(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const countdown = (targetIso: string) => {
+    const diff = new Date(targetIso).getTime() - now;
+    if (diff <= 0) return { done: true, d: 0, h: 0, m: 0, s: 0 };
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    return { done: false, d, h, m, s };
+  };
   const colorMap: Record<string, { chip: string; ring: string; text: string }> = {
     orange: { chip: "bg-orange text-cream", ring: "shadow-[6px_6px_0_var(--orange)]", text: "text-orange" },
     yellow: { chip: "bg-yellow text-ink",   ring: "shadow-[6px_6px_0_var(--yellow)]", text: "text-ink" },
