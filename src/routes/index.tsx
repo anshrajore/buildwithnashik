@@ -9,6 +9,7 @@ import { RegisterDialog } from "@/components/RegisterDialog";
 import { SponsorDialog } from "@/components/SponsorDialog";
 import { VolunteerDialog } from "@/components/VolunteerDialog";
 import { ChangeMembersDialog } from "@/components/ChangeMembersDialog";
+import { MentorJudgeDialog } from "@/components/MentorJudgeDialog";
 
 
 export const Route = createFileRoute("/")({
