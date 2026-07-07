@@ -60,6 +60,7 @@ function Home() {
       <Sponsors onSponsor={openSponsorFor} />
       <WhySponsor onSponsor={() => openSponsorFor("Title")} />
       <Community />
+      <MentorsJudges onApply={openMentorJudge} />
       <Team />
       <BuilderManifesto onRegister={() => setOpenReg(true)} />
 
@@ -73,6 +74,7 @@ function Home() {
       <SponsorDialog open={openSponsor} onClose={() => setOpenSponsor(false)} defaultTier={sponsorTier} />
       <VolunteerDialog open={openVol} onClose={() => setOpenVol(false)} />
       <ChangeMembersDialog open={openChange} onClose={() => setOpenChange(false)} />
+      <MentorJudgeDialog open={openMj} onClose={() => setOpenMj(false)} defaultType={mjType} />
     </div>
   );
 }
