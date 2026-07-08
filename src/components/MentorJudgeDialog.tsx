@@ -59,6 +59,8 @@ export function MentorJudgeDialog({
   const [done, setDone] = useState(false);
   const [type, setType] = useState<"mentor" | "judge">(defaultType);
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [customTag, setCustomTag] = useState<string | null>(null);
+  const [customDraft, setCustomDraft] = useState("");
 
   if (!open) return null;
 
@@ -69,6 +71,25 @@ export function MentorJudgeDialog({
       else next.add(a);
       return next;
     });
+  }
+
+  function addCustom() {
+    const v = customDraft.trim();
+    if (v.length < 2 || v.length > 30) return;
+    if (EXPERTISE.some((x) => x.toLowerCase() === v.toLowerCase())) return;
+    setCustomTag(v);
+    setPicked((prev) => new Set(prev).add(v));
+    setCustomDraft("");
+  }
+
+  function removeCustom() {
+    if (!customTag) return;
+    setPicked((prev) => {
+      const n = new Set(prev);
+      n.delete(customTag);
+      return n;
+    });
+    setCustomTag(null);
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
