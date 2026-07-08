@@ -24,6 +24,14 @@ export const Route = createFileRoute("/")({
 
 /* ===== state context (just two dialogs) ===== */
 
+type Tab = "overview" | "builders" | "teams" | "timeline";
+const TABS: { id: Tab; label: string }[] = [
+  { id: "overview", label: "Overview" },
+  { id: "builders", label: "Builders" },
+  { id: "teams", label: "Teams & Sponsors" },
+  { id: "timeline", label: "Timeline" },
+];
+
 function Home() {
   const [openReg, setOpenReg] = useState(false);
   const [openSponsor, setOpenSponsor] = useState(false);
@@ -32,6 +40,27 @@ function Home() {
   const [openMj, setOpenMj] = useState(false);
   const [mjType, setMjType] = useState<"mentor" | "judge">("mentor");
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
+  const [tab, setTab] = useState<Tab>("overview");
+
+  // hash <-> tab sync
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const applyHash = () => {
+      const h = window.location.hash.replace("#", "");
+      if ((TABS as any).some((t: any) => t.id === h)) setTab(h as Tab);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
+  function switchTab(t: Tab) {
+    setTab(t);
+    if (typeof window !== "undefined") {
+      history.replaceState(null, "", `#${t}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
 
   function openMentorJudge(t: "mentor" | "judge") {
     setMjType(t);
@@ -49,25 +78,64 @@ function Home() {
       <Toaster position="top-center" theme="light" toastOptions={{ style: { fontFamily: "var(--font-sans)" } }} />
       <Ticker />
       <Nav onRegister={() => setOpenReg(true)} />
-      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onChangeMembers={() => setOpenChange(true)} />
-      <Legacy />
-      <Stats />
-      <About />
-      <Mission />
-      <ScheduleSection />
-      <Tracks />
-      <Prizes />
-      <Sponsors onSponsor={openSponsorFor} />
-      <WhySponsor onSponsor={() => openSponsorFor("Title")} />
-      <Community />
-      <MentorsJudges onApply={openMentorJudge} />
-      <Team />
-      <BuilderManifesto onRegister={() => setOpenReg(true)} />
 
-      <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
-      <Venue onSponsor={() => openSponsorFor("Venue")} />
-      <Faq />
-      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
+      {/* Tab bar */}
+      <div className="sticky top-0 z-30 border-b-2 border-ink bg-cream/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => switchTab(t.id)}
+              className={`shrink-0 rounded-full px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-widest transition-colors ${
+                tab === t.id ? "bg-ink text-cream" : "text-ink/60 hover:bg-ink/5"
+              }`}
+              aria-current={tab === t.id ? "page" : undefined}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onChangeMembers={() => setOpenChange(true)} />
+
+      {tab === "overview" && (
+        <>
+          <Legacy />
+          <Stats />
+          <About />
+          <Mission />
+          <Community />
+          <Faq />
+          <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
+        </>
+      )}
+
+      {tab === "builders" && (
+        <>
+          <BuilderManifesto onRegister={() => setOpenReg(true)} />
+          <MentorsJudges onApply={openMentorJudge} />
+          <Team />
+          <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
+        </>
+      )}
+
+      {tab === "teams" && (
+        <>
+          <Sponsors onSponsor={openSponsorFor} />
+          <WhySponsor onSponsor={() => openSponsorFor("Title")} />
+          <Venue onSponsor={() => openSponsorFor("Venue")} />
+        </>
+      )}
+
+      {tab === "timeline" && (
+        <>
+          <ScheduleSection />
+          <Tracks />
+          <Prizes />
+        </>
+      )}
+
       <Footer />
 
       <RegisterDialog open={openReg} onClose={() => setOpenReg(false)} />
@@ -78,6 +146,7 @@ function Home() {
     </div>
   );
 }
+
 
 
 /* ============= shared ============= */
