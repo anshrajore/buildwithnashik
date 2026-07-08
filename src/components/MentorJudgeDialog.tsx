@@ -5,15 +5,27 @@ import { toast } from "sonner";
 
 const EXPERTISE = [
   "AI / ML",
+  "LLM Ops",
   "Frontend / Web",
   "Backend / Cloud",
   "Mobile",
   "Product / UX",
+  "Design Systems",
   "DevOps / SRE",
   "Security",
+  "Databases",
+  "Systems / Low-level",
   "Data / Analytics",
   "Web3 / Blockchain",
   "Hardware / IoT",
+  "Robotics",
+  "AR / VR",
+  "Gaming",
+  "Fintech",
+  "Healthtech",
+  "Edtech",
+  "Open Source",
+  "Community",
   "Startup / Fundraising",
   "Growth / GTM",
 ];
@@ -47,6 +59,8 @@ export function MentorJudgeDialog({
   const [done, setDone] = useState(false);
   const [type, setType] = useState<"mentor" | "judge">(defaultType);
   const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [customTag, setCustomTag] = useState<string | null>(null);
+  const [customDraft, setCustomDraft] = useState("");
 
   if (!open) return null;
 
@@ -57,6 +71,25 @@ export function MentorJudgeDialog({
       else next.add(a);
       return next;
     });
+  }
+
+  function addCustom() {
+    const v = customDraft.trim();
+    if (v.length < 2 || v.length > 30) return;
+    if (EXPERTISE.some((x) => x.toLowerCase() === v.toLowerCase())) return;
+    setCustomTag(v);
+    setPicked((prev) => new Set(prev).add(v));
+    setCustomDraft("");
+  }
+
+  function removeCustom() {
+    if (!customTag) return;
+    setPicked((prev) => {
+      const n = new Set(prev);
+      n.delete(customTag);
+      return n;
+    });
+    setCustomTag(null);
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -192,9 +225,44 @@ export function MentorJudgeDialog({
                     </button>
                   );
                 })}
+                {customTag && (
+                  <button
+                    type="button"
+                    onClick={removeCustom}
+                    className="ink-border-sm rounded-full bg-orange px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
+                    aria-pressed
+                  >
+                    ✓ {customTag} ✕
+                  </button>
+                )}
               </div>
-              <p className="mt-1.5 text-xs text-muted-foreground">Pick as many as apply. We match teams by these tags.</p>
+              {!customTag && (
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <input
+                    value={customDraft}
+                    onChange={(e) => setCustomDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addCustom();
+                      }
+                    }}
+                    maxLength={30}
+                    placeholder="Add your own tag (e.g. Quantum, MLOps)…"
+                    className="ink-border-sm rounded-full bg-cream px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest"
+                  />
+                  <button
+                    type="button"
+                    onClick={addCustom}
+                    className="ink-border-sm rounded-full bg-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
+                  >
+                    + Add
+                  </button>
+                </div>
+              )}
+              <p className="mt-1.5 text-xs text-muted-foreground">Pick as many as apply — plus one custom tag if none fit. We match teams by these tags.</p>
             </div>
+
 
             <div className="sm:col-span-2">
               <label className="mb-1 block font-mono text-xs font-bold uppercase tracking-widest">
