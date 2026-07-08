@@ -225,9 +225,44 @@ export function MentorJudgeDialog({
                     </button>
                   );
                 })}
+                {customTag && (
+                  <button
+                    type="button"
+                    onClick={removeCustom}
+                    className="ink-border-sm rounded-full bg-orange px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
+                    aria-pressed
+                  >
+                    ✓ {customTag} ✕
+                  </button>
+                )}
               </div>
-              <p className="mt-1.5 text-xs text-muted-foreground">Pick as many as apply. We match teams by these tags.</p>
+              {!customTag && (
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <input
+                    value={customDraft}
+                    onChange={(e) => setCustomDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addCustom();
+                      }
+                    }}
+                    maxLength={30}
+                    placeholder="Add your own tag (e.g. Quantum, MLOps)…"
+                    className="ink-border-sm rounded-full bg-cream px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest"
+                  />
+                  <button
+                    type="button"
+                    onClick={addCustom}
+                    className="ink-border-sm rounded-full bg-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
+                  >
+                    + Add
+                  </button>
+                </div>
+              )}
+              <p className="mt-1.5 text-xs text-muted-foreground">Pick as many as apply — plus one custom tag if none fit. We match teams by these tags.</p>
             </div>
+
 
             <div className="sm:col-span-2">
               <label className="mb-1 block font-mono text-xs font-bold uppercase tracking-widest">
