@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { listApplications, updateApplicationStatus } from "@/lib/admin.functions";
+import { Pagination } from "./admin.teams";
+
+const PAGE_SIZE = 20;
 
 export const Route = createFileRoute("/_authenticated/admin/applications")({
   component: ApplicationsPage,
 });
+
 
 type Row = any;
 
