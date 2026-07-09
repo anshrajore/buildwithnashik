@@ -148,10 +148,15 @@ function ApplicationsPage() {
         )}
       </div>
 
+      {filtered.length > 0 && (
+        <Pagination page={safePage} totalPages={totalPages} onChange={setPage} total={filtered.length} pageSize={PAGE_SIZE} />
+      )}
+
       {selected && <Detail row={selected} onClose={() => setSelected(null)} onAction={(s) => mut.mutate({ id: selected.id, status: s })} />}
     </div>
   );
 }
+
 
 function Segmented<T extends string>({ value, onChange, options }: { value: T; onChange: (v: T) => void; options: T[] }) {
   return (
