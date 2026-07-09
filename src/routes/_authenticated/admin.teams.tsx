@@ -52,7 +52,8 @@ function TeamsPage() {
   const rows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   // reset to page 1 when filters change
-  useMemo(() => setPage(1), [q, track, status, submission]);
+  useEffect(() => { setPage(1); }, [q, track, status, submission]);
+
 
   return (
     <div>
