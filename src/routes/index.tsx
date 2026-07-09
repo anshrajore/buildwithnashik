@@ -24,14 +24,6 @@ export const Route = createFileRoute("/")({
 
 /* ===== state context (just two dialogs) ===== */
 
-type Tab = "overview" | "builders" | "teams" | "timeline";
-const TABS: { id: Tab; label: string }[] = [
-  { id: "overview", label: "Overview" },
-  { id: "builders", label: "Builders" },
-  { id: "teams", label: "Teams & Sponsors" },
-  { id: "timeline", label: "Timeline" },
-];
-
 function Home() {
   const [openReg, setOpenReg] = useState(false);
   const [openSponsor, setOpenSponsor] = useState(false);
@@ -40,27 +32,8 @@ function Home() {
   const [openMj, setOpenMj] = useState(false);
   const [mjType, setMjType] = useState<"mentor" | "judge">("mentor");
   const [sponsorTier, setSponsorTier] = useState<string | undefined>();
-  const [tab, setTab] = useState<Tab>("overview");
 
-  // hash <-> tab sync
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const applyHash = () => {
-      const h = window.location.hash.replace("#", "");
-      if ((TABS as any).some((t: any) => t.id === h)) setTab(h as Tab);
-    };
-    applyHash();
-    window.addEventListener("hashchange", applyHash);
-    return () => window.removeEventListener("hashchange", applyHash);
-  }, []);
 
-  function switchTab(t: Tab) {
-    setTab(t);
-    if (typeof window !== "undefined") {
-      history.replaceState(null, "", `#${t}`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
 
   function openMentorJudge(t: "mentor" | "judge") {
     setMjType(t);
