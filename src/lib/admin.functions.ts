@@ -3,33 +3,54 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // ---------- role helpers ----------
-async function assertAdmin(context: { supabase: any; userId: string }) {
-  const { data, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
+async function isAdmin(context: { supabase: any; userId: string }): Promise<boolean> {
+  const { data, error } = await context.supabase
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
   if (error) throw new Error(error.message);
-  if (!data) throw new Error("Forbidden");
+  return Boolean(data);
+}
+
+async function assertAdmin(context: { supabase: any; userId: string }) {
+  if (!(await isAdmin(context))) throw new Error("Forbidden");
 }
 
 export const isCurrentUserAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (error) throw new Error(error.message);
-    return { isAdmin: Boolean(data), userId: context.userId };
+    return { isAdmin: await isAdmin(context), userId: context.userId };
   });
 
 export const claimFirstAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase.rpc("claim_first_admin");
-    if (error) throw new Error(error.message);
-    return data;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Any admin already?
+    const { data: existing, error: exErr } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "admin")
+      .limit(1);
+    if (exErr) throw new Error(exErr.message);
+
+    if (existing && existing.length > 0) {
+      if (existing[0].user_id === context.userId) {
+        return { ok: true, already_admin: true };
+      }
+      return { ok: false, code: "admin_exists" };
+    }
+
+    const { error: insErr } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: context.userId, role: "admin" });
+    if (insErr) throw new Error(insErr.message);
+    return { ok: true, claimed: true };
   });
+
 
 // ---------- overview ----------
 export const getAdminOverview = createServerFn({ method: "GET" })
