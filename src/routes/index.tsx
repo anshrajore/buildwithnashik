@@ -54,23 +54,24 @@ function Home() {
 
       <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onChangeMembers={() => setOpenChange(true)} />
 
-      <Legacy />
-      <Stats />
       <About />
       <Mission />
-      <Community />
-      <BuilderManifesto onRegister={() => setOpenReg(true)} />
-      <MentorsJudges onApply={openMentorJudge} />
-      <Team />
-      <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
-      <Sponsors onSponsor={openSponsorFor} />
-      <WhySponsor onSponsor={() => openSponsorFor("Title")} />
-      <Venue onSponsor={() => openSponsorFor("Venue")} />
+      <Stats />
+      <Legacy />
       <ScheduleSection />
       <Tracks />
       <Prizes />
+      <BuilderManifesto onRegister={() => setOpenReg(true)} />
+      <MentorsJudges onApply={openMentorJudge} />
+      <Sponsors onSponsor={openSponsorFor} />
+      <WhySponsor onSponsor={() => openSponsorFor("Title")} />
+      <Venue onSponsor={() => openSponsorFor("Venue")} />
+      <Team />
+      <Community />
+      <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
       <Faq />
       <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
+
 
 
       <Footer />
