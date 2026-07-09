@@ -37,24 +37,42 @@ function ApplicationsPage() {
 
   const [type, setType] = useState<"all" | "mentor" | "judge">("all");
   const [status, setStatus] = useState<"all" | "pending" | "approved" | "rejected">("all");
+  const [expertise, setExpertise] = useState<string>("all");
+  const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Row | null>(null);
 
-  const rows = useMemo(
-    () =>
-      (data ?? []).filter(
-        (r: Row) =>
-          (type === "all" || r.application_type === type) &&
-          (status === "all" || r.status === status),
-      ),
-    [data, type, status],
-  );
+  const expertiseOptions = useMemo(() => {
+    const set = new Set<string>();
+    (data ?? []).forEach((r: Row) =>
+      (r.expertise ?? "").split(",").map((t: string) => t.trim()).filter(Boolean).forEach((t: string) => set.add(t)),
+    );
+    return Array.from(set).sort();
+  }, [data]);
+
+  const filtered = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    return (data ?? []).filter((r: Row) => {
+      if (type !== "all" && r.application_type !== type) return false;
+      if (status !== "all" && r.status !== status) return false;
+      if (expertise !== "all" && !(r.expertise ?? "").toLowerCase().split(",").map((t: string) => t.trim()).includes(expertise.toLowerCase())) return false;
+      if (s && ![r.full_name, r.email, r.organization, r.current_title].some((v: any) => (v ?? "").toLowerCase().includes(s))) return false;
+      return true;
+    });
+  }, [data, type, status, expertise, q]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const rows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [type, status, expertise, q]);
 
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            {data?.length ?? 0} total
+            {filtered.length} of {data?.length ?? 0}
           </div>
           <h1 className="font-chunk text-4xl uppercase tracking-tight">Mentors & Judges</h1>
         </div>
@@ -64,8 +82,25 @@ function ApplicationsPage() {
         </div>
       </div>
 
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search name, email, org…"
+          className="ink-border-sm min-w-[220px] flex-1 rounded-full bg-cream px-4 py-2 font-sans"
+        />
+        <label className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest">
+          <span className="text-ink/60">Expertise</span>
+          <select value={expertise} onChange={(e) => setExpertise(e.target.value)} className="bg-transparent focus:outline-none">
+            <option value="all">all</option>
+            {expertiseOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+        </label>
+      </div>
+
       <div className="ink-border-sm overflow-hidden rounded-2xl bg-cream">
         <div className="grid grid-cols-[80px,1fr,1fr,110px,110px] gap-2 border-b-2 border-ink bg-ink px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-cream">
+
           <div>Type</div>
           <div>Name</div>
           <div>Org / Title</div>
