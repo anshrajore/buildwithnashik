@@ -79,62 +79,26 @@ function Home() {
       <Ticker />
       <Nav onRegister={() => setOpenReg(true)} />
 
-      {/* Tab bar */}
-      <div className="sticky top-0 z-30 border-b-2 border-ink bg-cream/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => switchTab(t.id)}
-              className={`shrink-0 rounded-full px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-widest transition-colors ${
-                tab === t.id ? "bg-ink text-cream" : "text-ink/60 hover:bg-ink/5"
-              }`}
-              aria-current={tab === t.id ? "page" : undefined}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <Hero onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onChangeMembers={() => setOpenChange(true)} />
 
-      {tab === "overview" && (
-        <>
-          <Legacy />
-          <Stats />
-          <About />
-          <Mission />
-          <Community />
-          <Faq />
-          <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
-        </>
-      )}
+      <Legacy />
+      <Stats />
+      <About />
+      <Mission />
+      <Community />
+      <BuilderManifesto onRegister={() => setOpenReg(true)} />
+      <MentorsJudges onApply={openMentorJudge} />
+      <Team />
+      <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
+      <Sponsors onSponsor={openSponsorFor} />
+      <WhySponsor onSponsor={() => openSponsorFor("Title")} />
+      <Venue onSponsor={() => openSponsorFor("Venue")} />
+      <ScheduleSection />
+      <Tracks />
+      <Prizes />
+      <Faq />
+      <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
 
-      {tab === "builders" && (
-        <>
-          <BuilderManifesto onRegister={() => setOpenReg(true)} />
-          <MentorsJudges onApply={openMentorJudge} />
-          <Team />
-          <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
-        </>
-      )}
-
-      {tab === "teams" && (
-        <>
-          <Sponsors onSponsor={openSponsorFor} />
-          <WhySponsor onSponsor={() => openSponsorFor("Title")} />
-          <Venue onSponsor={() => openSponsorFor("Venue")} />
-        </>
-      )}
-
-      {tab === "timeline" && (
-        <>
-          <ScheduleSection />
-          <Tracks />
-          <Prizes />
-        </>
-      )}
 
       <Footer />
 
