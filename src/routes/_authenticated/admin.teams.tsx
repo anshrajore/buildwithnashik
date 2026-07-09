@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { listTeams } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/teams")({
   component: TeamsPage,
 });
+
+const PAGE_SIZE = 20;
 
 function TeamsPage() {
   const fn = useServerFn(listTeams);
@@ -15,62 +17,143 @@ function TeamsPage() {
     queryFn: () => fn(),
   });
   const [q, setQ] = useState("");
+  const [track, setTrack] = useState<string>("all");
+  const [status, setStatus] = useState<string>("all");
+  const [submission, setSubmission] = useState<"all" | "with" | "without">("all");
+  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<any>(null);
 
-  const rows = useMemo(() => {
+  const tracks = useMemo(() => {
+    const set = new Set<string>();
+    (data ?? []).forEach((r: any) => r.track && set.add(r.track));
+    return Array.from(set).sort();
+  }, [data]);
+
+  const statuses = useMemo(() => {
+    const set = new Set<string>();
+    (data ?? []).forEach((r: any) => r.status && set.add(r.status));
+    return Array.from(set).sort();
+  }, [data]);
+
+  const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return (data ?? []).filter((r: any) =>
-      !s || [r.team_name, r.lead_email, r.lead_name].some((v: any) => (v ?? "").toLowerCase().includes(s)),
-    );
-  }, [data, q]);
+    return (data ?? []).filter((r: any) => {
+      if (s && ![r.team_name, r.lead_email, r.lead_name].some((v: any) => (v ?? "").toLowerCase().includes(s))) return false;
+      if (track !== "all" && r.track !== track) return false;
+      if (status !== "all" && r.status !== status) return false;
+      if (submission === "with" && !r.ppt_url) return false;
+      if (submission === "without" && r.ppt_url) return false;
+      return true;
+    });
+  }, [data, q, track, status, submission]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const rows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [q, track, status, submission]);
+
 
   return (
     <div>
-      <PageHeader title="Teams" subtitle={`${data?.length ?? 0} registered`} />
-      <div className="mb-4 flex flex-wrap gap-2">
+      <PageHeader title="Teams" subtitle={`${filtered.length} of ${data?.length ?? 0}`} />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search team name, lead name/email…"
-          className="ink-border-sm w-full max-w-md rounded-full bg-cream px-4 py-2 font-sans"
+          placeholder="Search team, lead name/email…"
+          className="ink-border-sm min-w-[220px] flex-1 rounded-full bg-cream px-4 py-2 font-sans"
         />
+        <Select label="Track" value={track} onChange={setTrack} options={["all", ...tracks]} />
+        <Select label="Status" value={status} onChange={setStatus} options={["all", ...statuses]} />
+        <Select label="PPT" value={submission} onChange={(v) => setSubmission(v as any)} options={["all", "with", "without"]} />
       </div>
       <div className="ink-border-sm overflow-hidden rounded-2xl bg-cream">
-        <div className="grid grid-cols-[1fr,1fr,80px,120px,90px] gap-2 border-b-2 border-ink bg-ink px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-cream">
+        <div className="grid grid-cols-[1fr,1fr,90px,80px,110px,80px] gap-2 border-b-2 border-ink bg-ink px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-cream">
           <div>Team</div>
           <div>Lead</div>
+          <div>Track</div>
           <div>Size</div>
           <div>Created</div>
-          <div>Changed</div>
+          <div>PPT</div>
         </div>
         {isLoading ? (
           <div className="p-6 text-sm text-muted-foreground">Loading…</div>
         ) : rows.length === 0 ? (
-          <div className="p-6 text-sm text-muted-foreground">No teams yet.</div>
+          <div className="p-6 text-sm text-muted-foreground">No teams match.</div>
         ) : (
           rows.map((r: any) => (
             <button
               key={r.id}
               onClick={() => setSelected(r)}
-              className="grid w-full grid-cols-[1fr,1fr,80px,120px,90px] items-center gap-2 border-b border-ink/10 px-4 py-3 text-left text-sm hover:bg-yellow/40"
+              className="grid w-full grid-cols-[1fr,1fr,90px,80px,110px,80px] items-center gap-2 border-b border-ink/10 px-4 py-3 text-left text-sm hover:bg-yellow/40"
             >
               <div className="truncate font-bold">{r.team_name}</div>
               <div className="truncate">
                 <div>{r.lead_name}</div>
                 <div className="text-xs text-muted-foreground">{r.lead_email}</div>
               </div>
+              <div className="truncate text-xs">{r.track ?? "—"}</div>
               <div>{r.member_count}</div>
               <div className="text-xs">{new Date(r.created_at).toLocaleDateString()}</div>
-              <div className="text-xs">{r.members_changed_at ? "Yes" : "—"}</div>
+              <div className="text-xs">{r.ppt_url ? "✓" : "—"}</div>
             </button>
           ))
         )}
       </div>
 
+      {filtered.length > 0 && (
+        <Pagination page={safePage} totalPages={totalPages} onChange={setPage} total={filtered.length} pageSize={PAGE_SIZE} />
+      )}
+
       {selected && <Drawer team={selected} onClose={() => setSelected(null)} />}
     </div>
   );
 }
+
+function Select({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
+  return (
+    <label className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest">
+      <span className="text-ink/60">{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="bg-transparent focus:outline-none">
+        {options.map((o) => (
+          <option key={o} value={o}>{o}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+export function Pagination({ page, totalPages, onChange, total, pageSize }: { page: number; totalPages: number; onChange: (p: number) => void; total: number; pageSize: number }) {
+  const from = (page - 1) * pageSize + 1;
+  const to = Math.min(total, page * pageSize);
+  return (
+    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        {from}–{to} of {total}
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          disabled={page <= 1}
+          onClick={() => onChange(page - 1)}
+          className="ink-border-sm rounded-full bg-cream px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest disabled:opacity-40"
+        >
+          ← Prev
+        </button>
+        <span className="font-mono text-[10px] uppercase tracking-widest">Page {page} / {totalPages}</span>
+        <button
+          disabled={page >= totalPages}
+          onClick={() => onChange(page + 1)}
+          className="ink-border-sm rounded-full bg-cream px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest disabled:opacity-40"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
 function Drawer({ team, onClose }: { team: any; onClose: () => void }) {
   return (
