@@ -70,6 +70,7 @@ function Home() {
       <Team />
       <Community />
       <JoinTeam onVolunteer={() => setOpenVol(true)} onSponsor={() => openSponsorFor()} />
+      <DigitalSwag />
       <Faq />
       <FinalCta onRegister={() => setOpenReg(true)} onSponsor={() => openSponsorFor()} onVolunteer={() => setOpenVol(true)} />
 
