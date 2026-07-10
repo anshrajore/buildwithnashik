@@ -10,6 +10,7 @@ import { SponsorDialog } from "@/components/SponsorDialog";
 import { VolunteerDialog } from "@/components/VolunteerDialog";
 import { ChangeMembersDialog } from "@/components/ChangeMembersDialog";
 import { MentorJudgeDialog } from "@/components/MentorJudgeDialog";
+import { DigitalSwag } from "@/components/DigitalSwag";
 
 
 export const Route = createFileRoute("/")({
