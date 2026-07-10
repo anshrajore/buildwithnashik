@@ -148,7 +148,7 @@ function Ticker() {
 /* ============= nav ============= */
 
 function Nav({ onRegister }: { onRegister: () => void }) {
-  const links = [["About", "about"], ["Timeline", "timeline"], ["Tracks", "tracks"], ["Prizes", "prizes"], ["Sponsors", "sponsors"], ["Team", "team"], ["FAQ", "faq"]];
+  const links = [["About", "about"], ["Timeline", "timeline"], ["Tracks", "tracks"], ["Prizes", "prizes"], ["Sponsors", "sponsors"], ["Swag", "swag"], ["Team", "team"], ["FAQ", "faq"]];
   return (
     <header className="sticky top-0 z-40 border-b-2 border-ink bg-cream/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
