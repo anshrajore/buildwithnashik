@@ -14,6 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
+      community_events: {
+        Row: {
+          banner_url: string | null
+          category: string
+          city: string | null
+          created_at: string
+          description: string
+          end_date: string | null
+          event_name: string
+          id: string
+          maps_url: string | null
+          mode: string
+          organisation: string | null
+          organiser_email: string
+          organiser_name: string
+          organiser_phone: string
+          register_url: string | null
+          reviewed_at: string | null
+          socials: Json
+          start_date: string | null
+          status: string
+          tagline: string | null
+          team_max: number
+          team_min: number
+          venue: string | null
+          website_url: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          category: string
+          city?: string | null
+          created_at?: string
+          description: string
+          end_date?: string | null
+          event_name: string
+          id?: string
+          maps_url?: string | null
+          mode?: string
+          organisation?: string | null
+          organiser_email: string
+          organiser_name: string
+          organiser_phone: string
+          register_url?: string | null
+          reviewed_at?: string | null
+          socials?: Json
+          start_date?: string | null
+          status?: string
+          tagline?: string | null
+          team_max?: number
+          team_min?: number
+          venue?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string
+          end_date?: string | null
+          event_name?: string
+          id?: string
+          maps_url?: string | null
+          mode?: string
+          organisation?: string | null
+          organiser_email?: string
+          organiser_name?: string
+          organiser_phone?: string
+          register_url?: string | null
+          reviewed_at?: string | null
+          socials?: Json
+          start_date?: string | null
+          status?: string
+          tagline?: string | null
+          team_max?: number
+          team_min?: number
+          venue?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       mentor_judge_applications: {
         Row: {
           application_type: string
