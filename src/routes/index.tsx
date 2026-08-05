@@ -1094,7 +1094,7 @@ function Team() {
               </div>
 
               <div>
-                <h3 className="font-chunk text-[13vw] uppercase leading-[0.85] tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+                <h3 className="font-chunk text-[11vw] uppercase leading-[0.85] tracking-tight sm:text-5xl md:text-6xl lg:text-[4rem]">
                   Ansh
                   <br />
                   <span className="tag-orange text-cream inline-block">Rajore.</span>
