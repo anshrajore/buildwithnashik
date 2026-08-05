@@ -1081,9 +1081,9 @@ function Team() {
             <span className="ml-auto hidden sm:inline">buildwithnashik.in · 2026</span>
           </div>
 
-          <div className="relative grid gap-0 lg:grid-cols-[minmax(0,0.95fr),minmax(0,1fr)]">
+          <div className="relative grid gap-0 lg:grid-cols-[minmax(0,1.25fr),minmax(0,0.75fr)]">
             {/* LEFT — the story */}
-            <div className="relative z-10 flex flex-col justify-center gap-5 p-6 sm:p-8 md:p-10 lg:p-12">
+            <div className="relative z-10 flex flex-col justify-center gap-4 p-5 sm:p-6 md:p-8 lg:p-9">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="ink-border-sm rounded-full bg-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
                   Founder · Organizer
