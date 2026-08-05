@@ -1164,8 +1164,8 @@ function Team() {
             </div>
 
             {/* RIGHT — portrait card (no face cropping) */}
-            <div className="relative p-4 sm:p-6 lg:p-8">
-              <div className="ink-border-lg relative mx-auto w-full max-w-md overflow-hidden rounded-3xl bg-cream lg:max-w-none">
+            <div className="relative p-4 sm:p-5 lg:p-6">
+              <div className="ink-border-lg relative mx-auto w-full max-w-[300px] overflow-hidden rounded-3xl bg-cream sm:max-w-xs lg:max-w-none">
                 {/* portrait area — aspect ratio so face never crops on desktop */}
                 <div className="relative aspect-[4/5] w-full overflow-hidden bg-ink sm:aspect-[3/4] lg:aspect-[4/5]">
                   <img
