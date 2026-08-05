@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import anshAsset from "@/assets/ansh.png.asset.json";
@@ -161,6 +161,9 @@ function Nav({ onRegister }: { onRegister: () => void }) {
           {links.map(([l, h]) => (
             <a key={h} href={`#${h}`} className="font-mono text-xs font-bold uppercase tracking-widest text-ink/70 transition-colors hover:text-orange">{l}</a>
           ))}
+          <span className="h-4 w-px bg-ink/20" />
+          <Link to="/events" className="font-mono text-xs font-bold uppercase tracking-widest text-ink/70 transition-colors hover:text-orange">Events</Link>
+          <Link to="/nest" className="font-mono text-xs font-bold uppercase tracking-widest text-cobalt transition-colors hover:text-orange">Team Nest</Link>
         </nav>
         <button onClick={onRegister} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
           Register <span>→</span>
@@ -1078,9 +1081,9 @@ function Team() {
             <span className="ml-auto hidden sm:inline">buildwithnashik.in · 2026</span>
           </div>
 
-          <div className="relative grid gap-0 lg:grid-cols-[minmax(0,0.95fr),minmax(0,1fr)]">
+          <div className="relative grid gap-0 lg:grid-cols-[minmax(0,1.25fr),minmax(0,0.75fr)]">
             {/* LEFT — the story */}
-            <div className="relative z-10 flex flex-col justify-center gap-5 p-6 sm:p-8 md:p-10 lg:p-12">
+            <div className="relative z-10 flex flex-col justify-center gap-4 p-5 sm:p-6 md:p-8 lg:p-9">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="ink-border-sm rounded-full bg-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
                   Founder · Organizer
@@ -1091,7 +1094,7 @@ function Team() {
               </div>
 
               <div>
-                <h3 className="font-chunk text-[13vw] uppercase leading-[0.85] tracking-tight sm:text-6xl md:text-7xl lg:text-[5.5rem]">
+                <h3 className="font-chunk text-[11vw] uppercase leading-[0.85] tracking-tight sm:text-5xl md:text-6xl lg:text-[4rem]">
                   Ansh
                   <br />
                   <span className="tag-orange text-cream inline-block">Rajore.</span>
@@ -1161,8 +1164,8 @@ function Team() {
             </div>
 
             {/* RIGHT — portrait card (no face cropping) */}
-            <div className="relative p-4 sm:p-6 lg:p-8">
-              <div className="ink-border-lg relative mx-auto w-full max-w-md overflow-hidden rounded-3xl bg-cream lg:max-w-none">
+            <div className="relative p-4 sm:p-5 lg:p-6">
+              <div className="ink-border-lg relative mx-auto w-full max-w-[300px] overflow-hidden rounded-3xl bg-cream sm:max-w-xs lg:max-w-none">
                 {/* portrait area — aspect ratio so face never crops on desktop */}
                 <div className="relative aspect-[4/5] w-full overflow-hidden bg-ink sm:aspect-[3/4] lg:aspect-[4/5]">
                   <img
