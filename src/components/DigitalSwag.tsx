@@ -289,7 +289,7 @@ export function DigitalSwag() {
     ctx.restore();
 
     ctx.save();
-    ctx.translate(W - 84, H - 74);
+    ctx.translate(frameX + frameW - 66, frameY + 48);
     ctx.rotate(0.14);
     ctx.fillStyle = T.ink;
     roundRect(ctx, -52, -22, 104, 44, 10);
