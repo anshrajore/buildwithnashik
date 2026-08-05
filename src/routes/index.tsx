@@ -161,6 +161,9 @@ function Nav({ onRegister }: { onRegister: () => void }) {
           {links.map(([l, h]) => (
             <a key={h} href={`#${h}`} className="font-mono text-xs font-bold uppercase tracking-widest text-ink/70 transition-colors hover:text-orange">{l}</a>
           ))}
+          <span className="h-4 w-px bg-ink/20" />
+          <Link to="/events" className="font-mono text-xs font-bold uppercase tracking-widest text-ink/70 transition-colors hover:text-orange">Events</Link>
+          <Link to="/nest" className="font-mono text-xs font-bold uppercase tracking-widest text-cobalt transition-colors hover:text-orange">Team Nest</Link>
         </nav>
         <button onClick={onRegister} className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 font-mono text-xs font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5">
           Register <span>→</span>
