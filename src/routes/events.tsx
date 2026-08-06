@@ -167,6 +167,8 @@ function fmt(d: string | null) {
 function EventCard({ e, i }: { e: EventRow; i: number }) {
   const socials = Array.isArray(e.socials) ? (e.socials as { label: string; url: string }[]) : [];
   const when = [fmt(e.start_date), fmt(e.end_date)].filter(Boolean).join(" → ");
+  const gcal = googleCalendarUrl(e);
+  const ics = icsDataUrl(e);
   return (
     <article
       className="ink-border-sm group flex flex-col overflow-hidden rounded-2xl bg-white transition-transform hover:-translate-y-1"
