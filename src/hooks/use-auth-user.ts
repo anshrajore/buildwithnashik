@@ -30,9 +30,9 @@ export function useAuthUser() {
 
 /** Google sign-in through the Lovable managed broker. */
 export async function signInWithGoogle(): Promise<{ error?: string; redirected?: boolean }> {
-  const result = await lovable.auth.signInWithOAuth("google", {
+  const result = (await lovable.auth.signInWithOAuth("google", {
     redirect_uri: window.location.origin,
-  });
+  })) as { error?: { message?: string }; redirected?: boolean };
   if (result.error) return { error: result.error.message ?? "Google sign-in failed" };
   if (result.redirected) return { redirected: true };
   return {};
