@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuthUser, signInWithGoogle } from "@/hooks/use-auth-user";
 
 const CATEGORIES = [
   "Hackathon",
