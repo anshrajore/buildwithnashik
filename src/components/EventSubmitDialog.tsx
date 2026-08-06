@@ -169,6 +169,42 @@ export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: (
               Back to events
             </button>
           </div>
+        ) : !user && !guest ? (
+          <div className="p-8 text-center sm:p-10">
+            {authLoading ? (
+              <div className="font-mono text-[11px] uppercase tracking-widest text-ink/50">Checking your session…</div>
+            ) : (
+              <>
+                <div className="font-chunk text-3xl uppercase leading-tight tracking-tight sm:text-4xl">
+                  Sign in to submit
+                </div>
+                <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+                  Sign in with Google so you can track your submission's review status and edit details later. Takes one tap.
+                </p>
+                <button
+                  type="button"
+                  disabled={googleBusy}
+                  onClick={async () => {
+                    setGoogleBusy(true);
+                    const res = await signInWithGoogle();
+                    setGoogleBusy(false);
+                    if (res.error) toast.error(res.error);
+                  }}
+                  className="ink-border-sm mx-auto mt-7 flex items-center gap-3 rounded-full bg-white px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                >
+                  <span className="font-sans text-base font-black text-cobalt">G</span>
+                  {googleBusy ? "Opening Google…" : "Continue with Google"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGuest(true)}
+                  className="mt-5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50 underline underline-offset-4 hover:text-orange"
+                >
+                  Submit without an account
+                </button>
+              </>
+            )}
+          </div>
         ) : (
           <form onSubmit={onSubmit} className="grid gap-5 p-6">
             {/* banner */}
