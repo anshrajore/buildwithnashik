@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { NestHeader } from "@/components/NestHeader";
 import { EventSubmitDialog } from "@/components/EventSubmitDialog";
+import { googleCalendarUrl, icsDataUrl } from "@/lib/calendar";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -167,6 +168,8 @@ function fmt(d: string | null) {
 function EventCard({ e, i }: { e: EventRow; i: number }) {
   const socials = Array.isArray(e.socials) ? (e.socials as { label: string; url: string }[]) : [];
   const when = [fmt(e.start_date), fmt(e.end_date)].filter(Boolean).join(" → ");
+  const gcal = googleCalendarUrl(e);
+  const ics = icsDataUrl(e);
   return (
     <article
       className="ink-border-sm group flex flex-col overflow-hidden rounded-2xl bg-white transition-transform hover:-translate-y-1"
@@ -204,6 +207,16 @@ function EventCard({ e, i }: { e: EventRow; i: number }) {
           {e.register_url && (
             <a href={e.register_url} target="_blank" rel="noopener noreferrer" className="ink-border-sm rounded-full bg-orange px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
               Register ↗
+            </a>
+          )}
+          {gcal && (
+            <a href={gcal} target="_blank" rel="noopener noreferrer" className="ink-border-sm rounded-full bg-cobalt px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
+              + Google Calendar
+            </a>
+          )}
+          {ics && (
+            <a href={ics} download={`${e.event_name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`} className="ink-border-sm rounded-full bg-white px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
+              .ics
             </a>
           )}
           {e.website_url && (

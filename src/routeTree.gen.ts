@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as NestRouteImport } from './routes/nest'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as EventsRouteImport } from './routes/events'
@@ -22,9 +24,20 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
 import { Route as AuthenticatedAdminTeamsRouteImport } from './routes/_authenticated/admin.teams'
 import { Route as AuthenticatedAdminSponsorsRouteImport } from './routes/_authenticated/admin.sponsors'
+import { Route as AuthenticatedAdminEventsRouteImport } from './routes/_authenticated/admin.events'
 import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NestRoute = NestRouteImport.update({
   id: '/nest',
   path: '/nest',
@@ -93,6 +106,12 @@ const AuthenticatedAdminSponsorsRoute =
     path: '/sponsors',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminEventsRoute =
+  AuthenticatedAdminEventsRouteImport.update({
+    id: '/events',
+    path: '/events',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminApplicationsRoute =
   AuthenticatedAdminApplicationsRouteImport.update({
     id: '/applications',
@@ -111,12 +130,15 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
   '/admin/teams': typeof AuthenticatedAdminTeamsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -127,11 +149,14 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
   '/admin/teams': typeof AuthenticatedAdminTeamsRoute
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -144,12 +169,15 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
   '/_authenticated/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
   '/_authenticated/admin/teams': typeof AuthenticatedAdminTeamsRoute
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
@@ -162,12 +190,15 @@ export interface FileRouteTypes {
     | '/events'
     | '/mcp'
     | '/nest'
+    | '/reset-password'
+    | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/admin/login'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
+    | '/admin/events'
     | '/admin/sponsors'
     | '/admin/teams'
     | '/admin/volunteers'
@@ -178,11 +209,14 @@ export interface FileRouteTypes {
     | '/events'
     | '/mcp'
     | '/nest'
+    | '/reset-password'
+    | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/login'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
+    | '/admin/events'
     | '/admin/sponsors'
     | '/admin/teams'
     | '/admin/volunteers'
@@ -194,12 +228,15 @@ export interface FileRouteTypes {
     | '/events'
     | '/mcp'
     | '/nest'
+    | '/reset-password'
+    | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/admin/login'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/applications'
+    | '/_authenticated/admin/events'
     | '/_authenticated/admin/sponsors'
     | '/_authenticated/admin/teams'
     | '/_authenticated/admin/volunteers'
@@ -212,6 +249,8 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   McpRoute: typeof McpRoute
   NestRoute: typeof NestRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  TermsRoute: typeof TermsRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -220,6 +259,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nest': {
       id: '/nest'
       path: '/nest'
@@ -311,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSponsorsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/events': {
+      id: '/_authenticated/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AuthenticatedAdminEventsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/applications': {
       id: '/_authenticated/admin/applications'
       path: '/applications'
@@ -330,6 +390,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
+  AuthenticatedAdminEventsRoute: typeof AuthenticatedAdminEventsRoute
   AuthenticatedAdminSponsorsRoute: typeof AuthenticatedAdminSponsorsRoute
   AuthenticatedAdminTeamsRoute: typeof AuthenticatedAdminTeamsRoute
   AuthenticatedAdminVolunteersRoute: typeof AuthenticatedAdminVolunteersRoute
@@ -338,6 +399,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
+  AuthenticatedAdminEventsRoute: AuthenticatedAdminEventsRoute,
   AuthenticatedAdminSponsorsRoute: AuthenticatedAdminSponsorsRoute,
   AuthenticatedAdminTeamsRoute: AuthenticatedAdminTeamsRoute,
   AuthenticatedAdminVolunteersRoute: AuthenticatedAdminVolunteersRoute,
@@ -364,6 +426,8 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   McpRoute: McpRoute,
   NestRoute: NestRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  TermsRoute: TermsRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,

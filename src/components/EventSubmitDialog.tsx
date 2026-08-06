@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuthUser, signInWithGoogle } from "@/hooks/use-auth-user";
 
 const CATEGORIES = [
   "Hackathon",
@@ -48,6 +49,9 @@ const schema = z.object({
 type Social = { label: string; url: string };
 
 export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { user, loading: authLoading } = useAuthUser();
+  const [guest, setGuest] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [banner, setBanner] = useState<File | null>(null);
@@ -56,6 +60,7 @@ export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: (
   const [venueQuery, setVenueQuery] = useState("");
   const [socials, setSocials] = useState<Social[]>([{ label: "Website", url: "" }]);
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   const mapEmbed = useMemo(() => {
     const q = venueQuery.trim();
@@ -132,6 +137,7 @@ export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: (
       register_url: d.register_url || null,
       socials: cleanSocials,
       status: "pending",
+      submitted_by: user?.id ?? null,
     });
     setSubmitting(false);
     if (error) {
@@ -162,6 +168,42 @@ export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: (
             <button onClick={onClose} className="ink-border-sm mt-8 rounded-full bg-ink px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream">
               Back to events
             </button>
+          </div>
+        ) : !user && !guest ? (
+          <div className="p-8 text-center sm:p-10">
+            {authLoading ? (
+              <div className="font-mono text-[11px] uppercase tracking-widest text-ink/50">Checking your session…</div>
+            ) : (
+              <>
+                <div className="font-chunk text-3xl uppercase leading-tight tracking-tight sm:text-4xl">
+                  Sign in to submit
+                </div>
+                <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+                  Sign in with Google so you can track your submission's review status and edit details later. Takes one tap.
+                </p>
+                <button
+                  type="button"
+                  disabled={googleBusy}
+                  onClick={async () => {
+                    setGoogleBusy(true);
+                    const res = await signInWithGoogle();
+                    setGoogleBusy(false);
+                    if (res.error) toast.error(res.error);
+                  }}
+                  className="ink-border-sm mx-auto mt-7 flex items-center gap-3 rounded-full bg-white px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-ink transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                >
+                  <span className="font-sans text-base font-black text-cobalt">G</span>
+                  {googleBusy ? "Opening Google…" : "Continue with Google"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGuest(true)}
+                  className="mt-5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50 underline underline-offset-4 hover:text-orange"
+                >
+                  Submit without an account
+                </button>
+              </>
+            )}
           </div>
         ) : (
           <form onSubmit={onSubmit} className="grid gap-5 p-6">
