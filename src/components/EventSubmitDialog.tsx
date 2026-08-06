@@ -49,6 +49,9 @@ const schema = z.object({
 type Social = { label: string; url: string };
 
 export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { user, loading: authLoading } = useAuthUser();
+  const [guest, setGuest] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [banner, setBanner] = useState<File | null>(null);
@@ -57,6 +60,7 @@ export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: (
   const [venueQuery, setVenueQuery] = useState("");
   const [socials, setSocials] = useState<Social[]>([{ label: "Website", url: "" }]);
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   const mapEmbed = useMemo(() => {
     const q = venueQuery.trim();
