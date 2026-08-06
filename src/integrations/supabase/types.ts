@@ -26,15 +26,18 @@ export type Database = {
           id: string
           maps_url: string | null
           mode: string
+          notified_at: string | null
           organisation: string | null
           organiser_email: string
           organiser_name: string
           organiser_phone: string
           register_url: string | null
+          review_note: string | null
           reviewed_at: string | null
           socials: Json
           start_date: string | null
           status: string
+          submitted_by: string | null
           tagline: string | null
           team_max: number
           team_min: number
@@ -52,15 +55,18 @@ export type Database = {
           id?: string
           maps_url?: string | null
           mode?: string
+          notified_at?: string | null
           organisation?: string | null
           organiser_email: string
           organiser_name: string
           organiser_phone: string
           register_url?: string | null
+          review_note?: string | null
           reviewed_at?: string | null
           socials?: Json
           start_date?: string | null
           status?: string
+          submitted_by?: string | null
           tagline?: string | null
           team_max?: number
           team_min?: number
@@ -78,15 +84,18 @@ export type Database = {
           id?: string
           maps_url?: string | null
           mode?: string
+          notified_at?: string | null
           organisation?: string | null
           organiser_email?: string
           organiser_name?: string
           organiser_phone?: string
           register_url?: string | null
+          review_note?: string | null
           reviewed_at?: string | null
           socials?: Json
           start_date?: string | null
           status?: string
+          submitted_by?: string | null
           tagline?: string | null
           team_max?: number
           team_min?: number
@@ -191,6 +200,45 @@ export type Database = {
           status?: string
           tier?: string
           website?: string | null
+        }
+        Relationships: []
+      }
+      swag_designs: {
+        Row: {
+          avatar_emoji: string | null
+          created_at: string
+          display_name: string
+          format_id: string
+          id: string
+          label: string
+          role: string
+          theme_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_emoji?: string | null
+          created_at?: string
+          display_name: string
+          format_id?: string
+          id?: string
+          label?: string
+          role: string
+          theme_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_emoji?: string | null
+          created_at?: string
+          display_name?: string
+          format_id?: string
+          id?: string
+          label?: string
+          role?: string
+          theme_id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
