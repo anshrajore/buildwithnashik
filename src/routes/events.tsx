@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { NestHeader } from "@/components/NestHeader";
 import { EventSubmitDialog } from "@/components/EventSubmitDialog";
+import { googleCalendarUrl, icsDataUrl } from "@/lib/calendar";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
