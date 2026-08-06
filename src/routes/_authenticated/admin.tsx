@@ -97,6 +97,7 @@ function AdminLayout() {
     { to: "/admin", label: "Overview", exact: true },
     { to: "/admin/teams", label: "Teams" },
     { to: "/admin/applications", label: "Mentors & Judges" },
+    { to: "/admin/events", label: "Events" },
     { to: "/admin/sponsors", label: "Sponsors" },
     { to: "/admin/volunteers", label: "Volunteers" },
   ] as const;
