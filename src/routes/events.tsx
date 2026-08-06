@@ -206,6 +206,16 @@ function EventCard({ e, i }: { e: EventRow; i: number }) {
               Register ↗
             </a>
           )}
+          {gcal && (
+            <a href={gcal} target="_blank" rel="noopener noreferrer" className="ink-border-sm rounded-full bg-cobalt px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
+              + Google Calendar
+            </a>
+          )}
+          {ics && (
+            <a href={ics} download={`${e.event_name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`} className="ink-border-sm rounded-full bg-white px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
+              .ics
+            </a>
+          )}
           {e.website_url && (
             <a href={e.website_url} target="_blank" rel="noopener noreferrer" className="ink-border-sm rounded-full bg-cream px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
               Website ↗
