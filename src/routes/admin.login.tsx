@@ -16,7 +16,7 @@ export const Route = createFileRoute("/admin/login")({
 
 function AdminLoginPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -32,7 +32,14 @@ function AdminLoginPage() {
     e.preventDefault();
     setBusy(true);
     try {
-      if (mode === "signup") {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/reset-password",
+        });
+        if (error) throw error;
+        toast.success("Reset link sent. Check your inbox.");
+        setMode("signin");
+      } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -92,24 +99,35 @@ function AdminLoginPage() {
               className="ink-border-sm rounded-lg bg-cream px-4 py-3 font-sans"
             />
           </label>
-          <label className="grid gap-1">
-            <span className="font-mono text-[11px] font-bold uppercase tracking-widest">Password</span>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="ink-border-sm rounded-lg bg-cream px-4 py-3 font-sans"
-            />
-          </label>
+          {mode !== "forgot" && (
+            <label className="grid gap-1">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-widest">Password</span>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="ink-border-sm rounded-lg bg-cream px-4 py-3 font-sans"
+              />
+            </label>
+          )}
           <button
             disabled={busy}
             className="ink-border-sm mt-2 rounded-full bg-ink px-6 py-3 font-mono text-xs font-bold uppercase tracking-widest text-cream disabled:opacity-60"
           >
-            {busy ? "…" : mode === "signup" ? "Create account" : "Sign in"}
+            {busy ? "…" : mode === "forgot" ? "Send reset link" : mode === "signup" ? "Create account" : "Sign in"}
           </button>
         </form>
+
+        <button
+          type="button"
+          onClick={() => setMode(mode === "forgot" ? "signin" : "forgot")}
+          className="mt-4 font-mono text-[11px] font-bold uppercase tracking-widest text-ink/60 underline underline-offset-4 hover:text-orange"
+        >
+          {mode === "forgot" ? "← Back to sign in" : "Forgot password?"}
+        </button>
+
         <p className="mt-4 text-xs text-muted-foreground">
           First-time setup: create an account, confirm your email, then sign in — the first signed-in admin will be granted access automatically.
         </p>
