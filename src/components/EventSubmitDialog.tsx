@@ -137,6 +137,7 @@ export function EventSubmitDialog({ open, onClose }: { open: boolean; onClose: (
       register_url: d.register_url || null,
       socials: cleanSocials,
       status: "pending",
+      submitted_by: user?.id ?? null,
     });
     setSubmitting(false);
     if (error) {
