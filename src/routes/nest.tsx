@@ -482,6 +482,63 @@ function NestPage() {
         </div>
       </section>
 
+      {/* ---------- HOW NEST RUNS ---------- */}
+      <section className="border-t-2 border-ink bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <SectionLabel n="05">How Nest runs</SectionLabel>
+          <h2 className="mt-6 max-w-3xl font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
+            A community with an <span className="tag-orange text-cream">operating system.</span>
+          </h2>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+            {[
+              {
+                n: "Membership tracks",
+                items: [
+                  ["Builder", "Students & devs shipping projects. Access to hack nights, mentor gates and the events board."],
+                  ["Campus lead", "Runs Nest programming inside a college. Gets playbooks, budget templates and speaker access."],
+                  ["Volunteer crew", "On-ground ops during events. Issued a private crew dashboard login by Nest admins."],
+                  ["Mentor / Judge", "Industry folks reviewing builds and judging demo days."],
+                ],
+              },
+              {
+                n: "The cadence",
+                items: [
+                  ["Weekly", "Build-in-public thread + open Discord office hours."],
+                  ["Monthly", "One workshop or hack night with something shipped by the end."],
+                  ["Quarterly", "Campus tour — a new college hosts Nest programming."],
+                  ["Yearly", "Build With Nashik, the 36-hour flagship."],
+                ],
+              },
+              {
+                n: "How we operate",
+                items: [
+                  ["Free forever", "No entry fee for students, ever. Sponsors fund the room."],
+                  ["Student-run", "Every organiser is a builder first, organiser second."],
+                  ["Open board", "Any Nashik community can list an event after crew review."],
+                  ["Receipts, not promises", "SUNHACKS 08/2025, NASA Space Apps, Mumbai Tech Week."],
+                ],
+              },
+            ].map((col, ci) => (
+              <Reveal key={col.n} delay={ci * 110}>
+                <div className="ink-border-sm h-full rounded-2xl bg-cream p-6">
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-orange">{col.n}</div>
+                  <ul className="mt-4 grid gap-3">
+                    {col.items.map(([t, d]) => (
+                      <li key={t} className="ink-border-sm rounded-xl bg-white p-3">
+                        <div className="font-chunk text-lg uppercase leading-tight tracking-tight">{t}</div>
+                        <p className="mt-1 text-sm leading-relaxed text-ink/70">{d}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
       {/* ---------- FAQ ---------- */}
       <section className="border-y-2 border-ink bg-cream py-20">
         <div className="mx-auto max-w-3xl px-6">
