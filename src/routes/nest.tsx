@@ -362,13 +362,14 @@ function NestPage() {
               <Reveal key={l.title} delay={i * 110}>
                 <article className="ink-border-sm flex h-full flex-col overflow-hidden rounded-2xl bg-cream text-ink">
                   <div className="relative aspect-[16/10] w-full overflow-hidden border-b-2 border-ink bg-white">
-                    {l.img ? (
-                      <img src={l.img} alt={`${l.title} — Team Nest`} loading="lazy" className="h-full w-full object-cover" />
-                    ) : (
-                      <div className={`grid h-full w-full place-items-center ${l.tint} font-chunk text-4xl uppercase text-cream`}>
-                        {l.title.slice(0, 2)}
-                      </div>
-                    )}
+                    <SafeImg
+                      src={l.img}
+                      alt={`${l.title} — Team Nest`}
+                      label={l.title}
+                      tint={l.tint}
+                      className="h-full w-full object-cover"
+                    />
+
                     <span className="ink-border-sm absolute left-3 top-3 rounded-full bg-cream px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest">
                       {l.date}
                     </span>
