@@ -22,21 +22,60 @@ export const Route = createFileRoute("/reset-password")({
 function ResetPasswordPage() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    const hash = window.location.hash ?? "";
-    const isRecovery = hash.includes("type=recovery");
-    supabase.auth.getSession().then(({ data }) => {
-      setReady(Boolean(data.session) || isRecovery);
+    let alive = true;
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!alive) return;
+      if (session && (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
+        setReady(true);
+        setProblem(null);
+      }
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
+
+    (async () => {
+      const url = new URL(window.location.href);
+      const hash = new URLSearchParams((window.location.hash ?? "").replace(/^#/, ""));
+
+      const errDesc = url.searchParams.get("error_description") ?? hash.get("error_description");
+      const code = url.searchParams.get("code");
+      const tokenHash = url.searchParams.get("token_hash");
+
+      try {
+        if (errDesc) {
+          setProblem(errDesc);
+        } else if (code) {
+          // PKCE-style recovery link
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+        } else if (tokenHash) {
+          // Newer email links: ?token_hash=...&type=recovery
+          const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+          if (error) throw error;
+        }
+      } catch (e: any) {
+        if (alive) setProblem(e?.message ?? "This reset link is invalid or has expired.");
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (!alive) return;
+      if (data.session) {
+        setReady(true);
+        setProblem(null);
+      }
+    })();
+
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
