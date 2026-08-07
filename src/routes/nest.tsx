@@ -440,13 +440,15 @@ function NestPage() {
               <div className="relative mx-auto w-full max-w-[300px]">
                 <div className="ink-border-lg overflow-hidden rounded-3xl bg-white p-3" style={{ transform: "rotate(1.6deg)" }}>
                   <div className="overflow-hidden rounded-2xl border-2 border-ink bg-cream">
-                    <img
+                    <SafeImg
                       src={anshImg}
                       alt="Ansh Rajore, founder of Team Nest"
-                      loading="lazy"
+                      label="AR"
+                      tint="bg-cobalt"
                       className="aspect-[4/5] w-full object-cover"
                       style={{ objectPosition: "50% 22%" }}
                     />
+
                   </div>
                   <div className="flex items-center justify-between px-1 pt-3 pb-1">
                     <span className="font-chunk text-lg uppercase leading-none">Ansh</span>
