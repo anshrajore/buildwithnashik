@@ -161,10 +161,61 @@ function SectionLabel({ n, children }: { n: string; children: React.ReactNode })
   );
 }
 
+/** Image that degrades to a branded tile instead of a broken/blank box. */
+function SafeImg({
+  src,
+  alt,
+  label,
+  tint = "bg-orange",
+  className = "",
+  style,
+}: {
+  src?: string | null;
+  alt: string;
+  label: string;
+  tint?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const [failed, setFailed] = useState(!src);
+  if (failed || !src) {
+    return (
+      <div
+        role="img"
+        aria-label={alt}
+        className={`grid h-full w-full place-items-center ${tint} font-chunk text-4xl uppercase text-cream ${className}`}
+      >
+        {label.slice(0, 2)}
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      onError={() => {
+        // eslint-disable-next-line no-console
+        console.error(`[asset] failed to load "${src}" on route /nest (${alt})`);
+        setFailed(true);
+      }}
+      className={className}
+      style={style}
+    />
+  );
+}
+
 /* ---------------- page ---------------- */
 
 function NestPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [cover, setCover] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setCover(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
 
   return (
     <div className="min-h-screen overflow-x-hidden paper text-foreground antialiased">
@@ -209,24 +260,61 @@ function NestPage() {
             </div>
           </div>
 
-          <Reveal delay={120}>
-            <div className="relative mx-auto w-full max-w-sm">
-              <div className="ink-border-lg rounded-3xl bg-white p-7" style={{ transform: "rotate(-1.4deg)" }}>
-                <img src={nestLogo} alt="NEST — Nashik Ecosystem for Startups & Technology" className="mx-auto h-auto w-full" />
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                  {STATS.map((s) => (
-                    <div key={s.k} className="ink-border-sm rounded-xl bg-cream p-3 text-center">
-                      <div className="font-chunk text-2xl leading-none">{s.k}</div>
-                      <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">{s.l}</div>
-                    </div>
-                  ))}
-                </div>
+          <div className="relative mx-auto w-full max-w-sm">
+            {/* animated cover card */}
+            <div
+              className="ink-border-lg relative overflow-hidden rounded-3xl bg-white p-7 transition-all duration-[900ms] ease-out"
+              style={{
+                transform: cover ? "rotate(-1.4deg) translateY(0) scale(1)" : "rotate(-6deg) translateY(24px) scale(0.94)",
+                opacity: cover ? 1 : 0,
+              }}
+            >
+              {/* sweeping gloss */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-ink/[0.07] to-transparent transition-transform duration-[1600ms] ease-out"
+                style={{ transform: cover ? "translateX(420%)" : "translateX(0)" }}
+              />
+              <SafeImg
+                src={nestLogo}
+                alt="NEST — Nashik Ecosystem for Startups & Technology"
+                label="NEST"
+                className="mx-auto h-auto w-full"
+                style={{
+                  transition: "opacity 900ms ease-out 200ms, transform 900ms cubic-bezier(.2,.8,.2,1) 200ms",
+                  opacity: cover ? 1 : 0,
+                  transform: cover ? "translateY(0) scale(1)" : "translateY(10px) scale(0.92)",
+                }}
+              />
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                {STATS.map((s, i) => (
+                  <div
+                    key={s.k}
+                    className="ink-border-sm rounded-xl bg-cream p-3 text-center transition-all duration-700 ease-out"
+                    style={{
+                      transitionDelay: `${360 + i * 90}ms`,
+                      opacity: cover ? 1 : 0,
+                      transform: cover ? "translateY(0)" : "translateY(10px)",
+                    }}
+                  >
+                    <div className="font-chunk text-2xl leading-none">{s.k}</div>
+                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">{s.l}</div>
+                  </div>
+                ))}
               </div>
-              <span className="ink-border-sm absolute -bottom-4 -left-3 rotate-[-6deg] rounded-full bg-yellow px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-widest">
-                Official community
-              </span>
             </div>
-          </Reveal>
+            <span
+              className="ink-border-sm absolute -bottom-4 -left-3 rounded-full bg-yellow px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-widest transition-all duration-700 ease-out"
+              style={{
+                transitionDelay: "760ms",
+                opacity: cover ? 1 : 0,
+                transform: cover ? "rotate(-6deg) scale(1)" : "rotate(-6deg) scale(0.7)",
+              }}
+            >
+              Official community
+            </span>
+          </div>
+
         </div>
       </section>
 
@@ -274,13 +362,14 @@ function NestPage() {
               <Reveal key={l.title} delay={i * 110}>
                 <article className="ink-border-sm flex h-full flex-col overflow-hidden rounded-2xl bg-cream text-ink">
                   <div className="relative aspect-[16/10] w-full overflow-hidden border-b-2 border-ink bg-white">
-                    {l.img ? (
-                      <img src={l.img} alt={`${l.title} — Team Nest`} loading="lazy" className="h-full w-full object-cover" />
-                    ) : (
-                      <div className={`grid h-full w-full place-items-center ${l.tint} font-chunk text-4xl uppercase text-cream`}>
-                        {l.title.slice(0, 2)}
-                      </div>
-                    )}
+                    <SafeImg
+                      src={l.img}
+                      alt={`${l.title} — Team Nest`}
+                      label={l.title}
+                      tint={l.tint}
+                      className="h-full w-full object-cover"
+                    />
+
                     <span className="ink-border-sm absolute left-3 top-3 rounded-full bg-cream px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest">
                       {l.date}
                     </span>
@@ -351,13 +440,15 @@ function NestPage() {
               <div className="relative mx-auto w-full max-w-[300px]">
                 <div className="ink-border-lg overflow-hidden rounded-3xl bg-white p-3" style={{ transform: "rotate(1.6deg)" }}>
                   <div className="overflow-hidden rounded-2xl border-2 border-ink bg-cream">
-                    <img
+                    <SafeImg
                       src={anshImg}
                       alt="Ansh Rajore, founder of Team Nest"
-                      loading="lazy"
+                      label="AR"
+                      tint="bg-cobalt"
                       className="aspect-[4/5] w-full object-cover"
                       style={{ objectPosition: "50% 22%" }}
                     />
+
                   </div>
                   <div className="flex items-center justify-between px-1 pt-3 pb-1">
                     <span className="font-chunk text-lg uppercase leading-none">Ansh</span>
@@ -390,6 +481,63 @@ function NestPage() {
           ))}
         </div>
       </section>
+
+      {/* ---------- HOW NEST RUNS ---------- */}
+      <section className="border-t-2 border-ink bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <SectionLabel n="05">How Nest runs</SectionLabel>
+          <h2 className="mt-6 max-w-3xl font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
+            A community with an <span className="tag-orange text-cream">operating system.</span>
+          </h2>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+            {[
+              {
+                n: "Membership tracks",
+                items: [
+                  ["Builder", "Students & devs shipping projects. Access to hack nights, mentor gates and the events board."],
+                  ["Campus lead", "Runs Nest programming inside a college. Gets playbooks, budget templates and speaker access."],
+                  ["Volunteer crew", "On-ground ops during events. Issued a private crew dashboard login by Nest admins."],
+                  ["Mentor / Judge", "Industry folks reviewing builds and judging demo days."],
+                ],
+              },
+              {
+                n: "The cadence",
+                items: [
+                  ["Weekly", "Build-in-public thread + open Discord office hours."],
+                  ["Monthly", "One workshop or hack night with something shipped by the end."],
+                  ["Quarterly", "Campus tour — a new college hosts Nest programming."],
+                  ["Yearly", "Build With Nashik, the 36-hour flagship."],
+                ],
+              },
+              {
+                n: "How we operate",
+                items: [
+                  ["Free forever", "No entry fee for students, ever. Sponsors fund the room."],
+                  ["Student-run", "Every organiser is a builder first, organiser second."],
+                  ["Open board", "Any Nashik community can list an event after crew review."],
+                  ["Receipts, not promises", "SUNHACKS 08/2025, NASA Space Apps, Mumbai Tech Week."],
+                ],
+              },
+            ].map((col, ci) => (
+              <Reveal key={col.n} delay={ci * 110}>
+                <div className="ink-border-sm h-full rounded-2xl bg-cream p-6">
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-orange">{col.n}</div>
+                  <ul className="mt-4 grid gap-3">
+                    {col.items.map(([t, d]) => (
+                      <li key={t} className="ink-border-sm rounded-xl bg-white p-3">
+                        <div className="font-chunk text-lg uppercase leading-tight tracking-tight">{t}</div>
+                        <p className="mt-1 text-sm leading-relaxed text-ink/70">{d}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* ---------- FAQ ---------- */}
       <section className="border-y-2 border-ink bg-cream py-20">

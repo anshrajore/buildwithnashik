@@ -109,10 +109,12 @@ export function DigitalSwag() {
 
   const theme = useMemo(() => THEMES.find((t) => t.id === themeId) ?? THEMES[0], [themeId]);
 
-  const shareUrl = useMemo(() => {
-    if (typeof window === "undefined") return "https://buildwithnashik.lovable.app/#swag";
-    return `${window.location.origin}/#swag`;
+  // Resolved after mount only — keeps SSR HTML and first client render identical.
+  const [shareUrl, setShareUrl] = useState("https://buildwithnashik.lovable.app/#swag");
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}/#swag`);
   }, []);
+
 
   // build QR once
   useEffect(() => {
