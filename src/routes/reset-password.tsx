@@ -99,10 +99,21 @@ function ResetPasswordPage() {
         <h1 className="mt-2 font-chunk text-4xl uppercase tracking-tight">New password</h1>
 
         {!ready ? (
-          <p className="mt-4 text-sm text-muted-foreground">
-            Open this page from the reset link in your inbox. If the link expired, request a new one from the sign-in page.
-          </p>
+          <div className="mt-4 grid gap-3">
+            <p className="text-sm text-muted-foreground">
+              {problem
+                ? problem
+                : "Checking your reset link… open this page from the link in your inbox."}
+            </p>
+            <Link
+              to="/admin/login"
+              className="ink-border-sm justify-self-start rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream"
+            >
+              Request a new link
+            </Link>
+          </div>
         ) : (
+
           <form onSubmit={onSubmit} className="mt-6 grid gap-3">
             <label className="grid gap-1">
               <span className="font-mono text-[11px] font-bold uppercase tracking-widest">New password</span>
