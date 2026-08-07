@@ -260,24 +260,61 @@ function NestPage() {
             </div>
           </div>
 
-          <Reveal delay={120}>
-            <div className="relative mx-auto w-full max-w-sm">
-              <div className="ink-border-lg rounded-3xl bg-white p-7" style={{ transform: "rotate(-1.4deg)" }}>
-                <img src={nestLogo} alt="NEST — Nashik Ecosystem for Startups & Technology" className="mx-auto h-auto w-full" />
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                  {STATS.map((s) => (
-                    <div key={s.k} className="ink-border-sm rounded-xl bg-cream p-3 text-center">
-                      <div className="font-chunk text-2xl leading-none">{s.k}</div>
-                      <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">{s.l}</div>
-                    </div>
-                  ))}
-                </div>
+          <div className="relative mx-auto w-full max-w-sm">
+            {/* animated cover card */}
+            <div
+              className="ink-border-lg relative overflow-hidden rounded-3xl bg-white p-7 transition-all duration-[900ms] ease-out"
+              style={{
+                transform: cover ? "rotate(-1.4deg) translateY(0) scale(1)" : "rotate(-6deg) translateY(24px) scale(0.94)",
+                opacity: cover ? 1 : 0,
+              }}
+            >
+              {/* sweeping gloss */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-ink/[0.07] to-transparent transition-transform duration-[1600ms] ease-out"
+                style={{ transform: cover ? "translateX(420%)" : "translateX(0)" }}
+              />
+              <SafeImg
+                src={nestLogo}
+                alt="NEST — Nashik Ecosystem for Startups & Technology"
+                label="NEST"
+                className="mx-auto h-auto w-full"
+                style={{
+                  transition: "opacity 900ms ease-out 200ms, transform 900ms cubic-bezier(.2,.8,.2,1) 200ms",
+                  opacity: cover ? 1 : 0,
+                  transform: cover ? "translateY(0) scale(1)" : "translateY(10px) scale(0.92)",
+                }}
+              />
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                {STATS.map((s, i) => (
+                  <div
+                    key={s.k}
+                    className="ink-border-sm rounded-xl bg-cream p-3 text-center transition-all duration-700 ease-out"
+                    style={{
+                      transitionDelay: `${360 + i * 90}ms`,
+                      opacity: cover ? 1 : 0,
+                      transform: cover ? "translateY(0)" : "translateY(10px)",
+                    }}
+                  >
+                    <div className="font-chunk text-2xl leading-none">{s.k}</div>
+                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">{s.l}</div>
+                  </div>
+                ))}
               </div>
-              <span className="ink-border-sm absolute -bottom-4 -left-3 rotate-[-6deg] rounded-full bg-yellow px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-widest">
-                Official community
-              </span>
             </div>
-          </Reveal>
+            <span
+              className="ink-border-sm absolute -bottom-4 -left-3 rounded-full bg-yellow px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-widest transition-all duration-700 ease-out"
+              style={{
+                transitionDelay: "760ms",
+                opacity: cover ? 1 : 0,
+                transform: cover ? "rotate(-6deg) scale(1)" : "rotate(-6deg) scale(0.7)",
+              }}
+            >
+              Official community
+            </span>
+          </div>
+
         </div>
       </section>
 
