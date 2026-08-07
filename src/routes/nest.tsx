@@ -2,9 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { NestHeader } from "@/components/NestHeader";
 import nestLogo from "@/assets/nest-logo.png";
-import anshImg from "@/assets/ansh.png";
-import sunhacksImg from "@/assets/sunhacks.png";
-import mtwImg from "@/assets/mtw.jpeg";
+import anshAsset from "@/assets/ansh.png.asset.json";
+import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
+import mtwAsset from "@/assets/mtw.jpeg.asset.json";
+
+const anshImg = anshAsset.url;
+const sunhacksImg = sunhacksAsset.url;
+const mtwImg = mtwAsset.url;
 
 export const Route = createFileRoute("/nest")({
   head: () => ({
