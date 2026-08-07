@@ -1047,196 +1047,98 @@ function Team() {
         Meet the <span className="tag-orange text-cream">builders.</span>
       </h2>
 
-      <div className="mt-16">
-        {/* ============= FOUNDER DOSSIER — redesigned ============= */}
-        <div className="ink-border-lg relative overflow-hidden rounded-3xl bg-ink text-cream">
-          {/* dot-grid backdrop */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-[0.08]"
-            style={{
-              backgroundImage: "radial-gradient(var(--cream) 1px, transparent 1px)",
-              backgroundSize: "22px 22px",
-            }}
-          />
-          {/* massive wordmark */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-2 -bottom-6 select-none whitespace-nowrap font-display text-[22vw] leading-[0.8] tracking-tight text-cream/[0.05] md:text-[16rem]"
-          >
-            RAJORE
-          </div>
+      {/* ============= FOUNDER — editorial (same language as /nest) ============= */}
+      <div className="relative mt-14 overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.5]"
+          style={{
+            backgroundImage: "radial-gradient(currentColor 1px, transparent 1px)",
+            backgroundSize: "18px 18px",
+            color: "rgb(0 0 0 / 0.07)",
+          }}
+        />
 
-          {/* top ticker */}
-          <div
-            aria-hidden
-            className="relative flex items-center gap-3 border-b border-cream/15 bg-ink/60 px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-cream/70"
-          >
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-orange" />
-            <span>Dossier · 001</span>
-            <span className="opacity-40">/</span>
-            <span>Founder file</span>
-            <span className="opacity-40">/</span>
-            <span>Team Nest</span>
-            <span className="ml-auto hidden sm:inline">buildwithnashik.in · 2026</span>
-          </div>
+        <div className="relative grid items-center gap-10 lg:grid-cols-[1fr,0.72fr]">
+          {/* text left */}
+          <div>
+            <h3 className="font-chunk text-4xl uppercase leading-[0.92] tracking-tight md:text-5xl">
+              Ansh Rajore
+            </h3>
+            <div className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-orange">
+              Founder · Organizer · Team Nest
+            </div>
 
-          <div className="relative grid gap-0 lg:grid-cols-[minmax(0,1.25fr),minmax(0,0.75fr)]">
-            {/* LEFT — the story */}
-            <div className="relative z-10 flex flex-col justify-center gap-4 p-5 sm:p-6 md:p-8 lg:p-9">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="ink-border-sm rounded-full bg-orange px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream">
-                  Founder · Organizer
-                </span>
-                <span className="ink-border-sm rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
-                  Est. 2023
-                </span>
-              </div>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink/80">
+              Organizer of SUNHACKS · 08/2025 and the driving force behind Team Nest's community work in Nashik.
+              Now bringing everything he's learned to Build With Nashik 2026 — a hackathon designed by builders,
+              for builders.
+            </p>
 
-              <div>
-                <h3 className="font-chunk text-[11vw] uppercase leading-[0.85] tracking-tight sm:text-5xl md:text-6xl lg:text-[4rem]">
-                  Ansh
-                  <br />
-                  <span className="tag-orange text-cream inline-block">Rajore.</span>
-                </h3>
-                <p className="mt-2 font-script text-3xl text-orange sm:text-4xl">building in public</p>
-              </div>
-
-              <p className="max-w-xl text-sm text-cream/85 sm:text-base md:text-lg">
-                Organizer of <span className="text-cream">SUNHACKS · 08/2025</span> and the driving force behind{" "}
-                <span className="text-cream">Team Nest</span>'s community work in Nashik. Now bringing everything he's learned to Build With Nashik 2026 — a hackathon designed by builders, for builders.
+            <blockquote className="ink-border-sm mt-6 rounded-2xl bg-white p-5">
+              <p className="font-script text-2xl leading-snug text-orange">
+                “You don’t wait for an ecosystem. You build the room, then invite the city in.”
               </p>
+            </blockquote>
 
-              {/* mini résumé timeline */}
-              <div className="ink-border-sm rounded-2xl bg-cream/[0.05] p-4">
-                <div className="mb-3 font-mono text-[10px] font-bold uppercase tracking-widest text-cream/60">
-                  Recent shipments
+            <dl className="mt-6 grid gap-2 sm:grid-cols-2">
+              {[
+                ["2023", "Founded Team Nest"],
+                ["08 / 2025", "Organizer · SUNHACKS"],
+                ["02 / 2025", "NASA Space Apps"],
+                ["2026", "Build With Nashik"],
+              ].map(([d, t]) => (
+                <div key={t} className="ink-border-sm flex items-center gap-3 rounded-xl bg-cream px-3 py-2">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink/50">{d}</span>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest">{t}</span>
                 </div>
-                <ol className="grid gap-2">
-                  {[
-                    { y: "2023", t: "Founded Team Nest · Nashik" },
-                    { y: "08/2025", t: "Organized SUNHACKS · flagship hackathon" },
-                    { y: "2026", t: "Ships Build With Nashik · you're here" },
-                  ].map((r) => (
-                    <li key={r.y} className="flex items-center gap-3">
-                      <span className="ink-border-sm rounded-md bg-yellow px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-ink">
-                        {r.y}
-                      </span>
-                      <span className="text-sm text-cream/90">{r.t}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
+              ))}
+            </dl>
 
-              {/* stat strip */}
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { k: "5×", v: "Hackathon Winner" },
-                  { k: "3000+", v: "Devs Connected" },
-                  { k: "12+", v: "Events Shipped" },
-                ].map((s) => (
-                  <div key={s.v} className="ink-border-sm rounded-xl bg-cream/[0.05] p-3">
-                    <div className="font-display text-2xl leading-none text-cream md:text-3xl">{s.k}</div>
-                    <div className="mt-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream/60">
-                      {s.v}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <a
-                  href="https://www.linkedin.com/in/ansh-rajore/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Ansh Rajore on LinkedIn (opens in a new tab)"
-                  className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream"
-                >
-                  LinkedIn ↗
-                </a>
-                <a
-                  href="#register"
-                  className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"
-                >
-                  Build with him →
-                </a>
-              </div>
-            </div>
-
-            {/* RIGHT — portrait card (no face cropping) */}
-            <div className="relative p-4 sm:p-5 lg:p-6">
-              <div className="ink-border-lg relative mx-auto w-full max-w-[300px] overflow-hidden rounded-3xl bg-cream sm:max-w-xs lg:max-w-none">
-                {/* portrait area — aspect ratio so face never crops on desktop */}
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-ink sm:aspect-[3/4] lg:aspect-[4/5]">
-                  <img
-                    src={anshAsset.url}
-                    alt="Portrait of Ansh Rajore, founder of Team Nest, smiling in a hoodie with a code editor visible in the background"
-                    className="absolute inset-0 h-full w-full object-cover"
-                    style={{ objectPosition: "50% 22%" }}
-                    loading="lazy"
-                    decoding="async"
-                  />
-
-                  {/* subtle top-fade for tag legibility */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink/50 to-transparent"
-                  />
-
-                  {/* corner tags */}
-                  <div
-                    className="ink-border-sm absolute left-3 top-3 rounded-md bg-orange px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
-                    style={{ transform: "rotate(-4deg)" }}
-                  >
-                    ★ 5× Winner
-                  </div>
-                  <div className="ink-border-sm absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-cream px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink">
-                    <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-orange" />
-                    On mission
-                  </div>
-
-                  {/* film-strip perforations on left edge */}
-                  <div aria-hidden className="pointer-events-none absolute left-1.5 top-1/2 hidden -translate-y-1/2 flex-col gap-1.5 lg:flex">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <span key={i} className="block h-2 w-2 rounded-sm bg-cream/70" />
-                    ))}
-                  </div>
-                </div>
-
-                {/* trading-card footer */}
-                <div className="grid gap-3 border-t-2 border-ink bg-cream p-4 text-ink sm:p-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink/60">Currently shipping</div>
-                      <div className="mt-0.5 truncate font-chunk text-lg uppercase leading-tight sm:text-xl">
-                        Build With Nashik · 2026
-                      </div>
-                    </div>
-                    <div className="ink-border-sm shrink-0 rounded-lg bg-yellow px-2 py-1 text-center">
-                      <div className="font-display text-lg leading-none text-ink">36h</div>
-                      <div className="font-mono text-[8px] font-bold uppercase tracking-widest text-ink/70">build</div>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="chip !text-[9px]">Team Nest</span>
-                    <span className="chip bg-cobalt text-cream border-ink !text-[9px]">SUNHACKS · 08/2025</span>
-                    <span className="chip !text-[9px]">Nashik</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* floating stamp */}
-              <div
-                aria-hidden
-                className="ink-border-sm absolute -bottom-2 right-4 hidden rounded-full bg-rose px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink shadow-[4px_4px_0_var(--ink)] sm:block"
-                style={{ transform: "rotate(6deg)" }}
+            <div className="mt-6 flex flex-wrap gap-2">
+              <a
+                href="https://www.linkedin.com/in/ansh-rajore/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ansh Rajore on LinkedIn (opens in a new tab)"
+                className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream hover-scale"
               >
-                ✓ Verified builder
+                LinkedIn ↗
+              </a>
+              <a
+                href="#register"
+                className="ink-border-sm inline-flex items-center gap-2 rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover-scale"
+              >
+                Build with him →
+              </a>
+            </div>
+          </div>
+
+          {/* portrait right */}
+          <div className="relative mx-auto w-full max-w-[300px]">
+            <div className="ink-border-lg overflow-hidden rounded-3xl bg-white p-3" style={{ transform: "rotate(1.6deg)" }}>
+              <div className="overflow-hidden rounded-2xl border-2 border-ink bg-cream">
+                <img
+                  src={anshAsset.url}
+                  alt="Ansh Rajore, founder of Team Nest"
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/5] w-full object-cover"
+                  style={{ objectPosition: "50% 22%" }}
+                />
+              </div>
+              <div className="flex items-center justify-between px-1 pb-1 pt-3">
+                <span className="font-chunk text-lg uppercase leading-none">Ansh</span>
+                <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink/50">Nest · 001</span>
               </div>
             </div>
+            <span className="ink-border-sm absolute -bottom-3 -left-3 rotate-[-7deg] rounded-full bg-cobalt px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-cream">
+              Verified builder
+            </span>
           </div>
         </div>
       </div>
+
 
 
 
