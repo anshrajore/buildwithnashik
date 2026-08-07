@@ -161,10 +161,61 @@ function SectionLabel({ n, children }: { n: string; children: React.ReactNode })
   );
 }
 
+/** Image that degrades to a branded tile instead of a broken/blank box. */
+function SafeImg({
+  src,
+  alt,
+  label,
+  tint = "bg-orange",
+  className = "",
+  style,
+}: {
+  src?: string | null;
+  alt: string;
+  label: string;
+  tint?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const [failed, setFailed] = useState(!src);
+  if (failed || !src) {
+    return (
+      <div
+        role="img"
+        aria-label={alt}
+        className={`grid h-full w-full place-items-center ${tint} font-chunk text-4xl uppercase text-cream ${className}`}
+      >
+        {label.slice(0, 2)}
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      onError={() => {
+        // eslint-disable-next-line no-console
+        console.error(`[asset] failed to load "${src}" on route /nest (${alt})`);
+        setFailed(true);
+      }}
+      className={className}
+      style={style}
+    />
+  );
+}
+
 /* ---------------- page ---------------- */
 
 function NestPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [cover, setCover] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setCover(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
 
   return (
     <div className="min-h-screen overflow-x-hidden paper text-foreground antialiased">
