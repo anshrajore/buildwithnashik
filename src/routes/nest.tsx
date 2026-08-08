@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { NestHeader } from "@/components/NestHeader";
+import { JoinNestDialog, NEST_TRACKS, type NestTrackId } from "@/components/JoinNestDialog";
+import { useAuthUser } from "@/hooks/use-auth-user";
+
 import nestLogo from "@/assets/nest-logo.png";
 import anshAsset from "@/assets/ansh.png.asset.json";
 import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
@@ -211,10 +214,13 @@ function SafeImg({
 function NestPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [cover, setCover] = useState(false);
+  const [joinTrack, setJoinTrack] = useState<NestTrackId | null>(null);
+  const { user } = useAuthUser();
   useEffect(() => {
     const t = setTimeout(() => setCover(true), 60);
     return () => clearTimeout(t);
   }, []);
+
 
 
   return (
@@ -537,6 +543,53 @@ function NestPage() {
           </div>
         </div>
       </section>
+
+      {/* ---------- MEMBERSHIP ---------- */}
+      <section id="join" className="border-t-2 border-ink bg-white py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <SectionLabel n="05">Membership</SectionLabel>
+          <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-chunk text-4xl uppercase leading-[0.95] tracking-tight md:text-6xl">
+              Join the roster.
+            </h2>
+            {user && (
+              <Link
+                to="/member"
+                className="ink-border-sm rounded-full bg-ink px-5 py-2.5 font-mono text-[11px] font-bold uppercase tracking-widest text-cream"
+              >
+                My member dashboard →
+              </Link>
+            )}
+          </div>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink/70 md:text-base">
+            Nest runs on people, not headcount. Pick the track that matches how you want to contribute — the crew
+            reviews every application by hand. Approved members get a dashboard scoped to their role; volunteer crew
+            receive an admin-issued login for on-ground ops.
+          </p>
+
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {NEST_TRACKS.map((t, i) => (
+              <div
+                key={t.id}
+                className="ink-border-lg flex flex-col rounded-2xl bg-cream p-6 transition-transform hover:-translate-y-1"
+              >
+                <div className={`ink-border-sm inline-flex w-fit rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${t.tint}`}>
+                  0{i + 1} · {t.label}
+                </div>
+                <p className="mt-4 flex-1 text-sm leading-relaxed text-ink/75">{t.blurb}</p>
+                <button
+                  onClick={() => setJoinTrack(t.id)}
+                  className="ink-border-sm mt-6 rounded-full bg-orange px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream transition-transform hover:-translate-y-0.5"
+                >
+                  Apply as {t.label} →
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <JoinNestDialog open={joinTrack !== null} track={joinTrack ?? "builder"} onClose={() => setJoinTrack(null)} />
 
 
       {/* ---------- FAQ ---------- */}
