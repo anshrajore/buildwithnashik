@@ -164,6 +164,105 @@ export type Database = {
         }
         Relationships: []
       }
+      nest_members: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          joined_at: string
+          notes: string | null
+          status: string
+          title: string | null
+          track: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          status?: string
+          title?: string | null
+          track: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          status?: string
+          title?: string | null
+          track?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nest_membership_applications: {
+        Row: {
+          city: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          motivation: string
+          organisation: string | null
+          phone: string
+          portfolio_url: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          skills: string | null
+          status: string
+          submitted_by: string | null
+          track: string
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          motivation: string
+          organisation?: string | null
+          phone: string
+          portfolio_url?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          skills?: string | null
+          status?: string
+          submitted_by?: string | null
+          track: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          motivation?: string
+          organisation?: string | null
+          phone?: string
+          portfolio_url?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          skills?: string | null
+          status?: string
+          submitted_by?: string | null
+          track?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sponsor_inquiries: {
         Row: {
           company_name: string
@@ -373,7 +472,14 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "builder"
+        | "campus_lead"
+        | "volunteer"
+        | "mentor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -501,7 +607,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "builder",
+        "campus_lead",
+        "volunteer",
+        "mentor",
+      ],
     },
   },
 } as const
