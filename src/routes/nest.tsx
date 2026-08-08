@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { NestHeader } from "@/components/NestHeader";
+import { JoinNestDialog, NEST_TRACKS, type NestTrackId } from "@/components/JoinNestDialog";
+import { useAuthUser } from "@/hooks/use-auth-user";
+
 import nestLogo from "@/assets/nest-logo.png";
 import anshAsset from "@/assets/ansh.png.asset.json";
 import sunhacksAsset from "@/assets/sunhacks.png.asset.json";
@@ -211,10 +214,13 @@ function SafeImg({
 function NestPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [cover, setCover] = useState(false);
+  const [joinTrack, setJoinTrack] = useState<NestTrackId | null>(null);
+  const { user } = useAuthUser();
   useEffect(() => {
     const t = setTimeout(() => setCover(true), 60);
     return () => clearTimeout(t);
   }, []);
+
 
 
   return (
