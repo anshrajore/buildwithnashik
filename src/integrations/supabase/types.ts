@@ -1119,18 +1119,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      can_manage_event: {
-        Args: { _event_id: string; _permission: string }
-        Returns: boolean
-      }
-      owns_registration: {
-        Args: { _registration_id: string }
-        Returns: boolean
-      }
-      registration_event_id: {
-        Args: { _registration_id: string }
-        Returns: string
-      }
       request_member_change: {
         Args: {
           p_lead_email: string
