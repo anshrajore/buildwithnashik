@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          actor_role: string | null
+          correlation_id: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+          new_value: Json | null
+          previous_value: Json | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          actor_role?: string | null
+          correlation_id: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+          new_value?: Json | null
+          previous_value?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          actor_role?: string | null
+          correlation_id?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+          new_value?: Json | null
+          previous_value?: Json | null
+        }
+        Relationships: []
+      }
       community_events: {
         Row: {
           banner_url: string | null
@@ -99,6 +144,385 @@ export type Database = {
           tagline?: string | null
           team_max?: number
           team_min?: number
+          venue?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      event_email_log: {
+        Row: {
+          body: string
+          created_at: string
+          error_message: string | null
+          event_id: string
+          id: string
+          recipient_email: string
+          registration_id: string | null
+          sent_by: string | null
+          status: string
+          subject: string
+          template: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          error_message?: string | null
+          event_id: string
+          id?: string
+          recipient_email: string
+          registration_id?: string | null
+          sent_by?: string | null
+          status?: string
+          subject: string
+          template: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          error_message?: string | null
+          event_id?: string
+          id?: string
+          recipient_email?: string
+          registration_id?: string | null
+          sent_by?: string | null
+          status?: string
+          subject?: string
+          template?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_email_log_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_email_log_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_organizers: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          event_id: string
+          id: string
+          permissions: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          event_id: string
+          id?: string
+          permissions?: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          event_id?: string
+          id?: string
+          permissions?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_organizers_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_registrations: {
+        Row: {
+          answers: Json
+          city: string | null
+          college: string | null
+          created_at: string
+          current_round_id: string | null
+          documents: Json
+          event_id: string
+          id: string
+          lead_email: string
+          lead_name: string
+          lead_phone: string
+          member_count: number
+          organizer_notes: string | null
+          participation_type: string
+          registration_code: string
+          status: string
+          team_name: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json
+          city?: string | null
+          college?: string | null
+          created_at?: string
+          current_round_id?: string | null
+          documents?: Json
+          event_id: string
+          id?: string
+          lead_email: string
+          lead_name: string
+          lead_phone: string
+          member_count?: number
+          organizer_notes?: string | null
+          participation_type?: string
+          registration_code: string
+          status?: string
+          team_name?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          city?: string | null
+          college?: string | null
+          created_at?: string
+          current_round_id?: string | null
+          documents?: Json
+          event_id?: string
+          id?: string
+          lead_email?: string
+          lead_name?: string
+          lead_phone?: string
+          member_count?: number
+          organizer_notes?: string | null
+          participation_type?: string
+          registration_code?: string
+          status?: string
+          team_name?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_current_round_id_fkey"
+            columns: ["current_round_id"]
+            isOneToOne: false
+            referencedRelation: "event_rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_rounds: {
+        Row: {
+          allow_file: boolean
+          allow_link: boolean
+          allow_text: boolean
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          event_id: string
+          id: string
+          is_enabled: boolean
+          name: string
+          position: number
+          round_type: string
+          starts_at: string | null
+          submission_deadline: string | null
+          submission_requirements: Json
+          submissions_open: boolean
+          updated_at: string
+        }
+        Insert: {
+          allow_file?: boolean
+          allow_link?: boolean
+          allow_text?: boolean
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          event_id: string
+          id?: string
+          is_enabled?: boolean
+          name: string
+          position?: number
+          round_type?: string
+          starts_at?: string | null
+          submission_deadline?: string | null
+          submission_requirements?: Json
+          submissions_open?: boolean
+          updated_at?: string
+        }
+        Update: {
+          allow_file?: boolean
+          allow_link?: boolean
+          allow_text?: boolean
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          event_id?: string
+          id?: string
+          is_enabled?: boolean
+          name?: string
+          position?: number
+          round_type?: string
+          starts_at?: string | null
+          submission_deadline?: string | null
+          submission_requirements?: Json
+          submissions_open?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rounds_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          banner_url: string | null
+          capacity: number | null
+          category: string
+          city: string | null
+          code: string
+          college_restriction: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          custom_questions: Json
+          description: string
+          eligibility: string | null
+          end_at: string | null
+          event_type: string
+          faqs: Json
+          highlights: Json
+          id: string
+          links: Json
+          maps_url: string | null
+          mode: string
+          name: string
+          online_url: string | null
+          owner_id: string
+          participation_type: string
+          published_at: string | null
+          register_url: string | null
+          registration_closes_at: string | null
+          registration_opens_at: string | null
+          required_documents: Json
+          required_participant_fields: Json
+          slug: string
+          start_at: string | null
+          stats: Json
+          status: string
+          tagline: string | null
+          team_max: number
+          team_min: number
+          team_name_required: boolean
+          updated_at: string
+          venue: string | null
+          website_url: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          capacity?: number | null
+          category?: string
+          city?: string | null
+          code: string
+          college_restriction?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          custom_questions?: Json
+          description?: string
+          eligibility?: string | null
+          end_at?: string | null
+          event_type?: string
+          faqs?: Json
+          highlights?: Json
+          id?: string
+          links?: Json
+          maps_url?: string | null
+          mode?: string
+          name: string
+          online_url?: string | null
+          owner_id: string
+          participation_type?: string
+          published_at?: string | null
+          register_url?: string | null
+          registration_closes_at?: string | null
+          registration_opens_at?: string | null
+          required_documents?: Json
+          required_participant_fields?: Json
+          slug: string
+          start_at?: string | null
+          stats?: Json
+          status?: string
+          tagline?: string | null
+          team_max?: number
+          team_min?: number
+          team_name_required?: boolean
+          updated_at?: string
+          venue?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          capacity?: number | null
+          category?: string
+          city?: string | null
+          code?: string
+          college_restriction?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          custom_questions?: Json
+          description?: string
+          eligibility?: string | null
+          end_at?: string | null
+          event_type?: string
+          faqs?: Json
+          highlights?: Json
+          id?: string
+          links?: Json
+          maps_url?: string | null
+          mode?: string
+          name?: string
+          online_url?: string | null
+          owner_id?: string
+          participation_type?: string
+          published_at?: string | null
+          register_url?: string | null
+          registration_closes_at?: string | null
+          registration_opens_at?: string | null
+          required_documents?: Json
+          required_participant_fields?: Json
+          slug?: string
+          start_at?: string | null
+          stats?: Json
+          status?: string
+          tagline?: string | null
+          team_max?: number
+          team_min?: number
+          team_name_required?: boolean
+          updated_at?: string
           venue?: string | null
           website_url?: string | null
         }
@@ -263,6 +687,129 @@ export type Database = {
         }
         Relationships: []
       }
+      registration_members: {
+        Row: {
+          college: string | null
+          created_at: string
+          details: Json
+          email: string | null
+          full_name: string
+          id: string
+          is_lead: boolean
+          phone: string | null
+          registration_id: string
+          role: string | null
+        }
+        Insert: {
+          college?: string | null
+          created_at?: string
+          details?: Json
+          email?: string | null
+          full_name: string
+          id?: string
+          is_lead?: boolean
+          phone?: string | null
+          registration_id: string
+          role?: string | null
+        }
+        Update: {
+          college?: string | null
+          created_at?: string
+          details?: Json
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_lead?: boolean
+          phone?: string | null
+          registration_id?: string
+          role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registration_members_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      round_submissions: {
+        Row: {
+          answers: Json
+          created_at: string
+          event_id: string
+          files: Json
+          id: string
+          link_url: string | null
+          registration_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          round_id: string
+          score: number | null
+          status: string
+          text_response: string | null
+          updated_at: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          event_id: string
+          files?: Json
+          id?: string
+          link_url?: string | null
+          registration_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          round_id: string
+          score?: number | null
+          status?: string
+          text_response?: string | null
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          event_id?: string
+          files?: Json
+          id?: string
+          link_url?: string | null
+          registration_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          round_id?: string
+          score?: number | null
+          status?: string
+          text_response?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "round_submissions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_submissions_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_submissions_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "event_rounds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sponsor_inquiries: {
         Row: {
           company_name: string
@@ -340,6 +887,118 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      task_submissions: {
+        Row: {
+          created_at: string
+          feedback: string | null
+          files: Json
+          id: string
+          link_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_by: string
+          task_id: string
+          text_response: string | null
+        }
+        Insert: {
+          created_at?: string
+          feedback?: string | null
+          files?: Json
+          id?: string
+          link_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by: string
+          task_id: string
+          text_response?: string | null
+        }
+        Update: {
+          created_at?: string
+          feedback?: string | null
+          files?: Json
+          id?: string
+          link_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by?: string
+          task_id?: string
+          text_response?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          activity: Json
+          assigned_by: string
+          assigned_to: string
+          assignee_email: string | null
+          assignee_name: string | null
+          attachments: Json
+          created_at: string
+          description: string | null
+          due_at: string | null
+          event_id: string | null
+          id: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          activity?: Json
+          assigned_by: string
+          assigned_to: string
+          assignee_email?: string | null
+          assignee_name?: string | null
+          attachments?: Json
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          event_id?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          activity?: Json
+          assigned_by?: string
+          assigned_to?: string
+          assignee_email?: string | null
+          assignee_name?: string | null
+          attachments?: Json
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          event_id?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       teams: {
         Row: {
@@ -460,6 +1119,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_manage_event: {
+        Args: { _event_id: string; _permission: string }
+        Returns: boolean
+      }
+      owns_registration: {
+        Args: { _registration_id: string }
+        Returns: boolean
+      }
+      registration_event_id: {
+        Args: { _registration_id: string }
+        Returns: string
+      }
       request_member_change: {
         Args: {
           p_lead_email: string
@@ -480,6 +1151,10 @@ export type Database = {
         | "campus_lead"
         | "volunteer"
         | "mentor"
+        | "founder"
+        | "team_member"
+        | "organizer"
+        | "participant"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -615,6 +1290,10 @@ export const Constants = {
         "campus_lead",
         "volunteer",
         "mentor",
+        "founder",
+        "team_member",
+        "organizer",
+        "participant",
       ],
     },
   },
