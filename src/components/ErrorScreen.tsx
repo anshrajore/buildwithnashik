@@ -120,11 +120,12 @@ export function ErrorScreen({
             </button>
           )}
           <Link
-            to="/dashboard"
+            to="/member"
             className="ink-border-sm rounded-full bg-ink px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-cream"
           >
             Back to dashboard
           </Link>
+
           <Link
             to="/nest"
             className="ink-border-sm rounded-full bg-cream px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink"
