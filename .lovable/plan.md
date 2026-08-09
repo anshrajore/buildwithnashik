@@ -1,57 +1,61 @@
-# Plan — Admin Dashboard, Tabbed Landing, Expertise Upgrade
+# NEST Event Operating System
 
-## 1. Expertise picker upgrade (MentorJudgeDialog)
-- Expand the built-in tag list (add: Fintech, Healthtech, Edtech, Gaming, AR/VR, Robotics, Design Systems, Community, Open Source, Systems / Low-level, LLM Ops, Databases).
-- Add a "+ Add custom" input that lets the user append exactly ONE custom tag to their selection (validated: 2–30 chars, dedup against list).
-- Store as CSV like today — no schema change needed.
+Turning NEST from a community site into a configuration-driven event + community operations platform. This is a large build, so it ships in five phases. Each phase is usable on its own.
 
-## 2. Split the long landing into tabbed sections
-Keep `/` as the marketing hero, but add an in-page top tab bar (sticky) with anchor-driven tabs so the page feels shorter and navigable:
-- **Overview** — Hero + Legacy + Community + CTA
-- **Builders** — Founder dossier (Ansh) + Builder Manifesto + Register CTA
-- **Teams** — Registered teams strip + Change members + Sponsors
-- **Timeline** — Schedule & Rounds with countdowns + Mentors/Judges apply
+## Phase 1 — Foundations (data + access + errors)
 
-Implementation: single route, one `activeTab` state, each tab renders its section group. Smooth scroll to top of section on switch. URL hash sync (`#builders`, `#teams`, `#timeline`) for shareable deep-links. Mobile: horizontal scroll tab bar.
+**Relational core** replacing the current single-table event model:
 
-## 3. Admin dashboard
-New protected route tree:
-- `/admin/login` — email+password sign in (Lovable Cloud auth).
-- `/_authenticated/admin/*` — gated by the managed auth layout AND an `admin` role check.
+```text
+users/roles/permissions -> members -> events -> event_organizers
+events -> rounds -> round_submissions -> evaluations
+events -> registrations -> teams -> team_members
+tasks -> task_submissions
+audit_logs, email_logs, notifications, credentials
+```
 
-### Auth & roles
-- Add `app_role` enum + `user_roles` table + `has_role()` SECURITY DEFINER (per platform user-roles knowledge).
-- Trigger grants `admin` role automatically to verified emails on a domain we set (default: the founder's email — configurable). Otherwise admins are inserted manually via migration.
-- RLS on all existing tables extended with an "admins can select all" policy using `has_role(auth.uid(),'admin')` so the dashboard can list rows.
+- Roles: `founder`, `team_member`, `organizer`, `volunteer`, `participant` (kept in the separate roles table, never on profiles).
+- Per-event organizer permissions (view participants, manage rounds, review submissions, shortlist, send email, export, edit event, full access) enforced in the database, so changing an event ID in the URL cannot leak another organizer's dashboard.
+- Immutable audit log with actor, target, previous/new value, timestamp, correlation ID.
+- Centralized error handling: 500/404/401/403/429 pages showing status, route, friendly message, correlation ID, retry + back-to-dashboard. No stack traces or DB errors surfaced.
+- Reusable empty/loading/error state components and the status colour system (green active, amber pending, blue in progress, red rejected, grey draft).
 
-### Dashboard pages
-Sidebar layout with tabs:
-1. **Teams** — list with search by team name / lead email, columns: name, lead, size, created, members-changed flag. Row click → drawer with full members JSON.
-2. **Mentor & Judge Applications** — filter by type (mentor/judge) and status. Actions: Approve / Reject (updates a new `status` column: pending|approved|rejected). Detail drawer shows bio, expertise chips, LinkedIn.
-3. **Sponsor Inquiries** — table + detail drawer.
-4. **Volunteer Signups** — table + detail drawer.
-5. **PPT / Submissions** — placeholder table wired to existing submission fields on teams (if any). If no submission column exists yet, add `ppt_url` + `submission_notes` to teams (nullable) so it can display.
-6. **Overview** — counts per table + recent activity list.
+## Phase 2 — Organizer: create & configure events
 
-### Schema additions (single migration)
-- `app_role` enum (`admin`, `moderator`, `user`).
-- `public.user_roles` table + GRANTs + RLS + `has_role()` function.
-- `ALTER TABLE mentor_judge_applications ADD COLUMN status text DEFAULT 'pending'` + admin update policy.
-- Admin SELECT policies on `teams`, `sponsor_inquiries`, `volunteer_signups`, `mentor_judge_applications` using `has_role`.
-- Optional `ppt_url` / `submission_notes` on `teams`.
+- Organizer dashboard with event list and a multi-step event builder: basic info, banner upload, venue/online, dates, registration window, links, contacts, FAQs.
+- Participation config: individual vs team, min/max team size, team-name rule, eligibility, college restrictions, required documents, custom registration questions with per-field required/optional control.
+- Round builder: add/rename/reorder rounds, set dates and submission deadlines, submission requirements, enable/disable, re-open. No hardcoded workflow — hackathon, workshop, startup competition and quiz flows are all just configurations.
+- Draft -> Published lifecycle; Register Now only activates when published and inside the registration window.
 
-### Frontend
-- `/admin/login` public route with email+password form.
-- `_authenticated/admin/route.tsx` — checks `has_role` via a server fn (`requireSupabaseAuth`), redirects non-admins to `/`.
-- `_authenticated/admin/index.tsx` — overview.
-- `_authenticated/admin/teams.tsx`, `applications.tsx`, `sponsors.tsx`, `volunteers.tsx`, `submissions.tsx`.
-- Shared `AdminLayout` with sidebar + top bar with sign-out.
-- All data fetched through `createServerFn` + `requireSupabaseAuth`, using RLS-scoped queries (no service role).
+## Phase 3 — Participants
+
+- Event discovery: browse, search, filter by category, date, participation type, online/offline, registration status. Cards show poster, name, date, location, deadline, participation type, team size, and a state badge (Register now / Closed / Coming soon / Completed).
+- Event page with full details, eligibility, deadline countdown, and registration flow: individual or team, member details, team name, document uploads, custom questions, confirmation with a unique registration ID.
+- Participant dashboard: my events (upcoming/registered/completed), status per event, current round, submission state, announcements, and an Action Center that surfaces pending work with deadline urgency (approaching / today / passed).
+
+## Phase 4 — Organizer operations
+
+- Per-event dashboard: Overview (registrations, participants, teams, pending submissions, shortlisted, rejected, active round, next deadline, conversion + completion rates), Registrations, Participants, Teams, Rounds, Submissions, Shortlisting, Communication, Analytics, Export, Settings.
+- Participant table with search, filters (college, team, round, status, date, submission), sorting, pagination, bulk select.
+- Review view per participant/team: registration details, members, documents, submission, round history, internal notes.
+- Actions: shortlist, reject, hold, advance round — individually and in bulk.
+- CSV and XLSX export for participants, teams, registrations, round data, submissions, shortlist results with clean column headers.
+- Email system: registration confirmation, shortlisted, rejected, submission reminder, final selection; custom templates, preview, bulk/selected sends, and full communication history.
+
+## Phase 5 — Community operations
+
+- Task system with role-based My Tasks: title, description, assigner, assignee, priority, deadline, status, attachments, comments, activity history; submissions with text/files/links and approve / reject / request changes + feedback.
+- Member management dashboard: profile, role, team, joining date, account status, tasks, events, last login; approve, change role, assign permissions, suspend, reactivate, revoke.
+- Credential system issuing accounts with an activation flow instead of exposing passwords; states pending / active / suspended / revoked.
+- Expanded NEST page: hero, about, what we do, dynamic upcoming events, past events with stats and winners, ecosystem ladder, live impact counters, volunteer / join / organize CTAs.
 
 ## Technical notes
-- No changes to existing dialogs' submit flows.
-- Tab bar is presentation-only; SEO stays intact because content still renders on `/`.
-- First admin: after this ships, the user signs up on `/admin/login`, then we insert their `user_id` into `user_roles` via a follow-up insert (or set a verified-domain rule if preferred).
 
-## Open question
-Which email/domain should auto-receive the `admin` role on signup? If you'd rather grant it manually to a specific email after signup, say so and I'll skip the trigger.
+- Backend on Lovable Cloud with row-level security on every table; all privileged reads and writes go through server functions that verify role and per-event permission before acting.
+- File uploads (banners, documents, submissions) go to private storage buckets with signed access and type/size validation.
+- Existing design language is kept: cream/charcoal with orange, yellow, cobalt and rose accents, chunk display headings, mono micro-labels. Existing pages (`/`, `/nest`, `/events`, swag, admin) stay working; the current Build With Nashik registration data migrates into the new event model.
+- Rate limiting and input validation on every public submission endpoint.
+
+## Suggested start
+
+Phase 1 and 2 in the first pass, so events can be created and configured end to end, then Phase 3 registration, then 4 and 5.
