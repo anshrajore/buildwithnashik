@@ -10,14 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SigninRouteImport } from './routes/signin'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as NestRouteImport } from './routes/nest'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EventsSlugRouteImport } from './routes/events.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AuthenticatedMyEventsRouteImport } from './routes/_authenticated/my-events'
 import { Route as AuthenticatedMemberRouteImport } from './routes/_authenticated/member'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -33,6 +37,11 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -64,14 +73,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsSlugRoute = EventsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => EventsRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMyEventsRoute = AuthenticatedMyEventsRouteImport.update({
+  id: '/my-events',
+  path: '/my-events',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMemberRoute = AuthenticatedMemberRouteImport.update({
   id: '/member',
   path: '/member',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -140,16 +164,20 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signin': typeof SigninRoute
   '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/member': typeof AuthenticatedMemberRoute
+  '/my-events': typeof AuthenticatedMyEventsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/events/$slug': typeof EventsSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
@@ -161,15 +189,19 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signin': typeof SigninRoute
   '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/member': typeof AuthenticatedMemberRoute
+  '/my-events': typeof AuthenticatedMyEventsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/events/$slug': typeof EventsSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
@@ -183,16 +215,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/events': typeof EventsRoute
+  '/events': typeof EventsRouteWithChildren
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signin': typeof SigninRoute
   '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/member': typeof AuthenticatedMemberRoute
+  '/_authenticated/my-events': typeof AuthenticatedMyEventsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/events/$slug': typeof EventsSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
@@ -210,12 +246,16 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/nest'
     | '/reset-password'
+    | '/signin'
     | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/dashboard'
     | '/member'
+    | '/my-events'
     | '/admin/login'
+    | '/events/$slug'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
     | '/admin/events'
@@ -231,11 +271,15 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/nest'
     | '/reset-password'
+    | '/signin'
     | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/dashboard'
     | '/member'
+    | '/my-events'
     | '/admin/login'
+    | '/events/$slug'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
     | '/admin/events'
@@ -252,12 +296,16 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/nest'
     | '/reset-password'
+    | '/signin'
     | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
     | '/_authenticated/member'
+    | '/_authenticated/my-events'
     | '/admin/login'
+    | '/events/$slug'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/applications'
     | '/_authenticated/admin/events'
@@ -271,10 +319,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  EventsRoute: typeof EventsRoute
+  EventsRoute: typeof EventsRouteWithChildren
   McpRoute: typeof McpRoute
   NestRoute: typeof NestRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SigninRoute: typeof SigninRoute
   TermsRoute: typeof TermsRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -289,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -333,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/$slug': {
+      id: '/events/$slug'
+      path: '/$slug'
+      fullPath: '/events/$slug'
+      preLoaderRoute: typeof EventsSlugRouteImport
+      parentRoute: typeof EventsRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -340,11 +403,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/my-events': {
+      id: '/_authenticated/my-events'
+      path: '/my-events'
+      fullPath: '/my-events'
+      preLoaderRoute: typeof AuthenticatedMyEventsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/member': {
       id: '/_authenticated/member'
       path: '/member'
       fullPath: '/member'
       preLoaderRoute: typeof AuthenticatedMemberRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
@@ -452,24 +529,40 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMemberRoute: typeof AuthenticatedMemberRoute
+  AuthenticatedMyEventsRoute: typeof AuthenticatedMyEventsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMemberRoute: AuthenticatedMemberRoute,
+  AuthenticatedMyEventsRoute: AuthenticatedMyEventsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface EventsRouteChildren {
+  EventsSlugRoute: typeof EventsSlugRoute
+}
+
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsSlugRoute: EventsSlugRoute,
+}
+
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  EventsRoute: EventsRoute,
+  EventsRoute: EventsRouteWithChildren,
   McpRoute: McpRoute,
   NestRoute: NestRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SigninRoute: SigninRoute,
   TermsRoute: TermsRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

@@ -687,6 +687,48 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          last_seen_at: string
+          phone: string | null
+          provider: string | null
+          signup_source: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          last_seen_at?: string
+          phone?: string | null
+          provider?: string | null
+          signup_source?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          last_seen_at?: string
+          phone?: string | null
+          provider?: string | null
+          signup_source?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       registration_members: {
         Row: {
           college: string | null
@@ -809,6 +851,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      site_visits: {
+        Row: {
+          created_at: string
+          id: string
+          path: string
+          referrer: string | null
+          session_id: string | null
+          site: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          path: string
+          referrer?: string | null
+          session_id?: string | null
+          site?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string | null
+          site?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       sponsor_inquiries: {
         Row: {
