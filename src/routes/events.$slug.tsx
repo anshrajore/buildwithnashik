@@ -97,7 +97,15 @@ function EventPage() {
   const links = (Array.isArray(event.links) ? event.links : []) as { label: string; url: string }[];
   const faqs = (Array.isArray(event.faqs) ? event.faqs : []) as { q: string; a: string }[];
   const highlights = (Array.isArray(event.highlights) ? event.highlights : []) as string[];
-  const rounds = data?.rounds ?? [];
+  type RoundRow = {
+    id: string;
+    name: string;
+    round_type: string;
+    description: string | null;
+    starts_at: string | null;
+    submission_deadline: string | null;
+  };
+  const rounds = (data?.rounds ?? []) as RoundRow[];
 
   function onRegisterClick() {
     if (!user) return setGate(true);
