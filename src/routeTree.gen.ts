@@ -19,6 +19,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EventsSlugRouteImport } from './routes/events.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AuthenticatedOrganizerRouteImport } from './routes/_authenticated/organizer'
 import { Route as AuthenticatedMyEventsRouteImport } from './routes/_authenticated/my-events'
 import { Route as AuthenticatedMemberRouteImport } from './routes/_authenticated/member'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -82,6 +83,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedOrganizerRoute = AuthenticatedOrganizerRouteImport.update({
+  id: '/organizer',
+  path: '/organizer',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMyEventsRoute = AuthenticatedMyEventsRouteImport.update({
   id: '/my-events',
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/member': typeof AuthenticatedMemberRoute
   '/my-events': typeof AuthenticatedMyEventsRoute
+  '/organizer': typeof AuthenticatedOrganizerRoute
   '/admin/login': typeof AdminLoginRoute
   '/events/$slug': typeof EventsSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/member': typeof AuthenticatedMemberRoute
   '/my-events': typeof AuthenticatedMyEventsRoute
+  '/organizer': typeof AuthenticatedOrganizerRoute
   '/admin/login': typeof AdminLoginRoute
   '/events/$slug': typeof EventsSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/member': typeof AuthenticatedMemberRoute
   '/_authenticated/my-events': typeof AuthenticatedMyEventsRoute
+  '/_authenticated/organizer': typeof AuthenticatedOrganizerRoute
   '/admin/login': typeof AdminLoginRoute
   '/events/$slug': typeof EventsSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -254,6 +263,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/member'
     | '/my-events'
+    | '/organizer'
     | '/admin/login'
     | '/events/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/member'
     | '/my-events'
+    | '/organizer'
     | '/admin/login'
     | '/events/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -304,6 +315,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/member'
     | '/_authenticated/my-events'
+    | '/_authenticated/organizer'
     | '/admin/login'
     | '/events/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -402,6 +414,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/organizer': {
+      id: '/_authenticated/organizer'
+      path: '/organizer'
+      fullPath: '/organizer'
+      preLoaderRoute: typeof AuthenticatedOrganizerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/my-events': {
       id: '/_authenticated/my-events'
@@ -532,6 +551,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMemberRoute: typeof AuthenticatedMemberRoute
   AuthenticatedMyEventsRoute: typeof AuthenticatedMyEventsRoute
+  AuthenticatedOrganizerRoute: typeof AuthenticatedOrganizerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -539,6 +559,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMemberRoute: AuthenticatedMemberRoute,
   AuthenticatedMyEventsRoute: AuthenticatedMyEventsRoute,
+  AuthenticatedOrganizerRoute: AuthenticatedOrganizerRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

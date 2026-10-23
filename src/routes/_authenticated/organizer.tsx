@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Toaster, toast } from "sonner";
-import { createEvent } from "@/lib/events.functions";
+import { createEvent, saveRounds } from "@/lib/events.functions";
 import { listMyEventSummaries } from "@/lib/organizer.functions";
 import { EVENT_CATEGORIES, EVENT_TYPE_PRESETS, eventCodeFrom, fmtDate, humanStatus, slugify, statusTone } from "@/lib/event-utils";
 
@@ -160,7 +160,7 @@ function CreateEventDialog({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const create = useServerFn(createEvent);
-  const saveRoundsFn = useServerFn(require("@/lib/events.functions").saveRounds);
+  const saveRoundsFn = useServerFn(saveRounds);
 
   const [form, setForm] = useState({
     name: "",
