@@ -33,22 +33,38 @@ function safePath(p: string | undefined) {
 function SignInPage() {
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
-  const dest = safePath(redirect);
+  const dest = redirect ? safePath(redirect) : null;
+  const resolveWorkspace = useServerFn(getMyWorkspace);
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
+  /** Land admins on the admin console, organizers on their events, everyone else on the hub. */
+  async function goToWorkspace() {
+    if (dest) {
+      navigate({ to: dest as any, replace: true });
+      return;
+    }
+    try {
+      const r: any = await resolveWorkspace();
+      navigate({ to: (r?.path ?? "/dashboard") as any, replace: true });
+    } catch {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }
+
   useEffect(() => {
     void supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: dest, replace: true });
+      if (data.user) void goToWorkspace();
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dest, navigate]);
 
   async function google() {
     setBusy(true);
     try {
-      sessionStorage.setItem("nest_after_signin", dest);
+      if (dest) sessionStorage.setItem("nest_after_signin", dest);
     } catch {
       /* ignore */
     }
@@ -56,7 +72,7 @@ function SignInPage() {
     setBusy(false);
     if (res.error) return toast.error(res.error);
     if (res.redirected) return;
-    navigate({ to: dest, replace: true });
+    void goToWorkspace();
   }
 
   async function submit(e: React.FormEvent) {
