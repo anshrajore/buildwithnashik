@@ -4,13 +4,17 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { supabase } from "@/integrations/supabase/client";
+import { getMyWorkspace } from "@/lib/organizer.functions";
 
 function NotFoundComponent() {
   return (
@@ -122,6 +126,36 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const resolveWorkspace = useServerFn(getMyWorkspace);
+
+  // One root listener: after sign-in, land admins on /admin, organizers on /organizer, others on the hub.
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN") return;
+      queryClient.invalidateQueries();
+      let stored: string | null = null;
+      try {
+        stored = sessionStorage.getItem("nest_after_signin");
+        sessionStorage.removeItem("nest_after_signin");
+      } catch {
+        /* ignore */
+      }
+      if (stored && stored.startsWith("/") && !stored.startsWith("//")) {
+        router.history.push(stored);
+        return;
+      }
+      if (pathname === "/") {
+        resolveWorkspace()
+          .then((r: any) => {
+            if (r?.path) router.history.push(r.path);
+          })
+          .catch(() => {});
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router, pathname, queryClient, resolveWorkspace]);
 
   return (
     <QueryClientProvider client={queryClient}>
