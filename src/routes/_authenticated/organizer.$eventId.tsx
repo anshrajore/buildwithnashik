@@ -97,15 +97,13 @@ function EventOpsPage() {
     );
 
   const ev = ops!.event;
-  const stats = useMemo(() => {
-    const regs = ops!.registrations;
-    return {
-      total: regs.length,
-      pending: regs.filter((r) => r.status === "submitted").length,
-      shortlisted: regs.filter((r) => ["shortlisted", "advanced", "finalist", "selected", "completed"].includes(r.status)).length,
-      rejected: regs.filter((r) => r.status === "rejected").length,
-    };
-  }, [ops]);
+  const regs = ops!.registrations;
+  const stats = {
+    total: regs.length,
+    pending: regs.filter((r) => r.status === "submitted").length,
+    shortlisted: regs.filter((r) => ["shortlisted", "advanced", "finalist", "selected", "completed"].includes(r.status)).length,
+    rejected: regs.filter((r) => r.status === "rejected").length,
+  };
 
   const tabs = [
     ["registrations", `Registrations (${stats.total})`],

@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Toaster, toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/hooks/use-auth-user";
+import { getMyWorkspace } from "@/lib/organizer.functions";
 
 const search = z.object({ redirect: z.string().optional() });
 
