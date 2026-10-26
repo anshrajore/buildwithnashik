@@ -8,8 +8,8 @@ import {
   sendEventEmails,
   setRegistrationStatus,
   reviewSubmission,
+  logDataExport,
 } from "@/lib/events.functions";
-import { logDataExport } from "@/lib/organizer.functions";
 import { exportCsv, exportXlsx, type Column } from "@/lib/export-utils";
 import {
   EMAIL_TEMPLATES,
@@ -97,15 +97,13 @@ function EventOpsPage() {
     );
 
   const ev = ops!.event;
-  const stats = useMemo(() => {
-    const regs = ops!.registrations;
-    return {
-      total: regs.length,
-      pending: regs.filter((r) => r.status === "submitted").length,
-      shortlisted: regs.filter((r) => ["shortlisted", "advanced", "finalist", "selected", "completed"].includes(r.status)).length,
-      rejected: regs.filter((r) => r.status === "rejected").length,
-    };
-  }, [ops]);
+  const regs = ops!.registrations;
+  const stats = {
+    total: regs.length,
+    pending: regs.filter((r) => r.status === "submitted").length,
+    shortlisted: regs.filter((r) => ["shortlisted", "advanced", "finalist", "selected", "completed"].includes(r.status)).length,
+    rejected: regs.filter((r) => r.status === "rejected").length,
+  };
 
   const tabs = [
     ["registrations", `Registrations (${stats.total})`],
@@ -234,7 +232,7 @@ function RegistrationsTab({ ops, eventId, onRefresh }: { ops: Ops; eventId: stri
           <option value="none">No submissions yet</option>
           {enabledRounds.map((r) => <option key={r.id} value={r.id}>Submitted · {r.name}</option>)}
         </select>
-        <button onClick={() => refetch()} className={btn + " bg-white " + mono}>↻ Refresh</button>
+        <button onClick={onRefresh} className={btn + " bg-white " + mono}>↻ Refresh</button>
       </div>
 
       {sel.size > 0 && (
@@ -443,10 +441,10 @@ function SubmissionRow({ s, ops, disabled, onSave }: { s: Row; ops: Ops; disable
 function EmailsTab({ ops, eventId }: { ops: Ops; eventId: string }) {
   const sendFn = useServerFn(sendEventEmails);
   const [templateKey, setTemplateKey] = useState<string>(EMAIL_TEMPLATES[0].key);
-  const [status, setStatusF] = useState("submitted");
-  const [roundFilter, setRoundFilter] = useState("all");
-  const [subject, setSubject] = useState(EMAIL_TEMPLATES[0].subject);
-  const [body, setBody] = useState(EMAIL_TEMPLATES[0].body);
+  const [status, setStatusF] = useState<string>("submitted");
+  const [roundFilter, setRoundFilter] = useState<string>("all");
+  const [subject, setSubject] = useState<string>(EMAIL_TEMPLATES[0].subject);
+  const [body, setBody] = useState<string>(EMAIL_TEMPLATES[0].body);
   const tpl = EMAIL_TEMPLATES.find((t) => t.key === templateKey) ?? EMAIL_TEMPLATES[0];
 
   const audience = useMemo(() => {

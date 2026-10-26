@@ -21,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 const CARDS = [
   { to: "/my-events" as const, label: "My events", body: "Registrations, rounds, deadlines and submissions." },
+  { to: "/organizer" as const, label: "Organizer console", body: "Per-event operations — registrations, rounds, emails and exports." },
   { to: "/member" as const, label: "Member workspace", body: "Tasks and updates for Nest members and volunteers." },
   { to: "/events" as const, label: "Events board", body: "Discover and register for upcoming events." },
   { to: "/admin" as const, label: "Staff & organiser tools", body: "Event operations, applications and moderation." },
