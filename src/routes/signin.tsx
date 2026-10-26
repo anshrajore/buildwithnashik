@@ -98,11 +98,11 @@ function SignInPage() {
           setMode("signin");
           return;
         }
-        navigate({ to: dest, replace: true });
+        void goToWorkspace();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: dest, replace: true });
+        void goToWorkspace();
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign in failed");
