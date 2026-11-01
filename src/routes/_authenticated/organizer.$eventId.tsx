@@ -69,6 +69,20 @@ function EventOpsPage() {
   const opsFn = useServerFn(getEventOps);
   const [tab, setTab] = useState<"registrations" | "rounds" | "emails" | "export">("registrations");
 
+  const statusFn = useServerFn(setEventStatus);
+  const statusMutate = useMutation({
+    mutationFn: (next: "draft" | "published" | "registration_closed" | "completed" | "archived") =>
+      statusFn({ data: { id: eventId, status: next } }) as Promise<{ ok: boolean; message?: string }>,
+    onSuccess: (res: any) => {
+      if (res?.ok) {
+        toast.success("Event status updated");
+        qc.invalidateQueries({ queryKey: ["ops", eventId] });
+        qc.invalidateQueries({ queryKey: ["organizer", "summaries"] });
+      } else toast.error(res?.message ?? "Could not update the event");
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Could not update the event"),
+  });
+
   const { data: ops, isLoading, error, refetch } = useQuery({
     queryKey: ["ops", eventId],
     queryFn: () => opsFn({ data: { event_id: eventId } }) as Promise<Ops>,
