@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner";
 import {
   getEventOps,
   sendEventEmails,
+  setEventStatus,
   setRegistrationStatus,
   reviewSubmission,
   logDataExport,
@@ -68,6 +69,20 @@ function EventOpsPage() {
   const opsFn = useServerFn(getEventOps);
   const [tab, setTab] = useState<"registrations" | "rounds" | "emails" | "export">("registrations");
 
+  const statusFn = useServerFn(setEventStatus);
+  const statusMutate = useMutation({
+    mutationFn: (next: "draft" | "published" | "registration_closed" | "completed" | "archived") =>
+      statusFn({ data: { id: eventId, status: next } }) as Promise<{ ok: boolean; message?: string }>,
+    onSuccess: (res: any) => {
+      if (res?.ok) {
+        toast.success("Event status updated");
+        qc.invalidateQueries({ queryKey: ["ops", eventId] });
+        qc.invalidateQueries({ queryKey: ["organizer", "summaries"] });
+      } else toast.error(res?.message ?? "Could not update the event");
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Could not update the event"),
+  });
+
   const { data: ops, isLoading, error, refetch } = useQuery({
     queryKey: ["ops", eventId],
     queryFn: () => opsFn({ data: { event_id: eventId } }) as Promise<Ops>,
@@ -125,9 +140,36 @@ function EventOpsPage() {
             </div>
             <h1 className="mt-2 font-chunk text-4xl uppercase tracking-tight">{ev.name}</h1>
           </div>
-          {ev.status === "published" && (
-            <Link to="/events/$slug" params={{ slug: ev.slug }} className={btn + " bg-white " + mono}>View public page ↗</Link>
-          )}
+          <div className="flex shrink-0 flex-wrap items-start justify-end gap-2">
+            {ev.status === "published" && (
+              <Link to="/events/$slug" params={{ slug: ev.slug }} className={btn + " bg-white " + mono}>View public page ↗</Link>
+            )}
+            {ev.status === "draft" && (
+              <button disabled={statusMutate.isPending} onClick={() => statusMutate.mutate("published")} className={btn + " bg-orange text-cream " + mono}>
+                {statusMutate.isPending ? "Publishing…" : "Publish event"}
+              </button>
+            )}
+            {ev.status === "published" && (
+              <button disabled={statusMutate.isPending} onClick={() => statusMutate.mutate("registration_closed")} className={btn + " bg-white " + mono}>
+                Close registration
+              </button>
+            )}
+            {ev.status === "registration_closed" && (
+              <button disabled={statusMutate.isPending} onClick={() => statusMutate.mutate("published")} className={btn + " bg-orange text-cream " + mono}>
+                Reopen registration
+              </button>
+            )}
+            {(ev.status === "published" || ev.status === "registration_closed") && (
+              <button disabled={statusMutate.isPending} onClick={() => statusMutate.mutate("completed")} className={btn + " bg-white " + mono}>
+                Mark completed
+              </button>
+            )}
+            {ev.status === "completed" && (
+              <button disabled={statusMutate.isPending} onClick={() => statusMutate.mutate("archived")} className={btn + " bg-white " + mono}>
+                Archive event
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

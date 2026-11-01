@@ -25,6 +25,7 @@ import { Route as AuthenticatedMemberRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedMyEventsRouteImport } from './routes/_authenticated/my-events'
 import { Route as AuthenticatedOrganizerRouteImport } from './routes/_authenticated/organizer'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
 import { Route as EventsSlugRouteImport } from './routes/events.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -34,6 +35,7 @@ import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminSponsorsRouteImport } from './routes/_authenticated/admin.sponsors'
 import { Route as AuthenticatedAdminTeamsRouteImport } from './routes/_authenticated/admin.teams'
 import { Route as AuthenticatedAdminVolunteersRouteImport } from './routes/_authenticated/admin.volunteers'
+import { Route as AuthenticatedOrganizerIndexRouteImport } from './routes/_authenticated/organizer.index'
 import { Route as AuthenticatedOrganizerEventIdRouteImport } from './routes/_authenticated/organizer.$eventId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -117,6 +119,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EventsRoute,
+} as any)
 const EventsSlugRoute = EventsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -168,6 +175,12 @@ const AuthenticatedAdminVolunteersRoute =
     path: '/volunteers',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedOrganizerIndexRoute =
+  AuthenticatedOrganizerIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedOrganizerRoute,
+  } as any)
 const AuthenticatedOrganizerEventIdRoute =
   AuthenticatedOrganizerEventIdRouteImport.update({
     id: '/$eventId',
@@ -192,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/organizer': typeof AuthenticatedOrganizerRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/events/$slug': typeof EventsSlugRoute
+  '/events/': typeof EventsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
@@ -201,10 +215,10 @@ export interface FileRoutesByFullPath {
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/organizer/$eventId': typeof AuthenticatedOrganizerEventIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/organizer/': typeof AuthenticatedOrganizerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/events': typeof EventsRouteWithChildren
   '/mcp': typeof McpRoute
   '/nest': typeof NestRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -215,9 +229,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/member': typeof AuthenticatedMemberRoute
   '/my-events': typeof AuthenticatedMyEventsRoute
-  '/organizer': typeof AuthenticatedOrganizerRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/events/$slug': typeof EventsSlugRoute
+  '/events': typeof EventsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
@@ -227,6 +241,7 @@ export interface FileRoutesByTo {
   '/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/organizer/$eventId': typeof AuthenticatedOrganizerEventIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/organizer': typeof AuthenticatedOrganizerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -247,6 +262,7 @@ export interface FileRoutesById {
   '/_authenticated/organizer': typeof AuthenticatedOrganizerRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/events/$slug': typeof EventsSlugRoute
+  '/events/': typeof EventsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
@@ -256,6 +272,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/volunteers': typeof AuthenticatedAdminVolunteersRoute
   '/_authenticated/organizer/$eventId': typeof AuthenticatedOrganizerEventIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/organizer/': typeof AuthenticatedOrganizerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -276,6 +293,7 @@ export interface FileRouteTypes {
     | '/organizer'
     | '/admin/login'
     | '/events/$slug'
+    | '/events/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
     | '/admin/events'
@@ -285,10 +303,10 @@ export interface FileRouteTypes {
     | '/admin/volunteers'
     | '/organizer/$eventId'
     | '/admin/'
+    | '/organizer/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/events'
     | '/mcp'
     | '/nest'
     | '/reset-password'
@@ -299,9 +317,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/member'
     | '/my-events'
-    | '/organizer'
     | '/admin/login'
     | '/events/$slug'
+    | '/events'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
     | '/admin/events'
@@ -311,6 +329,7 @@ export interface FileRouteTypes {
     | '/admin/volunteers'
     | '/organizer/$eventId'
     | '/admin'
+    | '/organizer'
   id:
     | '__root__'
     | '/'
@@ -330,6 +349,7 @@ export interface FileRouteTypes {
     | '/_authenticated/organizer'
     | '/admin/login'
     | '/events/$slug'
+    | '/events/'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/applications'
     | '/_authenticated/admin/events'
@@ -339,6 +359,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/volunteers'
     | '/_authenticated/organizer/$eventId'
     | '/_authenticated/admin/'
+    | '/_authenticated/organizer/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -470,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/': {
+      id: '/events/'
+      path: '/'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof EventsRoute
+    }
     '/events/$slug': {
       id: '/events/$slug'
       path: '/$slug'
@@ -533,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminVolunteersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/organizer/': {
+      id: '/_authenticated/organizer/'
+      path: '/'
+      fullPath: '/organizer/'
+      preLoaderRoute: typeof AuthenticatedOrganizerIndexRouteImport
+      parentRoute: typeof AuthenticatedOrganizerRoute
+    }
     '/_authenticated/organizer/$eventId': {
       id: '/_authenticated/organizer/$eventId'
       path: '/$eventId'
@@ -568,11 +603,13 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedOrganizerRouteChildren {
   AuthenticatedOrganizerEventIdRoute: typeof AuthenticatedOrganizerEventIdRoute
+  AuthenticatedOrganizerIndexRoute: typeof AuthenticatedOrganizerIndexRoute
 }
 
 const AuthenticatedOrganizerRouteChildren: AuthenticatedOrganizerRouteChildren =
   {
     AuthenticatedOrganizerEventIdRoute: AuthenticatedOrganizerEventIdRoute,
+    AuthenticatedOrganizerIndexRoute: AuthenticatedOrganizerIndexRoute,
   }
 
 const AuthenticatedOrganizerRouteWithChildren =
@@ -601,10 +638,12 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface EventsRouteChildren {
   EventsSlugRoute: typeof EventsSlugRoute
+  EventsIndexRoute: typeof EventsIndexRoute
 }
 
 const EventsRouteChildren: EventsRouteChildren = {
   EventsSlugRoute: EventsSlugRoute,
+  EventsIndexRoute: EventsIndexRoute,
 }
 
 const EventsRouteWithChildren =
