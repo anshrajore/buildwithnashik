@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner";
 import {
   getEventOps,
   sendEventEmails,
+  setEventStatus,
   setRegistrationStatus,
   reviewSubmission,
   logDataExport,
