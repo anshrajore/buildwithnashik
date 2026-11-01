@@ -12,7 +12,7 @@ import { eventLifecycle, fmtDate, humanStatus } from "@/lib/event-utils";
 import { EmptyState, LoadingRows, Pill } from "@/components/ui-states";
 import { useVisitTracking } from "@/hooks/use-visit-tracking";
 
-export const Route = createFileRoute("/events")({
+export const Route = createFileRoute("/events/")({
   head: () => ({
     meta: [
       { title: "Events Board · Hackathons & Meetups by Team Nest" },

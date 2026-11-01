@@ -7,7 +7,7 @@ import { createEvent, saveRounds } from "@/lib/events.functions";
 import { listMyEventSummaries } from "@/lib/organizer.functions";
 import { EVENT_CATEGORIES, EVENT_TYPE_PRESETS, eventCodeFrom, fmtDate, humanStatus, slugify, statusTone } from "@/lib/event-utils";
 
-export const Route = createFileRoute("/_authenticated/organizer")({
+export const Route = createFileRoute("/_authenticated/organizer/")({
   head: () => ({
     meta: [
       { title: "Organizer console · Team Nest" },
