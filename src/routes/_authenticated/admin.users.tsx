@@ -145,7 +145,9 @@ function UsersPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {r.roles.includes("admin") ? (
+                    {r.id === me ? (
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-ink/40">You</span>
+                    ) : r.roles.includes("admin") ? (
                       <button
                         onClick={() => {
                           setBusyId(r.id);
