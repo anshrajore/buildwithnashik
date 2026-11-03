@@ -101,7 +101,7 @@ function AdminLayout() {
     { to: "/admin/sponsors", label: "Sponsors" },
     { to: "/admin/volunteers", label: "Volunteers" },
     { to: "/admin/members", label: "Nest Members" },
-
+    { to: "/admin/users", label: "Users" },
   ] as const;
 
   function isActive(to: string, exact?: boolean) {

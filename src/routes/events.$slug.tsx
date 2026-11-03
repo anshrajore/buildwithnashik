@@ -7,6 +7,7 @@ import { NestHeader } from "@/components/NestHeader";
 import { AuthGate } from "@/components/AuthGate";
 import { EventRegisterDialog } from "@/components/EventRegisterDialog";
 import { getPublicEvent } from "@/lib/events.functions";
+import { getMyEventAccess } from "@/lib/organizer.functions";
 import { eventLifecycle, fmtDateTime, humanStatus, countdown } from "@/lib/event-utils";
 import { EmptyState, LoadingRows, Pill } from "@/components/ui-states";
 import { useAuthUser } from "@/hooks/use-auth-user";
@@ -58,6 +59,12 @@ function EventPage() {
     initialData: Route.useLoaderData(),
   });
   const { user } = useAuthUser();
+  const accessFn = useServerFn(getMyEventAccess);
+  const access = useQuery({
+    queryKey: ["event", slug, "myAccess", user?.id ?? "anon"],
+    queryFn: () => accessFn({ data: { slug } }) as Promise<{ canOperate: boolean; eventId: string | null }>,
+    enabled: !!user,
+  });
   const [gate, setGate] = useState(false);
   const [reg, setReg] = useState(false);
 
@@ -149,6 +156,15 @@ function EventPage() {
               >
                 My registrations
               </Link>
+              {access.data?.canOperate && access.data.eventId && (
+                <Link
+                  to="/organizer/$eventId"
+                  params={{ eventId: access.data.eventId }}
+                  className="ink-border-sm rounded-full bg-cobalt px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-widest text-cream"
+                >
+                  Operate dashboard →
+                </Link>
+              )}
               {links.map((l) => (
                 <a
                   key={l.url}

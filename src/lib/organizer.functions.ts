@@ -19,6 +19,29 @@ export const getMyWorkspace = createServerFn({ method: "GET" })
     return { path: "/dashboard" };
   });
 
+/** Can this signed-in user operate this event (owner or co-organizer)? For showing the operate link on public pages. */
+export const getMyEventAccess = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { slug: string }) => input)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: ev, error } = await supabase
+      .from("events")
+      .select("id,owner_id")
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!ev) return { canOperate: false, eventId: null };
+    if (ev.owner_id === userId) return { canOperate: true, eventId: ev.id };
+    const { data: co } = await supabase
+      .from("event_organizers")
+      .select("event_id")
+      .eq("user_id", userId)
+      .eq("event_id", ev.id)
+      .maybeSingle();
+    return { canOperate: Boolean(co), eventId: ev.id };
+  });
+
 /** Every event this organizer owns or co-organizes, with registration roll-ups. */
 export const listMyEventSummaries = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
