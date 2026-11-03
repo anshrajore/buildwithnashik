@@ -59,6 +59,12 @@ function EventPage() {
     initialData: Route.useLoaderData(),
   });
   const { user } = useAuthUser();
+  const accessFn = useServerFn(getMyEventAccess);
+  const access = useQuery({
+    queryKey: ["event", slug, "myAccess", user?.id ?? "anon"],
+    queryFn: () => accessFn({ data: { slug } }) as Promise<{ canOperate: boolean; eventId: string | null }>,
+    enabled: !!user,
+  });
   const [gate, setGate] = useState(false);
   const [reg, setReg] = useState(false);
 
