@@ -156,6 +156,15 @@ function EventPage() {
               >
                 My registrations
               </Link>
+              {access.data?.canOperate && access.data.eventId && (
+                <Link
+                  to="/organizer/$eventId"
+                  params={{ eventId: access.data.eventId }}
+                  className="ink-border-sm rounded-full bg-cobalt px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-widest text-cream"
+                >
+                  Operate dashboard →
+                </Link>
+              )}
               {links.map((l) => (
                 <a
                   key={l.url}
