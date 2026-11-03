@@ -41,10 +41,11 @@ function UsersPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "users"],
-    queryFn: () => fn() as Promise<{ rows: UserAccountRow[] }>,
+    queryFn: () => fn() as Promise<{ rows: UserAccountRow[]; userId: string }>,
   });
 
   const rows = data?.rows ?? [];
+  const me = data?.userId ?? null;
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return rows;
