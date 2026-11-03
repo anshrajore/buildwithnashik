@@ -7,6 +7,7 @@ import { NestHeader } from "@/components/NestHeader";
 import { AuthGate } from "@/components/AuthGate";
 import { EventRegisterDialog } from "@/components/EventRegisterDialog";
 import { getPublicEvent } from "@/lib/events.functions";
+import { getMyEventAccess } from "@/lib/organizer.functions";
 import { eventLifecycle, fmtDateTime, humanStatus, countdown } from "@/lib/event-utils";
 import { EmptyState, LoadingRows, Pill } from "@/components/ui-states";
 import { useAuthUser } from "@/hooks/use-auth-user";
