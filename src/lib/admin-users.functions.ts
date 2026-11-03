@@ -73,7 +73,7 @@ export const listUserAccounts = createServerFn({ method: "GET" })
       }))
       .sort((a, b) => (a.email ?? "").localeCompare(b.email ?? ""));
 
-    return { rows };
+    return { rows, userId: context.userId };
   });
 
 /** Admin-only: grant or revoke the admin role on an account. Self-changes are blocked. */
