@@ -48,6 +48,25 @@ export const claimFirstAdmin = createServerFn({ method: "POST" })
       .from("user_roles")
       .insert({ user_id: context.userId, role: "admin" });
     if (insErr) throw new Error(insErr.message);
+
+    // Audit trail: the very first admin claim is also a grant.
+    const { data: actor } = await supabaseAdmin
+      .from("profiles")
+      .select("email,full_name")
+      .eq("id", context.userId)
+      .maybeSingle();
+    const { writeAudit } = await import("@/lib/ops.server");
+    await writeAudit({
+      action: "first_admin_claimed",
+      entity_type: "user_account",
+      entity_id: context.userId,
+      actor_id: context.userId,
+      actor_email: actor?.email ?? null,
+      actor_role: "admin",
+      new_value: { role: "admin", granted: true },
+      metadata: { target_email: actor?.email ?? null, target_name: actor?.full_name ?? null },
+    });
+
     return { ok: true, claimed: true };
   });
 
