@@ -132,8 +132,8 @@ export const setUserAdmin = createServerFn({ method: "POST" })
       previous_value: { role: "admin", granted: !data.grant },
       new_value: { role: "admin", granted: data.grant },
       metadata: {
-        target_email: target?.email ?? null,
-        target_name: target?.full_name ?? null,
+        target_email: targetEmail,
+        target_name: targetName,
       },
     });
 
