@@ -142,9 +142,9 @@ export type AuditRow = {
   actor_id: string | null;
   actor_email: string | null;
   actor_role: string | null;
-  previous_value: Record<string, unknown> | null;
-  new_value: Record<string, unknown> | null;
-  metadata: Record<string, unknown> | null;
+  previous_value: Record<string, any> | null;
+  new_value: Record<string, any> | null;
+  metadata: Record<string, any> | null;
   created_at: string;
 };
 
