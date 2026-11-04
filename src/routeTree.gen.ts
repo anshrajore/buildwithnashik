@@ -30,6 +30,7 @@ import { Route as EventsSlugRouteImport } from './routes/events.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
 import { Route as AuthenticatedAdminEventsRouteImport } from './routes/_authenticated/admin.events'
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin.members'
 import { Route as AuthenticatedAdminSponsorsRouteImport } from './routes/_authenticated/admin.sponsors'
@@ -147,6 +148,11 @@ const AuthenticatedAdminApplicationsRoute =
     path: '/applications',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminEventsRoute =
   AuthenticatedAdminEventsRouteImport.update({
     id: '/events',
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/events/': typeof EventsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
@@ -241,6 +248,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
   '/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
@@ -273,6 +281,7 @@ export interface FileRoutesById {
   '/events/': typeof EventsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
   '/_authenticated/admin/sponsors': typeof AuthenticatedAdminSponsorsRoute
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/events/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
+    | '/admin/audit'
     | '/admin/events'
     | '/admin/members'
     | '/admin/sponsors'
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
+    | '/admin/audit'
     | '/admin/events'
     | '/admin/members'
     | '/admin/sponsors'
@@ -363,6 +374,7 @@ export interface FileRouteTypes {
     | '/events/'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/applications'
+    | '/_authenticated/admin/audit'
     | '/_authenticated/admin/events'
     | '/_authenticated/admin/members'
     | '/_authenticated/admin/sponsors'
@@ -538,6 +550,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminApplicationsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/events': {
       id: '/_authenticated/admin/events'
       path: '/events'
@@ -599,6 +618,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminEventsRoute: typeof AuthenticatedAdminEventsRoute
   AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
   AuthenticatedAdminSponsorsRoute: typeof AuthenticatedAdminSponsorsRoute
@@ -610,6 +630,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminEventsRoute: AuthenticatedAdminEventsRoute,
   AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
   AuthenticatedAdminSponsorsRoute: AuthenticatedAdminSponsorsRoute,
