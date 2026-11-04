@@ -94,19 +94,86 @@ export const setUserAdmin = createServerFn({ method: "POST" })
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+    // Resolve names/emails first so the audit entry records who did what to whom.
+    const [{ data: target }, { data: actor }] = await Promise.all([
+      supabaseAdmin.from("profiles").select("email,full_name").eq("id", data.user_id).maybeSingle(),
+      supabaseAdmin.from("profiles").select("email,full_name").eq("id", context.userId).maybeSingle(),
+    ]);
+
     if (data.grant) {
       const { error } = await supabaseAdmin
         .from("user_roles")
         .upsert({ user_id: data.user_id, role: "admin" as any }, { onConflict: "user_id,role" });
       if (error) throw new Error(error.message);
-      return { ok: true };
+    } else {
+      const { error } = await supabaseAdmin
+        .from("user_roles")
+        .delete()
+        .eq("user_id", data.user_id)
+        .eq("role", "admin");
+      if (error) throw new Error(error.message);
     }
 
-    const { error } = await supabaseAdmin
-      .from("user_roles")
-      .delete()
-      .eq("user_id", data.user_id)
-      .eq("role", "admin");
-    if (error) throw new Error(error.message);
+    // Audit trail: who granted / revoked admin access, to whom, and when.
+    const { writeAudit } = await import("@/lib/ops.server");
+    await writeAudit({
+      action: data.grant ? "admin_access_granted" : "admin_access_revoked",
+      entity_type: "user_account",
+      entity_id: data.user_id,
+      actor_id: context.userId,
+      actor_email: actor?.email ?? null,
+      actor_role: "admin",
+      previous_value: { role: "admin", granted: !data.grant },
+      new_value: { role: "admin", granted: data.grant },
+      metadata: {
+        target_email: target?.email ?? null,
+        target_name: target?.full_name ?? null,
+      },
+    });
+
     return { ok: true };
+  });
+
+export type AuditRow = {
+  id: string;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  actor_id: string | null;
+  actor_email: string | null;
+  actor_role: string | null;
+  previous_value: Record<string, unknown> | null;
+  new_value: Record<string, unknown> | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+};
+
+const AUDIT_PAGE_SIZE = 25;
+
+/** Admin-only: audit trail, optionally narrowed to one action, newest first. */
+export const listAuditLog = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        action: z.string().optional(),
+        page: z.number().int().min(0).default(0),
+      })
+      .default({ page: 0 })
+      .parse(input ?? {}),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    let query = supabaseAdmin
+      .from("audit_logs")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range(data.page * AUDIT_PAGE_SIZE, data.page * AUDIT_PAGE_SIZE + AUDIT_PAGE_SIZE - 1);
+    if (data.action) query = query.eq("action", data.action);
+
+    const { data: rows, count, error } = await query;
+    if (error) throw new Error(error.message);
+    return { rows: (rows ?? []) as AuditRow[], total: count ?? 0, page: data.page, pageSize: AUDIT_PAGE_SIZE };
   });
