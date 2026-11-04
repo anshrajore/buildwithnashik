@@ -99,6 +99,12 @@ export const setUserAdmin = createServerFn({ method: "POST" })
       supabaseAdmin.from("profiles").select("email,full_name").eq("id", data.user_id).maybeSingle(),
       supabaseAdmin.from("profiles").select("email,full_name").eq("id", context.userId).maybeSingle(),
     ]);
+    let targetEmail = target?.email ?? null;
+    let targetName = target?.full_name ?? null;
+    if (!targetEmail) {
+      const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(data.user_id);
+      targetEmail = authUser?.user?.email ?? null;
+    }
 
     if (data.grant) {
       const { error } = await supabaseAdmin
