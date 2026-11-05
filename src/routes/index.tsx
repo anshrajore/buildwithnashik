@@ -1672,10 +1672,10 @@ function FinalCta({ onRegister, onSponsor, onVolunteer }: { onRegister: () => vo
 
 function Footer() {
   const cols = [
-    { h: "Event", l: ["About", "Timeline", "Tracks", "Prizes", "FAQ"] },
-    { h: "Partners", l: ["Sponsors", "Community", "Volunteer", "Mentors"] },
-    { h: "Connect", l: ["Instagram", "LinkedIn", "GitHub", "Discord"] },
-    { h: "Legal", l: ["Privacy", "Terms", "Code of Conduct"] },
+    { h: "Event", l: [["About", "#about"], ["Timeline", "#timeline"], ["Tracks", "#tracks"], ["Prizes", "#prizes"], ["FAQ", "#faq"]] },
+    { h: "Partners", l: [["Sponsors", "#sponsors"], ["Community", "#community"], ["Volunteer", "#register"], ["Mentors", "#mentors"]] },
+    { h: "Explore", l: [["Team Nest", "/nest"], ["Events board", "/events"], ["Register", "#register"], ["Sign in", "/signin"]] },
+    { h: "Legal", l: [["Privacy", "/terms"], ["Terms", "/terms"], ["Code of Conduct", "/terms"]] },
   ];
   return (
     <footer className="bg-cream">
@@ -1694,8 +1694,8 @@ function Footer() {
               <div key={c.h}>
                 <div className="font-mono text-xs font-bold uppercase tracking-widest text-orange">{c.h}</div>
                 <ul className="mt-4 space-y-2">
-                  {c.l.map((it) => (
-                    <li key={it}><a href="#" className="text-sm text-ink/70 hover:text-ink">{it}</a></li>
+                  {c.l.map(([it, href]) => (
+                    <li key={it}><a href={href} className="text-sm text-ink/70 hover:text-ink">{it}</a></li>
                   ))}
                 </ul>
               </div>

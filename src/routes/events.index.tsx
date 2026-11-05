@@ -110,7 +110,7 @@ function EventsPage() {
     return list.filter((e) => {
       if (category !== "All" && e.category !== category) return false;
       if (mode !== "All" && e.mode !== mode) return false;
-      if (state !== "All" && state !== "Register now") return false;
+      if (state !== "All" && communityState(e) !== state) return false;
       if (!needle) return true;
       return [e.event_name, e.city, e.venue, e.organisation, e.category].some((v) =>
         (v ?? "").toLowerCase().includes(needle),
@@ -326,7 +326,16 @@ function fmt(d: string | null) {
   return new Date(`${d}T00:00:00`).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function communityState(e: CommunityRow): "Register now" | "Coming soon" | "Event completed" {
+  const today = new Date().toISOString().slice(0, 10);
+  const end = e.end_date ?? e.start_date;
+  if (end && end < today) return "Event completed";
+  if (!e.start_date) return "Coming soon";
+  return "Register now";
+}
+
 function CommunityCard({ e, i }: { e: CommunityRow; i: number }) {
+  const done = communityState(e) === "Event completed";
   const socials = Array.isArray(e.socials) ? (e.socials as { label: string; url: string }[]) : [];
   const when = [fmt(e.start_date), fmt(e.end_date)].filter(Boolean).join(" → ");
   const gcal = googleCalendarUrl(e);
